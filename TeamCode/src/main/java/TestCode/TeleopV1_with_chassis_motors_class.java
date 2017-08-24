@@ -6,9 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import Library.Chassis_motors;
 
-/**
- * Created by Uz as an example of how to use the Chassis_motors class.
- */
 @TeleOp(name = "teleOp with class", group = "TestCode")
 public class TeleopV1_with_chassis_motors_class extends LinearOpMode
 {
@@ -18,7 +15,7 @@ public class TeleopV1_with_chassis_motors_class extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         chassis_Object = new Chassis_motors(hardwareMap);
-        chassis_Object.set_Direction_Forward();
+        // chassis_Object.set_Direction_Forward(); // it's set by default
 
         waitForStart();
 
