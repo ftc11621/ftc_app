@@ -1,11 +1,13 @@
 package TestCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
  * Created by Jake Mueller on 8/10/2017.
  */
+@Autonomous(name = "AutonV1", group = "TestCode")
 
 public class AutonV1 extends LinearOpMode {
 

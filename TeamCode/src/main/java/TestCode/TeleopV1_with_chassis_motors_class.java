@@ -13,11 +13,11 @@ import Library.Chassis_motors;
 public class TeleopV1_with_chassis_motors_class extends LinearOpMode
 {
 
-    private Chassis_motors chassis_Object = new Chassis_motors(hardwareMap);
+    private Chassis_motors chassis_Object = null;
 
     public void runOpMode() throws InterruptedException
     {
-
+        chassis_Object = new Chassis_motors(hardwareMap);
         chassis_Object.set_Direction_Forward();
 
         waitForStart();
