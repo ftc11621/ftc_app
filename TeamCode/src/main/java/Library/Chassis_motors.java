@@ -35,6 +35,8 @@ public class Chassis_motors
         motorLeft = hardwareMap.dcMotor.get("LeftDrive");
         motorRight = hardwareMap.dcMotor.get("RightDrive");
         set_Direction_Forward();                        // forward by default
+        motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //also works when encoder is not used
+        motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);//also works when encoder is not used
     }
 
     // set direction forward
@@ -53,6 +55,9 @@ public class Chassis_motors
         motorLeft.setPower(leftPower);
         motorRight.setPower(rightPower);
     }
+
+
+
 
     // Run motors with encoders, specify the power, distance in CM (centimeter)
     public void run_Motors_encoder_CM(double power, double leftDistance, double rightDistance, double timeout) {

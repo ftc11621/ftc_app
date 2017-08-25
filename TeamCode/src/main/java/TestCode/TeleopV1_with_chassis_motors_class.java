@@ -10,18 +10,18 @@ import Library.Chassis_motors;
 public class TeleopV1_with_chassis_motors_class extends LinearOpMode
 {
 
-    private Chassis_motors chassis_Object = null;
+    private Chassis_motors chassis_Object = null;  // declare chassis motors object
 
     public void runOpMode() throws InterruptedException
     {
-        chassis_Object = new Chassis_motors(hardwareMap);
-        // chassis_Object.set_Direction_Forward(); // it's set by default
+        chassis_Object = new Chassis_motors(hardwareMap); // create chassis motors object
 
         waitForStart();
 
         while(opModeIsActive())
         {
 
+            // Use chassis method to run motor, without encoder
             chassis_Object.run_Motors_no_encoder(-gamepad1.left_stick_y, -gamepad1.right_stick_y);
 
             idle();

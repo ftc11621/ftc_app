@@ -34,13 +34,13 @@ package Library;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.Hardware;
+//import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+//import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+//import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+//import com.qualcomm.robotcore.util.Hardware;
 import  com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Func;
+//import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -65,7 +65,8 @@ public class IMU    {
 
     // State used for updating telemetry
     private Orientation angles;
-    private Acceleration gravity;
+    private double yaw_initial, roll_initial, pitch_initial;
+    //private Acceleration gravity;
 
     private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -85,19 +86,32 @@ public class IMU    {
 
     public void start ()  {  // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+        measure();           // get initial angles as the reference
+        yaw_initial = get_yaw();
+        roll_initial = get_roll();
+        pitch_initial = get_pitch();
     }
 
 
     public void measure () {   // measure angles
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
     }
-    public double get_yaw() {   // yaw, positive counterclockwise -180 to 180
+    private double get_yaw() {   // yaw, positive counterclockwise -180 to 180
         return AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle));
     }
-    public double get_roll() {   // positive when fall back
+    private double get_roll() {   // positive when fall back
         return AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.secondAngle));
     }
-    public double get_pitch() {   // positive tilt to the right
+    private double get_pitch() {   // positive tilt to the right
         return AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.thirdAngle));
+    }
+    public double yaw() {
+        return get_yaw() - yaw_initial;
+    }
+    public double roll() {
+        return get_roll() - roll_initial;
+    }
+    public double pitch() {
+        return get_pitch() - pitch_initial;
     }
 }
