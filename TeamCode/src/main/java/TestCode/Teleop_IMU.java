@@ -42,11 +42,26 @@ public class Teleop_IMU extends LinearOpMode
         });
 
         telemetry.addLine()
-                .addData("Orientation: ", new Func<String>() {
+                .addData("Yaw: ", new Func<String>() {
                     @Override
                     public String value() {
                         return String.format(Locale.getDefault(), "%.1f", IMU_Object.get_yaw());
                     }
                 });
+        telemetry.addLine()
+                .addData("Roll: ", new Func<String>() {
+                    @Override
+                    public String value() {
+                        return String.format(Locale.getDefault(), "%.1f", IMU_Object.get_roll());
+                    }
+                });
+        telemetry.addLine()
+                .addData("Pitch: ", new Func<String>() {
+                    @Override
+                    public String value() {
+                        return String.format(Locale.getDefault(), "%.1f", IMU_Object.get_pitch());
+                    }
+                });
+
     }
 }

@@ -87,11 +87,16 @@ public class IMU    {
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
     }
 
-    public void measure () {   // get robot orientation in degree
+    public void measure () {   // measure angles
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
     }
-    public double get_yaw() {
+    public double get_yaw() {   // yaw, positive counterclockwise -180 to 180
         return AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle));
     }
-
+    public double get_roll() {   // positive when fall back
+        return AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.secondAngle));
+    }
+    public double get_pitch() {   // positive tilt to the right
+        return AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.thirdAngle));
+    }
 }
