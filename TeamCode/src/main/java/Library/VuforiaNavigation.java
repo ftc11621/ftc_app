@@ -76,14 +76,16 @@ public class VuforiaNavigation  {
     VuforiaTrackable tools = null;
     VuforiaTrackable gears = null;
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+    VuforiaLocalizer.Parameters parameters;
 
     //Picture wheels_loc;
 
     public VuforiaNavigation() {        // constructor
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
+        //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
+        parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
         parameters.vuforiaLicenseKey = "AdksQ3j/////AAAAGVB9GUsSEE0BlMaVB7HcRZRM4Sv74bxusFbCpn3gwnUkr3GuOtSWhrTCHnTU/93+Im+JlrYI6///bytu1igZT48xQ6182nSTpVzJ2ZP+Q/sNzSg3qvIOMnjEptutngqB+e3mQ1+YTiDa9aZod1e8X7UvGsAJ3cfV+X/S3E4M/81d1IRSMPRPEaLpKFdMqN3AcbDpBHoqp82fAp7XWVN3qd/BRe0CAAoNsr26scPBAxvm9cizRG1WeRSFms3XkwFN6eGpH7VpNAdPPXep9RQ3lLZMTFQGOfiV/vRQXq/Tlaj/b7dkA12zBSW81MfBiXRxp06NGieFe7KvXNuu2aDyyXoaPFsI44FEGp1z/SVSEVR4"; // Insert your own key here
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        parameters.useExtendedTracking = false;        // whether to use extended tracking
+        parameters.useExtendedTracking = true;        // whether to use extended tracking
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
         targets = this.vuforia.loadTrackablesFromAsset("FTC_2016-17");
@@ -192,6 +194,9 @@ public class VuforiaNavigation  {
         return  destination_from_y_axis_angle + getOrientation(3);
     }
 
+    public void setExtendedTracking(boolean truefalse) {
+        parameters.useExtendedTracking = truefalse;        // whether to use extended tracking
+    }
 
     private double getX() { // robot x location
         float[] coordinates = lastRobotLocation.getTranslation().getData();

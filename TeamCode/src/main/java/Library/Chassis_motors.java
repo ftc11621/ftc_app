@@ -61,12 +61,17 @@ public class Chassis_motors
         motorRight.setPower(rightPower);
     }
 
+    public void turn_encoder_degree(double power, double turnangle, double timeout) {
+        double totalDistanceToMove = Math.PI*WHEELS_SPACING_CM * turnangle / 360.0;// get total distance to move in centimeters
+        run_Motors_encoder_CM(power , totalDistanceToMove,-1 * totalDistanceToMove, timeout);
+    }
+
 
 
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
     // Run motors with encoders, specify the power, distance in CM (centimeter)
-    public void run_Motors_encoder_CM(double power, double leftDistance, double rightDistance, double timeout) {
+    public double run_Motors_encoder_CM(double power, double leftDistance, double rightDistance, double timeout) {
         int leftlastpos = motorLeft.getCurrentPosition();
         int rightlastpos = motorRight.getCurrentPosition();
         int newLeftTarget  = leftlastpos  + (int)(leftDistance * COUNTS_PER_CM);
@@ -120,6 +125,7 @@ public class Chassis_motors
         }
 */
         // Turn off RUN_TO_POSITION
+        double actual_distance = 0.5*(motorLeft.getCurrentPosition()-leftlastpos + motorRight.getCurrentPosition()-rightlastpos)/COUNTS_PER_CM;
         motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Stop all motion;
@@ -128,7 +134,7 @@ public class Chassis_motors
         lastleftpower = 0.0; lastrightpower = 0.0;
         motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+        return  actual_distance;
 
     }
 
