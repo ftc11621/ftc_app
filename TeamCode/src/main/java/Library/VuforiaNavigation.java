@@ -80,12 +80,12 @@ public class VuforiaNavigation  {
 
     //Picture wheels_loc;
 
-    public VuforiaNavigation() {        // constructor
+    public VuforiaNavigation(boolean enableExtendedTracking) {        // constructor
         //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
         parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
         parameters.vuforiaLicenseKey = "AdksQ3j/////AAAAGVB9GUsSEE0BlMaVB7HcRZRM4Sv74bxusFbCpn3gwnUkr3GuOtSWhrTCHnTU/93+Im+JlrYI6///bytu1igZT48xQ6182nSTpVzJ2ZP+Q/sNzSg3qvIOMnjEptutngqB+e3mQ1+YTiDa9aZod1e8X7UvGsAJ3cfV+X/S3E4M/81d1IRSMPRPEaLpKFdMqN3AcbDpBHoqp82fAp7XWVN3qd/BRe0CAAoNsr26scPBAxvm9cizRG1WeRSFms3XkwFN6eGpH7VpNAdPPXep9RQ3lLZMTFQGOfiV/vRQXq/Tlaj/b7dkA12zBSW81MfBiXRxp06NGieFe7KvXNuu2aDyyXoaPFsI44FEGp1z/SVSEVR4"; // Insert your own key here
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        parameters.useExtendedTracking = true;        // true by default,whether to use extended tracking
+        parameters.useExtendedTracking = enableExtendedTracking;        // true by default,whether to use extended tracking
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
         targets = this.vuforia.loadTrackablesFromAsset("FTC_2016-17");
@@ -173,8 +173,7 @@ public class VuforiaNavigation  {
         OpenGLMatrix robotLocationTransform = null;
         boolean currentlocation_flag = false;
 
-        for (VuforiaTrackable trackable : allTrackables) {
-
+        for (VuforiaTrackable trackable : allTrackables) {  // for all target pictures
             robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
             if (robotLocationTransform != null) {
                 lastRobotLocation = robotLocationTransform;
@@ -184,11 +183,12 @@ public class VuforiaNavigation  {
         return currentlocation_flag;       // when no new location found
     }
 
+    // distance the robot needs to go to a destination X-Y coordinate
     public double getDestinationDistance_mm(double destination_X, double destination_Y) {
         return Math.sqrt(Math.pow(getX()-destination_X,2) + Math.pow(getY()-destination_Y,2));
     }
 
-    // angle > 0 when the destination is on the right side of the robot
+    // angle > 0 when the destination is on the right side of the robot, destination in X-Y coordinate
     public double getRobotNeedToTurnAngle(double destination_X, double destination_Y) {
         double destination_from_y_axis_angle = Math.toDegrees( Math.atan2(destination_X-getX(), destination_Y-getY()));
         return  destination_from_y_axis_angle + getOrientation(3);

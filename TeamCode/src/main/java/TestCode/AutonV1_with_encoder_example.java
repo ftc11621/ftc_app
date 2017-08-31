@@ -21,8 +21,11 @@ public class AutonV1_with_encoder_example extends LinearOpMode
 
 
         // autonomous sequence
-        double actual_distance = chassis_Object.run_Motors_encoder_CM(1.0, 57.5, 57.5, 10); sleep(2000); // forward 20 cm
-        telemetry.addData("Actual Distance: ", actual_distance);
+        chassis_Object.run_Motors_encoder(1.0, 57.5, 57.5, 10, 2.0); sleep(2000); // forward 20 cm
+        double actual_left_distance =chassis_Object.getLeftDistance_cm();
+        double actual_right_distance =chassis_Object.getRightDistance_cm();
+        telemetry.addData("Left  Actual Distance: ", actual_left_distance);
+        telemetry.addData("Right Actual Distance: ", actual_right_distance);
         telemetry.update();
         //chassis_Object.turn_encoder_degree(1.0, 90, 10); sleep(2000); // turn 90 degree
         //chassis_Object.run_Motors_encoder_CM(0.8, -15, 15, 10); sleep(2000); // turn

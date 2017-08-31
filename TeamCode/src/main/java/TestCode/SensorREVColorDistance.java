@@ -10,7 +10,7 @@ import java.util.Locale;
 
 import Library.REVColorDistance;
 
-@Autonomous(name = "Sensor: REVColorDistance", group = "TestCode")
+@Autonomous(name = "Test: REVColorDistance", group = "TestCode")
 //@Disabled                            // Comment this out to add to the opmode list
 public class SensorREVColorDistance extends LinearOpMode {
 

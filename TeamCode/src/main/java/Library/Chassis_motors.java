@@ -24,7 +24,7 @@ public class Chassis_motors
             (WHEEL_DIAMETER_CM * Math.PI );
     private static final double     WHEELS_SPACING_CM       = 40.8;     // spacing between wheels for turns
     private static final double     SMOOTHING_COEFFICIENT   = 0.02;      // to smooth out power changes, smaller=smoother
-    private static final int        MOTOR_STOP_TOLERANCE    = 50;       // encoder count tolerance to stop
+    //private static final int        MOTOR_STOP_TOLERANCE    = 50;       // encoder count tolerance to stop
     private static final double     MOTOR_STOP_POWER        = 0.3;      // power just before stopping
 
     private DcMotor motorLeft;
@@ -32,6 +32,7 @@ public class Chassis_motors
     private ElapsedTime chassis_runtime = new ElapsedTime();
 
     private double lastleftpower, lastrightpower;
+    private double leftDistance, rightDistance;
 
     public Chassis_motors(HardwareMap hardwareMap){    // constructor to create object
         motorLeft = hardwareMap.dcMotor.get("LeftDrive");
@@ -61,9 +62,9 @@ public class Chassis_motors
         motorRight.setPower(rightPower);
     }
 
-    public void turn_encoder_degree(double power, double turnangle, double timeout) {
+    public void turn_encoder_degree(double power, double turnangle, double timeout, double distance_tolerance) {
         double totalDistanceToMove = Math.PI*WHEELS_SPACING_CM * turnangle / 360.0;// get total distance to move in centimeters
-        run_Motors_encoder_CM(power , totalDistanceToMove,-1 * totalDistanceToMove, timeout);
+        run_Motors_encoder(power , totalDistanceToMove,-1 * totalDistanceToMove, timeout, distance_tolerance);
     }
 
 
@@ -71,11 +72,12 @@ public class Chassis_motors
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
     // Run motors with encoders, specify the power, distance in CM (centimeter)
-    public double run_Motors_encoder_CM(double power, double leftDistance, double rightDistance, double timeout) {
+    public void run_Motors_encoder(double power, double leftDistance, double rightDistance, double timeout, double distance_tolerance) {
         int leftlastpos = motorLeft.getCurrentPosition();
         int rightlastpos = motorRight.getCurrentPosition();
         int newLeftTarget  = leftlastpos  + (int)(leftDistance * COUNTS_PER_CM);
         int newRightTarget = rightlastpos + (int)(rightDistance * COUNTS_PER_CM);
+        int countTolerance = (int)(distance_tolerance * COUNTS_PER_CM);
         motorLeft.setTargetPosition(newLeftTarget);
         motorRight.setTargetPosition(newRightTarget);
 
@@ -96,8 +98,8 @@ public class Chassis_motors
         double newrightpower = power;
         while ((chassis_runtime.seconds() < timeout) &&
                 (is_motors_busy()) &&
-                (Math.abs(motorLeft.getCurrentPosition()-newLeftTarget) > MOTOR_STOP_TOLERANCE ||
-                        Math.abs(motorRight.getCurrentPosition()-newRightTarget) > MOTOR_STOP_TOLERANCE)) {
+                (Math.abs(motorLeft.getCurrentPosition()-newLeftTarget) > countTolerance ||
+                        Math.abs(motorRight.getCurrentPosition()-newRightTarget) > countTolerance)) {
             newleftpower = power;
             newrightpower = power;
             if (Math.abs(motorLeft.getCurrentPosition()-newLeftTarget) < 1000) {
@@ -124,8 +126,9 @@ public class Chassis_motors
 
         }
 */
+        leftDistance = (motorLeft.getCurrentPosition()-leftlastpos) / COUNTS_PER_CM;
+        rightDistance = (motorRight.getCurrentPosition()-rightlastpos) / COUNTS_PER_CM;
         // Turn off RUN_TO_POSITION
-        double actual_distance = 0.5*(motorLeft.getCurrentPosition()-leftlastpos + motorRight.getCurrentPosition()-rightlastpos)/COUNTS_PER_CM;
         motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Stop all motion;
@@ -134,9 +137,12 @@ public class Chassis_motors
         lastleftpower = 0.0; lastrightpower = 0.0;
         motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        return  actual_distance;
 
     }
+
+    public double getLeftDistance_cm () { return leftDistance; }
+    public double getRightDistance_cm () { return rightDistance; }
+
 
 
     // If either motor is busy
