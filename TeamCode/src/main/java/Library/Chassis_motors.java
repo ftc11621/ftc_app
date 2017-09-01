@@ -32,7 +32,7 @@ public class Chassis_motors
     private ElapsedTime chassis_runtime = new ElapsedTime();
 
     private double lastleftpower, lastrightpower;
-    private double leftDistance, rightDistance;
+    private double leftDistance, rightDistance;         // actual distance by encoders
 
     public Chassis_motors(HardwareMap hardwareMap){    // constructor to create object
         motorLeft = hardwareMap.dcMotor.get("LeftDrive");
@@ -42,7 +42,6 @@ public class Chassis_motors
         motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);//also works when encoder is not used
         motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
     }
 
     // set direction forward
@@ -62,7 +61,8 @@ public class Chassis_motors
         motorRight.setPower(rightPower);
     }
 
-    public void turn_encoder_degree(double power, double turnangle, double timeout, double distance_tolerance) {
+    // spin, positive to the right
+    public void spin_encoder_degree(double power, double turnangle, double timeout, double distance_tolerance) {
         double totalDistanceToMove = Math.PI*WHEELS_SPACING_CM * turnangle / 360.0;// get total distance to move in centimeters
         run_Motors_encoder(power , totalDistanceToMove,-1 * totalDistanceToMove, timeout, distance_tolerance);
     }
@@ -96,22 +96,35 @@ public class Chassis_motors
         // keep looping while we are still active, and there is time left, and both motors are running.
         double newleftpower = power;
         double newrightpower = power;
+        double left_remaining, right_remaining, ratio_leftright; // remaining distances in encoder counts, normalized
         while ((chassis_runtime.seconds() < timeout) &&
                 (is_motors_busy()) &&
                 (Math.abs(motorLeft.getCurrentPosition()-newLeftTarget) > countTolerance ||
                         Math.abs(motorRight.getCurrentPosition()-newRightTarget) > countTolerance)) {
-            newleftpower = power;
-            newrightpower = power;
-            if (Math.abs(motorLeft.getCurrentPosition()-newLeftTarget) < 1000) {
+            //newleftpower = power;
+            //newrightpower = power;
+
+            if (Math.abs(motorLeft.getCurrentPosition()-newLeftTarget) < 1000) {  // close to stopping
                 //newleftpower = power* (Math.abs(motorLeft.getCurrentPosition()-newLeftTarget)/2000.0);
                 newleftpower = MOTOR_STOP_POWER;
+            } else {
+
             }
-            if (Math.abs(motorRight.getCurrentPosition()-newRightTarget) < 1000) {
+            if (Math.abs(motorRight.getCurrentPosition()-newRightTarget) < 1000) { // close to stopping
                 //newrightpower = power*(Math.abs(motorRight.getCurrentPosition()-newRightTarget)/2000.0);
                 newrightpower = MOTOR_STOP_POWER;
             }
-            //newleftpower = Math.abs(0.5 * (motorLeft.getCurrentPosition()-newLeftTarget)/(newLeftTarget-leftlastpos));
-            //newrightpower = Math.abs(0.5 * (motorRight.getCurrentPosition()-newRightTarget)/(newRightTarget-rightlastpos));
+
+            left_remaining = Math.abs((motorLeft.getCurrentPosition()-newLeftTarget)/(leftlastpos-newLeftTarget));
+            right_remaining = Math.abs((motorRight.getCurrentPosition()-newRightTarget)/(rightlastpos-newRightTarget));
+            if (left_remaining < right_remaining) { // adjust the power to move both motor consistently
+                newleftpower = power * left_remaining / right_remaining;
+                newrightpower = power;
+            } else {
+                newleftpower = power;
+                newrightpower = power * right_remaining / left_remaining;
+            }
+
             smooth_motors(newleftpower,newrightpower);
             motorLeft.setPower(lastleftpower);
             motorRight.setPower(lastrightpower);
