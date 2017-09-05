@@ -34,6 +34,10 @@ public abstract class BaseNavigation extends LinearOpMode {
 
         navigate();
 
+        while(opModeIsActive()) // after autonomous is done wait for manual stop or stop after the timer
+        {
+            idle();
+        }
     }
 
     protected abstract void navigate();
