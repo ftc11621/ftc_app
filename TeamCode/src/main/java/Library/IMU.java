@@ -87,31 +87,31 @@ public class IMU    {
     public void start ()  {  // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         measure();           // get initial angles as the reference
-        yaw_initial = get_yaw();
-        roll_initial = get_roll();
-        pitch_initial = get_pitch();
+        //yaw_initial = get_yaw();
+        //roll_initial = get_roll();
+        //pitch_initial = get_pitch();
     }
 
 
     public void measure () {   // measure angles
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
     }
-    private double get_yaw() {   // yaw, positive counterclockwise -180 to 180
+    public double yaw() {   // yaw, positive counterclockwise -180 to 180
         return AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle));
     }
-    private double get_roll() {   // positive when fall back
+    public double roll() {   // positive when fall back
         return AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.secondAngle));
     }
-    private double get_pitch() {   // positive tilt to the right
+    public double pitch() {   // positive tilt to the right
         return AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.thirdAngle));
     }
-    public double yaw() {
-        return get_yaw() - yaw_initial;
-    }
-    public double roll() {
-        return get_roll() - roll_initial;
-    }
-    public double pitch() {
-        return get_pitch() - pitch_initial;
-    }
+    //public double yaw() {
+    //    return get_yaw() - yaw_initial;
+    //}
+    //public double roll() {
+    //    return get_roll() - roll_initial;
+    //}
+    //public double pitch() {
+    //    return get_pitch() - pitch_initial;
+    //}
 }
