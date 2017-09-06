@@ -3,6 +3,8 @@ package TestCode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import Library.Chassis_motors;
 import Navigation.BaseNavigation;
 
@@ -12,7 +14,10 @@ public class BaseNavigation_example extends BaseNavigation
     @Override
 
     protected void navigate() {
-        moveEncoderDistance(50.0);
+
+        setCurrentLocation(0,0,40);     // set initial location
+        aimAt_fine(10,10);
+        goToXY_coarse(50,50);
     }
 
 }

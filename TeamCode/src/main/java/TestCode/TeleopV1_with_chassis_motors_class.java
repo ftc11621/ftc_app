@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import Library.Chassis_motors;
 
-@TeleOp(name = "teleOp with class", group = "TestCode")
+@TeleOp(name = "Driver mode with chassis class", group = "TestCode")
 public class TeleopV1_with_chassis_motors_class extends LinearOpMode
 {
 
