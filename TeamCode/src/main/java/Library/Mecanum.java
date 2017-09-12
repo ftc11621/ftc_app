@@ -1,19 +1,8 @@
 package Library;
 
-//import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-//import com.qualcomm.robotcore.hardware.DcMotorSimple;
-//import com.vuforia.ar.pl.DebugLog;
-
-//import org.firstinspires.ftc.robotcore.external.Func;
-//import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-//import java.util.Locale;
-//import java.lang.Thread;
 
 
 public class Mecanum
@@ -25,12 +14,16 @@ public class Mecanum
     private static final double     COUNTS_PER_CM           = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_CM * Math.PI );
     private static final double     WHEELS_SPACING_CM       = 40.8;     // spacing between wheels for turns
-    private static final double     SMOOTHING_COEFFICIENT   = 0.02;      // to smooth out power changes, smaller=smoother
+    private static final double     SMOOTHING_COEFFICIENT   = 0.1;      // to smooth out power changes, smaller=smoother
     //private static final int        MOTOR_STOP_TOLERANCE    = 50;       // encoder count tolerance to stop
-    private static final double     MOTOR_STOP_POWER        = 0.3;      // power just before stopping
+    //private static final double     MOTOR_STOP_POWER        = 0.3;      // power just before stopping
 
-    private DcMotor motorLeft;
-    private DcMotor motorRight;
+    private static final float      YAW_PID_KP                = 0.05f;       // PID KP coefficient
+    private static final float      YAW_PID_KI                = 0.001f;      // PID KI coefficient
+    private float                   Yaw_Ki_sum                = 0.0f;        // PID KI integration
+    private float                   Yaw_locked_angle;                       // angle to lock the robot orientation
+
+    private IMU IMU_Object = null;
     private ElapsedTime chassis_runtime = new ElapsedTime();
 
     private double lastleftFpower, lastrightFpower,lastleftRpower, lastrightRpower;
@@ -52,6 +45,8 @@ public class Mecanum
         motorRF.setDirection(DcMotor.Direction.FORWARD);
         motorLR.setDirection(DcMotor.Direction.REVERSE);
         motorRR.setDirection(DcMotor.Direction.FORWARD);
+
+        IMU_Object = new IMU(hardwareMap);
     }
 
 
@@ -67,11 +62,28 @@ public class Mecanum
         motorRR.setPower(RR / normalized);
     }
 
+    public void start_angle_locked(float yaw_locked_angle) {    // start locking an orientation
+        Yaw_locked_angle = yaw_locked_angle;
+        Yaw_Ki_sum = 0.0f;           // reset the PID error sum
+    }
+    public void run_Motor_angle_locked(float X_of_robot, float Y_of_robot ) { // move with locked orientation
+        IMU_Object.measure();       // measure orientation
+        float angle_deviation = Yaw_locked_angle - (float) IMU_Object.yaw();
+        Yaw_Ki_sum += angle_deviation * YAW_PID_KI;
+        if (Yaw_Ki_sum > 1.0) {
+            Yaw_Ki_sum = 1.0f;
+        } else if (Yaw_Ki_sum < -1.0) {
+            Yaw_Ki_sum = -1.0f;
+        }
+        float rotation = YAW_PID_KP * angle_deviation + Yaw_Ki_sum;
+        run_Motors_no_encoder(X_of_robot, Y_of_robot, rotation);
+    }
+
     public void spin_Motors_no_encoder(float power) {  // -1 to 1 positive for counter clockwise
         run_Motors_no_encoder(0,0, power);
     }
 
-    // spin, positive to the left
+    // spin, positive is counter clockwise
     public void spin_encoder_degree(double power, double turnangle, double timeout, double distance_tolerance) {
         double totalDistanceToMove = Math.PI*WHEELS_SPACING_CM * turnangle / 360.0;// get total distance to move in centimeters
         run_Motors_encoder(power , -totalDistanceToMove,totalDistanceToMove,-totalDistanceToMove,totalDistanceToMove, timeout, distance_tolerance);

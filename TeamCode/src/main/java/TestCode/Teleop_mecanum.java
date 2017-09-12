@@ -6,9 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import Library.JewelServo;
 import Library.Mecanum;
 
-/**
- * Created by jakemueller on 8/10/17.
- */
 @TeleOp(name = "Mecanum Drive test", group = "TestCode")
 public class Teleop_mecanum extends LinearOpMode
 {
@@ -22,13 +19,18 @@ public class Teleop_mecanum extends LinearOpMode
 
         waitForStart();
 
+        //mecanumDrive.start_angle_locked(90.0f);  // to lock on an orientation angle
+
 
         while(opModeIsActive())
         {
 
-            rotation = -gamepad1.right_stick_x;
+            rotation = -gamepad1.left_stick_x;
 
-            mecanumDrive.run_Motors_no_encoder(gamepad1.left_stick_x, -gamepad1.left_stick_y, rotation);
+            mecanumDrive.run_Motors_no_encoder(gamepad1.right_stick_x, -gamepad1.right_stick_y, rotation);
+
+            // or locked in an angle
+            //mecanumDrive.run_Motor_angle_locked(gamepad1.right_stick_x, -gamepad1.right_stick_y);
 
             idle();
 
