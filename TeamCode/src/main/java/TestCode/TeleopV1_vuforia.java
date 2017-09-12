@@ -32,6 +32,14 @@ public class TeleopV1_vuforia extends LinearOpMode
                 } else {
                     telemetry.addData("Location Update:", "No");
                 }
+
+                telemetry.addData("Distance to Relic Template (inch): ",
+                        formatDouble( vuforia_test.getDestinationDistance_mm(0, 0) / 25.4));
+                telemetry.addData("Angle to Relic Template: ",
+                        formatDouble( vuforia_test.getRobotNeedToTurnAngle(0, 0)));
+                telemetry.addData("Crytobox side: ", vuforia_test.getCrytoboxSide());
+
+                /*
                 telemetry.addData("Distance to wheels (inch): ",
                        formatDouble( vuforia_test.getDestinationDistance_mm(vuforia_test.wheels_x_mm, vuforia_test.wheels_y_mm) / 25.4));
                 telemetry.addData("Distance to tools (inch) : ",
@@ -49,6 +57,7 @@ public class TeleopV1_vuforia extends LinearOpMode
                         formatDouble( vuforia_test.getRobotNeedToTurnAngle(vuforia_test.legos_x_mm, vuforia_test.legos_y_mm) / 25.4));
                 telemetry.addData("Angle to gears (inch): ",
                         formatDouble( vuforia_test.getRobotNeedToTurnAngle(vuforia_test.gears_x_mm, vuforia_test.gears_y_mm) / 25.4));
+                        */
             } else {
                 telemetry.addData("Vuforia", "NOT visible");
             }

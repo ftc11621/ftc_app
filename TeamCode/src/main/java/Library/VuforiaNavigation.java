@@ -84,7 +84,7 @@ public class VuforiaNavigation  {
 
     VectorF trans=null;
     Orientation rot=null;
-
+    private String      vumark;         // L M or R side
 
 
 
@@ -198,6 +198,8 @@ public class VuforiaNavigation  {
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
+            vumark = vuMark.toString();
+
             OpenGLMatrix pose = ((VuforiaTrackableDefaultListener) relicTemplate.getListener()).getPose();
             if (pose != null) {     // target location found
                 trans = pose.getTranslation();
@@ -230,6 +232,10 @@ public class VuforiaNavigation  {
     public double getRobotNeedToTurnAngle(double destination_X, double destination_Y) {
         double destination_from_y_axis_angle = Math.toDegrees( Math.atan2(destination_X-getX(), destination_Y-getY()));
         return  destination_from_y_axis_angle + getOrientation(3);
+    }
+
+    public String getCrytoboxSide() {
+        return vumark;
     }
 
     //public void setExtendedTracking(boolean truefalse) {
