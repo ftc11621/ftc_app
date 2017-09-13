@@ -62,13 +62,23 @@ public class Mecanum
         motorRR.setPower(RR / normalized);
     }
 
-    public void start_angle_locked(float yaw_locked_angle) {    // start locking an orientation
+    public void set_angle_locked(float yaw_locked_angle) {    // start locking an orientation
         Yaw_locked_angle = yaw_locked_angle;
         Yaw_Ki_sum = 0.0f;           // reset the PID error sum
+    }
+    public void current_angle_locked() {    // start locking an orientation
+        IMU_Object.measure();       // measure orientation
+        set_angle_locked((float)IMU_Object.yaw());
     }
     public void run_Motor_angle_locked(float X_of_robot, float Y_of_robot ) { // move with locked orientation
         IMU_Object.measure();       // measure orientation
         float angle_deviation = Yaw_locked_angle - (float) IMU_Object.yaw();
+        // to avoid spinning more than 180 degree either direction for efficiency
+        if (angle_deviation>180f) {
+            angle_deviation = 360f - angle_deviation;
+        } else if (angle_deviation < -180f) {
+            angle_deviation += 360f;
+        }
         Yaw_Ki_sum += angle_deviation * YAW_PID_KI;
         if (Yaw_Ki_sum > 1.0) {
             Yaw_Ki_sum = 1.0f;
