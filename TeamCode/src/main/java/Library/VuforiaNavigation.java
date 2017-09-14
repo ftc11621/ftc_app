@@ -224,14 +224,14 @@ public class VuforiaNavigation  {
     }
 
     // distance the robot needs to go to a destination X-Y coordinate
-    public double getDestinationDistance_mm(double destination_X, double destination_Y) {
-        return Math.sqrt(Math.pow(getX()-destination_X,2) + Math.pow(getY()-destination_Y,2));
+    private double getDestinationDistance_mm(double destination_X, double destination_Y) {
+        return Math.sqrt(Math.pow(getX()-destination_X,2) + Math.pow(getZ()-destination_Y,2));
     }
 
     // angle > 0 when the destination is on the right side of the robot, destination in X-Y coordinate
-    public double getRobotNeedToTurnAngle(double destination_X, double destination_Y) {
-        double destination_from_y_axis_angle = Math.toDegrees( Math.atan2(destination_X-getX(), destination_Y-getY()));
-        return  destination_from_y_axis_angle + getOrientation(3);
+    private double getRobotNeedToTurnAngle(double destination_X, double destination_Y) {
+        double destination_from_y_axis_angle = Math.toDegrees( Math.atan2(destination_X-getX(), destination_Y-getZ()));
+        return  destination_from_y_axis_angle + getOrientation();
     }
 
     public int getCrytoboxColumn() {
@@ -250,7 +250,7 @@ public class VuforiaNavigation  {
     //    parameters.useExtendedTracking = truefalse;   // whether to use extended tracking
     //}
 
-    private double getX() { // robot x location
+    public double getX() { // robot x location
         //float[] coordinates = lastRobotLocation.getTranslation().getData();
         //return coordinates[0];
         return trans.get(0);
@@ -260,8 +260,13 @@ public class VuforiaNavigation  {
         //return coordinates[1];
         return trans.get(1);
     }
+    public double getZ() { // robot y location
+        //float[] coordinates = lastRobotLocation.getTranslation().getData();
+        //return coordinates[1];
+        return -trans.get(2);
+    }
 
-    private float getOrientation(int angleorder) {  // 1st, 2nd, and 3rd angle
+    public float getOrientation() {  // 1st, 2nd, and 3rd angle
         /*
         float orient_angle;
         switch (angleorder) {
@@ -276,13 +281,13 @@ public class VuforiaNavigation  {
         }
         return orient_angle;
         */
-        return rot.thirdAngle;
+        return -rot.secondAngle;
     }
 
-
+    /*
     private String format(OpenGLMatrix transformationMatrix) {
         return transformationMatrix.formatAsTransform();
     }
-
+    */
 
 }

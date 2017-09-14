@@ -33,10 +33,17 @@ public class TeleopV1_vuforia extends LinearOpMode
                     telemetry.addData("Location Update:", "No");
                 }
 
-                telemetry.addData("Distance to Relic Template (inch): ",
-                        formatDouble( vuforia_test.getDestinationDistance_mm(0, 0) / 25.4));
-                telemetry.addData("Angle to Relic Template: ",
-                        formatDouble( vuforia_test.getRobotNeedToTurnAngle(0, 0)));
+                telemetry.addData("X (inch): ", formatDouble(vuforia_test.getX() / 25.4));
+                telemetry.addData("Y (inch): ", formatDouble(vuforia_test.getZ() / 25.4));
+                //telemetry.addData("Z (inch): ", formatDouble(vuforia_test.getZ() / 25.4));
+
+
+                //telemetry.addData("Distance to Relic Template (inch): ",
+                //        formatDouble(vuforia_test.getDestinationDistance_mm(0, 0) / 25.4));
+                telemetry.addData("Robot orientation (degree): ",
+                        formatDouble( vuforia_test.getOrientation()));
+                //telemetry.addData("Angle to Relic Template: ",
+                //        formatDouble( vuforia_test.getRobotNeedToTurnAngle(0, 0)));
                 telemetry.addData("Crytobox column: ", vuforia_test.getCrytoboxColumn());
 
                 /*
@@ -65,6 +72,6 @@ public class TeleopV1_vuforia extends LinearOpMode
         }
     }
     private String formatDouble (double datadouble) {
-        return String.format(Locale.US, "%.0f", datadouble);
+        return String.format(Locale.US, "%.1f", datadouble);
     }
 }
