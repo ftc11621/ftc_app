@@ -37,7 +37,7 @@ public class TeleopV1_vuforia extends LinearOpMode
                         formatDouble( vuforia_test.getDestinationDistance_mm(0, 0) / 25.4));
                 telemetry.addData("Angle to Relic Template: ",
                         formatDouble( vuforia_test.getRobotNeedToTurnAngle(0, 0)));
-                telemetry.addData("Crytobox side: ", vuforia_test.getCrytoboxSide());
+                telemetry.addData("Crytobox column: ", vuforia_test.getCrytoboxColumn());
 
                 /*
                 telemetry.addData("Distance to wheels (inch): ",

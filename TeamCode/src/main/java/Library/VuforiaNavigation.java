@@ -63,28 +63,25 @@ public class VuforiaNavigation  {
     float mmFTCFieldWidth  = (12*12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
 
     // target location in mm
-    public final float wheels_x_mm = 12 * mmPerInch, wheels_y_mm = 71 * mmPerInch;
-    public final float tools_x_mm = -71 * mmPerInch, tools_y_mm  = 36 * mmPerInch;
-    public final float legos_x_mm = -36 * mmPerInch, legos_y_mm  = 71 * mmPerInch;
-    public final float gears_x_mm = -71 * mmPerInch, gears_y_mm = -12 * mmPerInch;
+    //public final float wheels_x_mm = 12 * mmPerInch, wheels_y_mm = 71 * mmPerInch;
+    //public final float tools_x_mm = -71 * mmPerInch, tools_y_mm  = 36 * mmPerInch;
+    //public final float legos_x_mm = -36 * mmPerInch, legos_y_mm  = 71 * mmPerInch;
+    //public final float gears_x_mm = -71 * mmPerInch, gears_y_mm = -12 * mmPerInch;
 
 
     public static final String TAG = "Vuforia VuMark Sample";
-    //public static final String TAG = "Vuforia Sample";
     OpenGLMatrix lastRobotLocation = null;
     VuforiaLocalizer vuforia;
     VuforiaTrackables targets = null;
     VuforiaTrackable relicTemplate  = null;
-    //VuforiaTrackable wheels = null;
-    //VuforiaTrackable legos = null;
-    //VuforiaTrackable tools = null;
-    //VuforiaTrackable gears = null;
+
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
     VuforiaLocalizer.Parameters parameters;
 
     VectorF trans=null;
     Orientation rot=null;
-    private String      vumark;         // L M or R side
+    // private String      vumark;         // L M or R side
+    private RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.UNKNOWN;
 
 
 
@@ -113,16 +110,17 @@ public class VuforiaNavigation  {
 
         /** For convenience, gather together all the trackable objects in one easily-iterable collection */
         //List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
-        allTrackables.addAll(targets);
+        //allTrackables.addAll(targets);
 
         // possibly in the center for now
+        /*
         OpenGLMatrix relicLocationOnField = OpenGLMatrix
                 .translation(0, 0, 0)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.XZX,
                         AngleUnit.DEGREES, 90, 0, 0));
 
-        /*
+
         OpenGLMatrix wheelsLocationOnField = OpenGLMatrix
                 .translation(wheels_x_mm, wheels_y_mm, 0)
                 .multiplied(Orientation.getRotationMatrix(
@@ -150,27 +148,29 @@ public class VuforiaNavigation  {
         */
 
         // for phone in front, 6mm to the left
+        /*
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
                 .translation(-50, 0, 30)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.YZY,
                         AngleUnit.DEGREES, -90, 90, 180));  // insert phone from the left front
+                        */
         //AngleUnit.DEGREES, -90, 90, 0));  // -90,0,0 for the right side
 
-        relicTemplate.setLocation(relicLocationOnField);
+        //relicTemplate.setLocation(relicLocationOnField);
         //wheels.setLocation(wheelsLocationOnField);
         //legos.setLocation(legosLocationOnField);
         //tools.setLocation(toolsLocationOnField);
         //gears.setLocation(gearsLocationOnField);
 
-        RobotLog.ii(TAG, "Relic Target=%s", format(relicLocationOnField));
+        //RobotLog.ii(TAG, "Relic Target=%s", format(relicLocationOnField));
         //RobotLog.ii(TAG, "Wheels Target=%s", format(wheelsLocationOnField));
         //RobotLog.ii(TAG, "Legos Target=%s", format(legosLocationOnField));
         //RobotLog.ii(TAG, "Tools Target=%s", format(toolsLocationOnField));
         //RobotLog.ii(TAG, "Gears Target=%s", format(gearsLocationOnField));
         //RobotLog.ii(TAG, "phone=%s", format(phoneLocationOnRobot));
 
-        ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
+       // ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         //((VuforiaTrackableDefaultListener)wheels.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         //((VuforiaTrackableDefaultListener)legos.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         //((VuforiaTrackableDefaultListener)tools.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
@@ -195,10 +195,10 @@ public class VuforiaNavigation  {
 
     public boolean updateRobotLocation()  {
 
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        vuMark = RelicRecoveryVuMark.from(relicTemplate);
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
-            vumark = vuMark.toString();
+            //vumark = vuMark.toString();
 
             OpenGLMatrix pose = ((VuforiaTrackableDefaultListener) relicTemplate.getListener()).getPose();
             if (pose != null) {     // target location found
@@ -234,8 +234,16 @@ public class VuforiaNavigation  {
         return  destination_from_y_axis_angle + getOrientation(3);
     }
 
-    public String getCrytoboxSide() {
-        return vumark;
+    public int getCrytoboxColumn() {
+        if (vuMark == RelicRecoveryVuMark.LEFT) {
+            return 1;
+        } else if (vuMark == RelicRecoveryVuMark.CENTER) {
+            return 2;
+        } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+            return 3;
+        } else {
+            return 0;
+        }
     }
 
     //public void setExtendedTracking(boolean truefalse) {

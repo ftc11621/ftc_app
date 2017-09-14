@@ -8,10 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import Library.JewelServo;
 
-/**
- * Created by jakemueller on 8/10/17.
- */
-@TeleOp(name = "JewelFlickerTest", group = "TestCode")
+@TeleOp(name = "Jewel Flicker Servo Test", group = "TestCode")
 public class TeleopV1 extends LinearOpMode
 {
     private JewelServo JewelFlicker = null;
