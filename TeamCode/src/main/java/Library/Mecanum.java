@@ -75,7 +75,7 @@ public class Mecanum
         float angle_deviation = Yaw_locked_angle - (float) IMU_Object.yaw();
         // to avoid spinning more than 180 degree either direction for efficiency
         if (angle_deviation>180f) {
-            angle_deviation = 360f - angle_deviation;
+            angle_deviation -= 360f;
         } else if (angle_deviation < -180f) {
             angle_deviation += 360f;
         }

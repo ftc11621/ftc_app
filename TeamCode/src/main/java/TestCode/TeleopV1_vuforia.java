@@ -34,7 +34,7 @@ public class TeleopV1_vuforia extends LinearOpMode
                 }
 
                 telemetry.addData("X (inch): ", formatDouble(vuforia_test.getX() / 25.4));
-                telemetry.addData("Y (inch): ", formatDouble(vuforia_test.getZ() / 25.4));
+                telemetry.addData("Y (inch): ", formatDouble(vuforia_test.getY() / 25.4));
                 //telemetry.addData("Z (inch): ", formatDouble(vuforia_test.getZ() / 25.4));
 
 
@@ -44,7 +44,7 @@ public class TeleopV1_vuforia extends LinearOpMode
                         formatDouble( vuforia_test.getOrientation()));
                 //telemetry.addData("Angle to Relic Template: ",
                 //        formatDouble( vuforia_test.getRobotNeedToTurnAngle(0, 0)));
-                telemetry.addData("Crytobox column: ", vuforia_test.getCrytoboxColumn());
+                telemetry.addData("Crytobox column: ", vuforia_test.getCrytoboxColumn()); // 0,1,2 for L,C,R
 
                 /*
                 telemetry.addData("Distance to wheels (inch): ",

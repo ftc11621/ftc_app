@@ -6,9 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import Library.JewelServo;
 import Library.REVColorDistance;
 
-/**
- * Created by jakemueller on 8/10/17.
- */
+
 @TeleOp(name = "JewelFlickerTest", group = "TestCode")
 public class Teleop_JewelTest extends LinearOpMode
 {

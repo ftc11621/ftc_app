@@ -36,7 +36,7 @@ public class Teleop_mecanum extends LinearOpMode
             }
 
             if (gamepad1.a) {   // lock toward crytobox
-                mecanumDrive.set_angle_locked(180.0f);
+                mecanumDrive.set_angle_locked(0.0f);
                 is_angle_locked = true;
             }
 
@@ -48,7 +48,7 @@ public class Teleop_mecanum extends LinearOpMode
                 //rotation = -gamepad1.left_stick_x;
                 rotation = 0.0f;
                 if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.2) {
-                    rotation = (float) Math.toDegrees(Math.atan2((double) gamepad1.left_stick_x, (double) -gamepad1.left_stick_y));
+                    rotation = (float) Math.toDegrees(Math.atan2((double) gamepad1.left_stick_y, (double) gamepad1.left_stick_x));
                 }
                 mecanumDrive.run_Motors_no_encoder(gamepad1.right_stick_x, -gamepad1.right_stick_y, rotation);
             }

@@ -1,11 +1,13 @@
 package Competition;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import Library.Chassis_motors;
 
 @TeleOp(name = "Driver Controlled", group = "Competition")
+@Disabled
 public class DriverControlled extends LinearOpMode
 {
     private Chassis_motors chassis_Object = null;  // declare chassis motors object

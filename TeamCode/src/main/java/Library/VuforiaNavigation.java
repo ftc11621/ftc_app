@@ -198,8 +198,6 @@ public class VuforiaNavigation  {
         vuMark = RelicRecoveryVuMark.from(relicTemplate);
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
-            //vumark = vuMark.toString();
-
             OpenGLMatrix pose = ((VuforiaTrackableDefaultListener) relicTemplate.getListener()).getPose();
             if (pose != null) {     // target location found
                 trans = pose.getTranslation();
@@ -225,24 +223,22 @@ public class VuforiaNavigation  {
 
     // distance the robot needs to go to a destination X-Y coordinate
     private double getDestinationDistance_mm(double destination_X, double destination_Y) {
-        return Math.sqrt(Math.pow(getX()-destination_X,2) + Math.pow(getZ()-destination_Y,2));
+        return Math.sqrt(Math.pow(getX()-destination_X,2) + Math.pow(getY()-destination_Y,2));
     }
 
     // angle > 0 when the destination is on the right side of the robot, destination in X-Y coordinate
     private double getRobotNeedToTurnAngle(double destination_X, double destination_Y) {
-        double destination_from_y_axis_angle = Math.toDegrees( Math.atan2(destination_X-getX(), destination_Y-getZ()));
+        double destination_from_y_axis_angle = Math.toDegrees( Math.atan2(destination_X-getX(), destination_Y-getY()));
         return  destination_from_y_axis_angle + getOrientation();
     }
 
     public int getCrytoboxColumn() {
-        if (vuMark == RelicRecoveryVuMark.LEFT) {
+        if (vuMark == RelicRecoveryVuMark.CENTER) {
             return 1;
-        } else if (vuMark == RelicRecoveryVuMark.CENTER) {
-            return 2;
         } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-            return 3;
+            return 2;
         } else {
-            return 0;
+            return 0;       // pick the left one by default
         }
     }
 
@@ -255,12 +251,13 @@ public class VuforiaNavigation  {
         //return coordinates[0];
         return trans.get(0);
     }
-    private double getY() { // robot y location
+    /*
+    private double getY_vuforia() { // vuforia y location
         //float[] coordinates = lastRobotLocation.getTranslation().getData();
         //return coordinates[1];
         return trans.get(1);
-    }
-    public double getZ() { // robot y location
+    }*/
+    public double getY() { // robot y location actually
         //float[] coordinates = lastRobotLocation.getTranslation().getData();
         //return coordinates[1];
         return -trans.get(2);
