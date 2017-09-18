@@ -20,6 +20,9 @@ public class Teleop_JewelTest extends LinearOpMode
 
         waitForStart();
 
+
+        JewelFlicker.LowerBeam();
+
         while(opModeIsActive())
         {
             Colordistance.measure();
@@ -32,5 +35,7 @@ public class Teleop_JewelTest extends LinearOpMode
             }
             idle();
         }
+        JewelFlicker.RaiseBeam();
     }
+
 }
