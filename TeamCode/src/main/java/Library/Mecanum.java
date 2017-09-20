@@ -55,11 +55,12 @@ public class Mecanum
         double RF = Y_of_robot - X_of_robot + rotation;
         double LR = Y_of_robot - X_of_robot - rotation;
         double RR = Y_of_robot + X_of_robot + rotation;
+        double mag = Math.sqrt(X_of_robot*X_of_robot+ Y_of_robot*Y_of_robot);
         double normalized = Math.max( Math.max(Math.abs(LF), Math.abs(LR)) , Math.max( Math.abs(RF), Math.abs(RR)) );
-        motorLF.setPower(LF / normalized);
-        motorRF.setPower(RF / normalized);
-        motorLR.setPower(LR / normalized);
-        motorRR.setPower(RR / normalized);
+        motorLF.setPower(mag * LF / normalized);
+        motorRF.setPower(mag * RF / normalized);
+        motorLR.setPower(mag * LR / normalized);
+        motorRR.setPower(mag * RR / normalized);
     }
 
     public void set_angle_locked(float yaw_locked_angle) {    // start locking an orientation
