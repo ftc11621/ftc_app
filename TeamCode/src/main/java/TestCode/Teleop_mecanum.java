@@ -20,38 +20,52 @@ public class Teleop_mecanum extends LinearOpMode
 
         waitForStart();
 
-        //mecanumDrive.start_angle_locked(90.0f);  // to lock on an orientation angle
-
+        mecanumDrive.Start(0.0f);       // to start mecanum and its IMU
 
         while(opModeIsActive())
         {
-            if (gamepad1.x) { // lock the current orientation
-                is_angle_locked = true;
-                mecanumDrive.current_angle_locked();
+            //if (gamepad1.x) { // lock the current orientation
+            //    is_angle_locked = true;
+            //    mecanumDrive.set_current_angle_locked();
+            //}
+            if (gamepad1.b) {  // reset 0-degree, typically the robot facing the driver
+                mecanumDrive.setCurrentAngle(0.0f);
+            }
+            if (gamepad1.a) {   // make the robot to stay on angle=0 degree
+                mecanumDrive.set_angle_locked(0.0f);    // to stay on 0-degree toward crytobox
+                //is_angle_locked = true;
+            }
+            if (gamepad1.y) {   // make the robot to stay on angle=180 degree toward glyph
+                mecanumDrive.set_angle_locked(180.0f);    // to stay on 0-degree
+                //is_angle_locked = true;
             }
 
             // disable angle lock when the left joystick adjust angle
-            if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.2) {
-                is_angle_locked = false;
+            //if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.2) {
+            //    is_angle_locked = false;
+            //}
+
+            // robot points where the left joystick points to
+            if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.5) {
+                float angle_robot = (float) Math.toDegrees(Math.atan2((double) gamepad1.left_stick_y, (double) gamepad1.left_stick_x));
+                mecanumDrive.set_angle_locked(angle_robot);
             }
-
-            if (gamepad1.a) {   // lock toward crytobox
-                mecanumDrive.set_angle_locked(0.0f);
-                is_angle_locked = true;
-            }
+            // always locked
+            mecanumDrive.run_Motor_angle_locked(gamepad1.right_stick_x, -gamepad1.right_stick_y);
 
 
-            // or locked in an angle
+            /*
+            // if locked in an angle
             if (is_angle_locked) {
                 mecanumDrive.run_Motor_angle_locked(gamepad1.right_stick_x, -gamepad1.right_stick_y);
             } else {
-                //rotation = -gamepad1.left_stick_x;
                 rotation = 0.0f;
                 if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.2) {
                     rotation = (float) Math.toDegrees(Math.atan2((double) gamepad1.left_stick_y, (double) gamepad1.left_stick_x));
                 }
                 mecanumDrive.run_Motors_no_encoder(gamepad1.right_stick_x, -gamepad1.right_stick_y, rotation);
             }
+            */
 
             idle();
 
