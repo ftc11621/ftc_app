@@ -25,7 +25,7 @@ public class JewelServo
         flicker =  hardwareMap.get(Servo.class, "JewelServoFlicker");
         flicker =  hardwareMap.get(Servo.class, "JewelServoBeam");
         flicker.setPosition(0);
-        flickerbeam.setPosition(0);
+        flickerbeam.setPosition(0); //Initialzation sticker add to bot
     }
 
 

@@ -101,8 +101,6 @@ public class Mecanum
     }
 
 
-    ///////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////
     // Run motors with encoders, specify the power, distance in CM (centimeter)
     public void run_Motors_encoder(double power, double leftFDistance, double rightFDistance, double leftRDistance, double rightRDistance,double timeout, double distance_tolerance) {
         int leftFlastpos = motorLF.getCurrentPosition();
