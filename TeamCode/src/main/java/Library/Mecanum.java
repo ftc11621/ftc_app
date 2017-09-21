@@ -54,9 +54,12 @@ public class Mecanum
         set_current_angle_locked();    // current orientation locked
     }
 
-    private float IMU_getAngle() {
+    public float IMU_getAngle() {
         IMU_Object.measure();
         return (float)IMU_Object.yaw();
+    }
+    public float getRobotAngle() {
+        return (float)IMU_Object.yaw() + IMU_yaw_offset;
     }
 
     // all inputs from -1 to 1, rotation as well
@@ -104,6 +107,15 @@ public class Mecanum
             rotation = 1.0f * Math.signum(rotation);
         }
         run_Motors_no_encoder(X_of_robot, Y_of_robot, rotation);
+    }
+
+    // Drive the robot relative to the driver X-Y instead of the robot X-Y
+    public void run_Motor_angle_locked_relative_to_driver(float X_of_Joystick, float Y_of_Joystick) {
+        // angle difference between the joystick and the robot in radiant
+        double angle_diff = (Math.PI/180.0) * (Math.toDegrees( Math.atan2(X_of_Joystick,Y_of_Joystick)) - (IMU_getAngle() + IMU_yaw_offset));
+        float ref_X = (float)Math.cos(angle_diff);
+        float ref_Y = (float)Math.sin(angle_diff);
+        run_Motor_angle_locked(ref_X,ref_Y);
     }
 
     public void spin_Motors_no_encoder(float power) {  // -1 to 1 positive for counter clockwise

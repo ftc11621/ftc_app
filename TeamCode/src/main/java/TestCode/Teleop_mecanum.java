@@ -20,7 +20,7 @@ public class Teleop_mecanum extends LinearOpMode
 
         waitForStart();
 
-        mecanumDrive.Start(0.0f);       // to start mecanum and its IMU
+        mecanumDrive.Start(0.0f);       // to start mecanum and its IMU, robot point toward the driver
 
         while(opModeIsActive())
         {
@@ -50,9 +50,15 @@ public class Teleop_mecanum extends LinearOpMode
                 float angle_robot = (float) Math.toDegrees(Math.atan2((double) gamepad1.left_stick_y, (double) gamepad1.left_stick_x));
                 mecanumDrive.set_angle_locked(angle_robot);
             }
-            // always locked
+
+            // always locked to an orientation
             mecanumDrive.run_Motor_angle_locked(gamepad1.right_stick_x, -gamepad1.right_stick_y);
 
+            telemetry.addData("IMU angle  :", mecanumDrive.IMU_getAngle());
+            telemetry.addData("Robot angle:", mecanumDrive.getRobotAngle());
+            telemetry.update();
+            // Experimental driving it relative to the driver X-Y instead of the robot X-Y
+            //mecanumDrive.run_Motor_angle_locked_relative_to_driver(gamepad1.right_stick_x, -gamepad1.right_stick_y);
 
             /*
             // if locked in an angle
