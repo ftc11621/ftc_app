@@ -48,10 +48,10 @@ public class Mecanum
         IMU_Object = new IMU(hardwareMap);
     }
 
-    public void Start(float initialAngle) {
+    public void Start() {
         IMU_Object.start();
-        setCurrentAngle(initialAngle);
-        set_current_angle_locked();    // current orientation locked
+        //setCurrentAngle(initialAngle);
+        //set_current_angle_locked();    // current orientation locked
     }
 
     public float IMU_getAngle() {

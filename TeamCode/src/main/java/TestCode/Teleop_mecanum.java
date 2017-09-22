@@ -11,7 +11,7 @@ public class Teleop_mecanum extends LinearOpMode
 {
     private Mecanum mecanumDrive = null;
     private float rotation;
-    private boolean is_angle_locked = false;
+    private boolean is_angle_locked = false; // if locked to the left joystick
 
     public void runOpMode() throws InterruptedException
     {
@@ -20,58 +20,55 @@ public class Teleop_mecanum extends LinearOpMode
 
         waitForStart();
 
-        mecanumDrive.Start(0.0f);       // to start mecanum and its IMU, robot point toward the driver
+        mecanumDrive.Start();  // default to start mecanum and its IMU, robot point away from the driver
+
+        // Start with pointing the joystick to where the robot points to, then press X
 
         while(opModeIsActive())
         {
-            //if (gamepad1.x) { // lock the current orientation
-            //    is_angle_locked = true;
-            //    mecanumDrive.set_current_angle_locked();
-            //}
-            if (gamepad1.b) {  // reset 0-degree, typically the robot facing the driver
-                mecanumDrive.setCurrentAngle(0.0f);
-            }
-            if (gamepad1.a) {   // make the robot to stay on angle=0 degree
-                mecanumDrive.set_angle_locked(0.0f);    // to stay on 0-degree toward crytobox
-                //is_angle_locked = true;
-            }
-            if (gamepad1.y) {   // make the robot to stay on angle=180 degree toward glyph
-                mecanumDrive.set_angle_locked(180.0f);    // to stay on 0-degree
-                //is_angle_locked = true;
+
+            if (gamepad1.b) {  // unlock robot orientation from left joystick. Do this before gamepad1.x below
+                is_angle_locked = false;
             }
 
-            // disable angle lock when the left joystick adjust angle
-            //if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.2) {
-            //    is_angle_locked = false;
-            //}
 
-            // robot points where the left joystick points to
-            if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.5) {
-                float angle_robot = (float) Math.toDegrees(Math.atan2((double) gamepad1.left_stick_y, (double) gamepad1.left_stick_x));
-                mecanumDrive.set_angle_locked(angle_robot);
+            if(is_angle_locked) {   // angle locked to left joystick where it points to
+                if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.5) { // left stick actually point somewhere
+                    float angle_robot = (float) Math.toDegrees(Math.atan2((double) gamepad1.left_stick_y, (double) gamepad1.left_stick_x));
+                    mecanumDrive.set_angle_locked(angle_robot);
+                }
+            } else {
+                if (gamepad1.x) { // point left joystick to the front of robot, then press X
+                    if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.5) { // left stick actually points somewhere
+                        float angle_robot = (float) Math.toDegrees(Math.atan2((double) gamepad1.left_stick_y, (double) gamepad1.left_stick_x));
+                        mecanumDrive.setCurrentAngle(angle_robot);
+                        mecanumDrive.set_current_angle_locked();
+                        is_angle_locked = true;
+                    }
+                }
             }
 
-            // always locked to an orientation
-            mecanumDrive.run_Motor_angle_locked(gamepad1.right_stick_x, -gamepad1.right_stick_y);
+
+            // if locked in an angle
+            if (is_angle_locked) {
+                // mecanumDrive.run_Motor_angle_locked(gamepad1.right_stick_x, -gamepad1.right_stick_y);
+                // Experimental driving it relative to the driver X-Y instead of the robot X-Y
+                mecanumDrive.run_Motor_angle_locked_relative_to_driver(gamepad1.right_stick_x, -gamepad1.right_stick_y);
+
+            } else {
+                rotation = gamepad1.left_stick_x;
+                mecanumDrive.run_Motors_no_encoder(gamepad1.right_stick_x, -gamepad1.right_stick_y, rotation);
+            }
+
 
             telemetry.addData("IMU angle  :", mecanumDrive.IMU_getAngle());
             telemetry.addData("Robot angle:", mecanumDrive.getRobotAngle());
-            telemetry.update();
-            // Experimental driving it relative to the driver X-Y instead of the robot X-Y
-            //mecanumDrive.run_Motor_angle_locked_relative_to_driver(gamepad1.right_stick_x, -gamepad1.right_stick_y);
-
-            /*
-            // if locked in an angle
             if (is_angle_locked) {
-                mecanumDrive.run_Motor_angle_locked(gamepad1.right_stick_x, -gamepad1.right_stick_y);
+                telemetry.addData("Angle Lock: ", "Yes");
             } else {
-                rotation = 0.0f;
-                if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.2) {
-                    rotation = (float) Math.toDegrees(Math.atan2((double) gamepad1.left_stick_y, (double) gamepad1.left_stick_x));
-                }
-                mecanumDrive.run_Motors_no_encoder(gamepad1.right_stick_x, -gamepad1.right_stick_y, rotation);
+                telemetry.addData("Angle Lock: ", "No");
             }
-            */
+            telemetry.update();
 
             idle();
 
