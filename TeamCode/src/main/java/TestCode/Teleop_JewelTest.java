@@ -19,16 +19,16 @@ public class Teleop_JewelTest extends LinearOpMode
         Colordistance = new REVColorDistance(hardwareMap);
 
         waitForStart();
-
+JewelFlicker.CenterFlick();
 
         JewelFlicker.LowerBeam();
 
         while(opModeIsActive())
         {
             Colordistance.measure();
-            if (Colordistance.getBlue() > 10) {
+            if (Colordistance.getBlue() > 20 && Colordistance.getRed()<15) {
                 JewelFlicker.LeftFlick();
-            }else if (Colordistance.getRed()>10){
+            }else if (Colordistance.getRed()>20 && Colordistance.getBlue()<15){
                 JewelFlicker.RightFlick();
 
 

@@ -17,33 +17,45 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //import java.lang.Thread;
 
 
-public class JewelServo
-{
+public class JewelServo {
     Servo flicker;
     Servo flickerbeam;
+
     public JewelServo(HardwareMap hardwareMap) {    // constructor to create object
-        flicker =  hardwareMap.get(Servo.class, "JewelServoFlicker");
-        flicker =  hardwareMap.get(Servo.class, "JewelServoBeam");
-        flicker.setPosition(0);
-        flickerbeam.setPosition(0); //Initialzation sticker add to bot
+        flicker = hardwareMap.get(Servo.class, "JewelServoFlicker");
+        flickerbeam = hardwareMap.get(Servo.class, "JewelServoBeam");
+        //flicker.setPosition(0.0);
+        //flickerbeam.setPosition(0.0); //Initialzation sticker add to bot
+    }
+
+public void CenterFlick() {flicker.setPosition(0.5);}
+    public void LeftFlick() {
+        flicker.setPosition(0.0);
     }
 
 
-
-    public void LeftFlick (){
-        flicker.setPosition(0);
-    }
-
-
-    public void RightFlick(){
+    public void RightFlick() {
 
         flicker.setPosition(1);
     }
-    public void LowerBeam(){
-        flickerbeam.setPosition(0.5);
+
+    public void LowerBeam() {
+        int nn;
+        for (nn = 0; nn < 20; nn++)
+        {
+            float ns = nn*0.025f;
+            flickerbeam.setPosition(ns);
+        }
+
+
     }
     public void RaiseBeam(){
-        flickerbeam.setPosition(0);
+        int nn;
+        for (nn = 0; nn > -20; nn--)
+        {
+            float ns =.5f + nn*0.025f;
+            flickerbeam.setPosition(ns);
+        }
     }
 
 

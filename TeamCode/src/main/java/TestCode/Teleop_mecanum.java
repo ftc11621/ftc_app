@@ -21,7 +21,7 @@ public class Teleop_mecanum extends LinearOpMode
         waitForStart();
 
         mecanumDrive.Start();  // default to start mecanum and its IMU, robot point away from the driver
-
+        is_angle_locked = false;
         // Start with pointing the joystick to where the robot points to, then press X
 
         while(opModeIsActive())
@@ -29,6 +29,12 @@ public class Teleop_mecanum extends LinearOpMode
 
             if (gamepad1.b) {  // unlock robot orientation from left joystick. Do this before gamepad1.x below
                 is_angle_locked = false;
+            }
+            rotation = 0.0f;
+            if (gamepad1.dpad_left) {
+                rotation = -0.5f;
+            } else if (gamepad1.dpad_right) {
+                rotation = 0.5f;
             }
 
 
@@ -56,7 +62,7 @@ public class Teleop_mecanum extends LinearOpMode
                 mecanumDrive.run_Motor_angle_locked_relative_to_driver(gamepad1.right_stick_x, -gamepad1.right_stick_y);
 
             } else {
-                rotation = gamepad1.left_stick_x;
+             // rotation = gamepad1.left_stick_x;
                 mecanumDrive.run_Motors_no_encoder(gamepad1.right_stick_x, -gamepad1.right_stick_y, rotation);
             }
 
