@@ -15,19 +15,18 @@ public class Mecanum
             (WHEEL_DIAMETER_CM * Math.PI );
     private static final double     WHEELS_SPACING_CM       = 40.8;     // spacing between wheels for turns
     private static final double     SMOOTHING_COEFFICIENT   = 0.1;      // to smooth out power changes, smaller=smoother
-    //private static final int        MOTOR_STOP_TOLERANCE    = 50;       // encoder count tolerance to stop
-    //private static final double     MOTOR_STOP_POWER        = 0.3;      // power just before stopping
 
-    private static final float      YAW_PID_KP                = 0.05f;       // PID KP coefficient
+    private static final float      YAW_PID_KP                = 0.03f;       // PID KP coefficient
     private static final float      YAW_PID_KI                = 0.001f;      // PID KI coefficient
     private float                   Yaw_Ki_sum                = 0.0f;        // PID KI integration
     private float                   Yaw_locked_angle;                       // angle to lock the robot orientation
 
     private IMU IMU_Object = null;
+    private float IMU_yaw_offset = 0;
     private ElapsedTime chassis_runtime = new ElapsedTime();
 
     private double lastleftFpower, lastrightFpower,lastleftRpower, lastrightRpower;
-    private double leftDistance_actual, rightDistance_actual;         // actual distance by encoders
+    //private double leftDistance_actual, rightDistance_actual;         // actual distance by encoders
 
     private DcMotor motorLF, motorRF, motorLR, motorRR;      // four motors on four corners
 
@@ -49,31 +48,48 @@ public class Mecanum
         IMU_Object = new IMU(hardwareMap);
     }
 
+    public void Start() {
+        IMU_Object.start();
+        //setCurrentAngle(initialAngle);
+        //set_current_angle_locked();    // current orientation locked
+    }
 
+    public float IMU_getAngle() {
+        IMU_Object.measure();
+        return (float)IMU_Object.yaw();
+    }
+    public float getRobotAngle() {
+        return (float)IMU_Object.yaw() + IMU_yaw_offset;
+    }
+
+    // all inputs from -1 to 1, rotation as well
     public void run_Motors_no_encoder(float X_of_robot, float Y_of_robot, float rotation) {
         double LF = Y_of_robot + X_of_robot - rotation;
         double RF = Y_of_robot - X_of_robot + rotation;
         double LR = Y_of_robot - X_of_robot - rotation;
         double RR = Y_of_robot + X_of_robot + rotation;
-        double mag = Math.sqrt(X_of_robot*X_of_robot+ Y_of_robot*Y_of_robot);
-        double normalized = Math.max( Math.max(Math.abs(LF), Math.abs(LR)) , Math.max( Math.abs(RF), Math.abs(RR)) );
-        motorLF.setPower(mag * LF / normalized);
-        motorRF.setPower(mag * RF / normalized);
-        motorLR.setPower(mag * LR / normalized);
-        motorRR.setPower(mag * RR / normalized);
+        // normalized just in case magnitude greater than 1.0
+        double normalized = Math.max(1.0,Math.max( Math.max(Math.abs(LF), Math.abs(LR)) , Math.max( Math.abs(RF), Math.abs(RR)) ));
+        motorLF.setPower(LF / normalized);
+        motorRF.setPower(RF / normalized);
+        motorLR.setPower(LR / normalized);
+        motorRR.setPower(RR / normalized);
+    }
+
+    public void setCurrentAngle(float setAngle) {  // set the robot orientation to a known angle
+        IMU_yaw_offset = setAngle - IMU_getAngle();
     }
 
     public void set_angle_locked(float yaw_locked_angle) {    // start locking an orientation
         Yaw_locked_angle = yaw_locked_angle;
         Yaw_Ki_sum = 0.0f;           // reset the PID error sum
     }
-    public void current_angle_locked() {    // start locking an orientation
-        IMU_Object.measure();       // measure orientation
-        set_angle_locked((float)IMU_Object.yaw());
+    public void set_current_angle_locked() {    // start locking the current orientation
+        set_angle_locked(IMU_getAngle()+IMU_yaw_offset);
     }
     public void run_Motor_angle_locked(float X_of_robot, float Y_of_robot ) { // move with locked orientation
-        IMU_Object.measure();       // measure orientation
-        float angle_deviation = Yaw_locked_angle - (float) IMU_Object.yaw();
+
+        float angle_deviation = Yaw_locked_angle - IMU_getAngle() - IMU_yaw_offset;
         // to avoid spinning more than 180 degree either direction for efficiency
         if (angle_deviation>180f) {
             angle_deviation -= 360f;
@@ -87,7 +103,19 @@ public class Mecanum
             Yaw_Ki_sum = -1.0f;
         }
         float rotation = YAW_PID_KP * angle_deviation + Yaw_Ki_sum;
+        if (Math.abs(rotation) > 1.0) {
+            rotation = 1.0f * Math.signum(rotation);
+        }
         run_Motors_no_encoder(X_of_robot, Y_of_robot, rotation);
+    }
+
+    // Drive the robot relative to the driver X-Y instead of the robot X-Y
+    public void run_Motor_angle_locked_relative_to_driver(float X_of_Joystick, float Y_of_Joystick) {
+        // angle difference between the joystick and the robot in radiant
+        double angle_diff = (Math.PI/180.0) * (Math.toDegrees( Math.atan2(X_of_Joystick,Y_of_Joystick)) - (IMU_getAngle() + IMU_yaw_offset));
+        float ref_X = (float)Math.cos(angle_diff);
+        float ref_Y = (float)Math.sin(angle_diff);
+        run_Motor_angle_locked(ref_X,ref_Y);
     }
 
     public void spin_Motors_no_encoder(float power) {  // -1 to 1 positive for counter clockwise
