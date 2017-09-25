@@ -65,16 +65,7 @@ public class Teleop_mecanum extends LinearOpMode
             }
 
 
-            // if locked in an angle
-            if (is_angle_locked) {
-                // mecanumDrive.run_Motor_angle_locked(gamepad1.right_stick_x, -gamepad1.right_stick_y);
-                // Experimental driving it relative to the driver X-Y instead of the robot X-Y
-                //mecanumDrive.run_Motor_angle_locked_relative_to_driver(gamepad1.right_stick_x, -gamepad1.right_stick_y);
 
-            } else {
-             // rotation = gamepad1.left_stick_x;
-                //mecanumDrive.run_Motors_no_encoder(gamepad1.right_stick_x, -gamepad1.right_stick_y, rotation);
-            }
 
             telemetry.addData("Locked angle  :", mecanumDrive.get_locked_angle());
             telemetry.addData("IMU angle  :", mecanumDrive.IMU_getAngle());
