@@ -4,13 +4,14 @@ package TestCode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
 import java.util.Locale;
 
 import Library.REVColorDistance;
 
-@Autonomous(name = "Test: REVColorDistance", group = "TestCode")
+@TeleOp(name = "Test: REVColorDistance", group = "TestCode")
 //@Disabled                            // Comment this out to add to the opmode list
 public class SensorREVColorDistance extends LinearOpMode {
 

@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import java.util.Locale;
 
-import Library.Chassis_motors;
 import Library.VuforiaNavigation;
 
 @TeleOp(name = "teleop Vuforia test", group = "TestCode")

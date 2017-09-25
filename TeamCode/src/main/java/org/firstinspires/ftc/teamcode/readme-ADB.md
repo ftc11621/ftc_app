@@ -4,3 +4,7 @@ For Mac OS:
         using terminal to edit ~/.bash_profile file
         add the following line (example, change the SDK path if different):
             export PATH="/Users/myuser/Library/Android/sdk/platform-tools":$PATH
+
+Windows 7:
+https://www.nextofwindows.com/how-to-addedit-environment-variables-in-windows-7
+

@@ -19,7 +19,8 @@ public class Teleop_JewelTest extends LinearOpMode
         Colordistance = new REVColorDistance(hardwareMap);
 
         waitForStart();
-JewelFlicker.CenterFlick();
+
+        JewelFlicker.CenterFlick();
 
         JewelFlicker.LowerBeam();
 
