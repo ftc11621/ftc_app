@@ -100,10 +100,10 @@ public class Mecanum
             angle_deviation += 360f;
         }
         Yaw_Ki_sum += angle_deviation * YAW_PID_KI;
-        if (Yaw_Ki_sum > 1.0) {
-            Yaw_Ki_sum = 1.0f;
-        } else if (Yaw_Ki_sum < -1.0) {
-            Yaw_Ki_sum = -1.0f;
+        if (Yaw_Ki_sum > 0.8) {
+            Yaw_Ki_sum = 0.8f;
+        } else if (Yaw_Ki_sum < -0.8) {
+            Yaw_Ki_sum = -0.8f;
         }
         float rotation = YAW_PID_KP * angle_deviation + Yaw_Ki_sum;
 
