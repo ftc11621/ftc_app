@@ -48,9 +48,9 @@ public class Teleop_mecanum extends LinearOpMode
 
                 rotation = 0.0f;
                 if (gamepad1.dpad_left) {
-                    rotation = 1.0f;
+                    rotation = 0.4f;
                 } else if (gamepad1.dpad_right) {
-                    rotation = -1.0f;
+                    rotation = -0.4f;
                 }
                 mecanumDrive.run_Motors_no_encoder(gamepad1.right_stick_x, -gamepad1.right_stick_y, rotation);
 

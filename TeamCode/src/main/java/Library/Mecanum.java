@@ -18,9 +18,10 @@ public class Mecanum
     private static final double     SMOOTHING_COEFFICIENT   = 0.1;      // to smooth out power changes, smaller=smoother
 
     private static final float      YAW_PID_KP                = 0.03f;       // PID KP coefficient
-    private static final float      YAW_PID_KI                = 0.001f;      // PID KI coefficient
+    private static final float      YAW_PID_KI                = 0.00f;      // PID KI coefficient
     private float                   Yaw_Ki_sum                = 0.0f;        // PID KI integration
     private float                   Yaw_locked_angle;                       // angle to lock the robot orientation
+    private float  max_speed                                  = 0.7f;
 
     private IMU IMU_Object = null;
     private float IMU_yaw_offset = 0;
@@ -68,7 +69,7 @@ public class Mecanum
         double LR = Y_of_robot - X_of_robot - rotation;
         double RR = Y_of_robot + X_of_robot + rotation;
         // normalized just in case magnitude greater than 1.0
-        double normalized = Math.max(1.0,Math.max( Math.max(Math.abs(LF), Math.abs(LR)) , Math.max( Math.abs(RF), Math.abs(RR)) ));
+        double normalized = Math.max(1.0,Math.max( Math.max(Math.abs(LF), Math.abs(LR)) , Math.max( Math.abs(RF), Math.abs(RR)) )) / max_speed;
         motorLF.setPower(LF / normalized);
         motorRF.setPower(RF / normalized);
         motorLR.setPower(LR / normalized);
@@ -115,14 +116,15 @@ public class Mecanum
     // Drive the robot relative to the driver X-Y instead of the robot X-Y
     public void run_Motor_angle_locked_relative_to_driver(float X_of_Joystick, float Y_of_Joystick) {
         // angle difference between the joystick and the robot in radiant
-        if ((Math.abs(X_of_Joystick)+Math.abs(Y_of_Joystick)) > 0.1) {
+        float mag = (float)Math.sqrt(X_of_Joystick*X_of_Joystick+Y_of_Joystick*Y_of_Joystick);
+        //if ((Math.abs(X_of_Joystick)+Math.abs(Y_of_Joystick)) > 0.1) {
             double angle_diff = (Math.PI / 180.0) * (90.0+Math.toDegrees(Math.atan2(X_of_Joystick, Y_of_Joystick)) - getRobotAngle());
-            float ref_X = (float) Math.cos(angle_diff);
-            float ref_Y = (float) Math.sin(angle_diff);
+            float ref_X = mag * (float)Math.cos(angle_diff);
+            float ref_Y = mag * (float)Math.sin(angle_diff);
             run_Motor_angle_locked(ref_X, ref_Y);
-        } else {
-            run_Motor_angle_locked(0.0f, 0.0f);
-        }
+        //} else {
+        //    run_Motor_angle_locked(0.0f, 0.0f);
+        //}
     }
 
     public void spin_Motors_no_encoder(float power) {  // -1 to 1 positive for counter clockwise
