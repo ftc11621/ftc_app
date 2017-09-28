@@ -13,7 +13,11 @@ public class BaseNavigation_example extends BaseNavigation
     protected void navigate() {
 
         flickJewel(true);                 // for Red alliance
-        offBalancingStone(true,true);     //  Red alliance on the left side
+
+        getOutofBalancingStone(true);     //  Red alliance on the left side
+
+        goTo_Red_left_Crytobox();
+
     }
 
 }
