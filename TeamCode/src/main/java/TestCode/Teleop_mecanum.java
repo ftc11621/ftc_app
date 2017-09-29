@@ -16,11 +16,10 @@ public class Teleop_mecanum extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         mecanumDrive = new Mecanum(hardwareMap);
-
+        mecanumDrive.Start();  // default to start mecanum and its IMU, robot point away from the driver
 
         waitForStart();
 
-        mecanumDrive.Start();  // default to start mecanum and its IMU, robot point away from the driver
 
         while(opModeIsActive())
         {

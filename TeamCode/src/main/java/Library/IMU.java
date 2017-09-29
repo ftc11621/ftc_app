@@ -66,7 +66,8 @@ public class IMU    {
     // State used for updating telemetry
     private Orientation angles;
     private double yaw_initial, roll_initial, pitch_initial;
-    //private Acceleration gravity;
+    private Acceleration gravity;
+    public double gravity_x, gravity_y, gravity_z;
 
     private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -95,6 +96,12 @@ public class IMU    {
 
     public void measure () {   // measure angles
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+    }
+    public void getGravity() {
+        gravity  = imu.getGravity();
+        gravity_x = gravity.xAccel*gravity.xAccel;
+        gravity_y = gravity.yAccel*gravity.yAccel;
+        gravity_z = gravity.zAccel*gravity.zAccel;
     }
     public double yaw() {   // yaw, positive counterclockwise -180 to 180
         return AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle));

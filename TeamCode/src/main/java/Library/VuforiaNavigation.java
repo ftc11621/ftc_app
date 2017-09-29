@@ -155,13 +155,13 @@ public class VuforiaNavigation  {
         */
 
         // for phone in front, 6mm to the left
-        /*
+
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
-                .translation(-50, 0, 30)
+                .translation(0, 0, 0)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.YZY,
-                        AngleUnit.DEGREES, -90, 90, 180));  // insert phone from the left front
-                        */
+                        AngleUnit.DEGREES, -90, 45, 90));  // insert phone from the left front
+
         //AngleUnit.DEGREES, -90, 90, 0));  // -90,0,0 for the right side
 
         //relicTemplate.setLocation(relicLocationOnField);
@@ -177,7 +177,7 @@ public class VuforiaNavigation  {
         //RobotLog.ii(TAG, "Gears Target=%s", format(gearsLocationOnField));
         //RobotLog.ii(TAG, "phone=%s", format(phoneLocationOnRobot));
 
-       // ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
+        ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         //((VuforiaTrackableDefaultListener)wheels.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         //((VuforiaTrackableDefaultListener)legos.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         //((VuforiaTrackableDefaultListener)tools.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);

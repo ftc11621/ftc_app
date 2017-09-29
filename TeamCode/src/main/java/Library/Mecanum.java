@@ -61,10 +61,13 @@ public class Mecanum
         IMU_Object.measure();
         return IMU_Object.yaw();
     }
+
+    // --------------------------------------------------------------------
     public double getRobotAngle() {
-        return IMU_Object.yaw() + IMU_yaw_offset;
+        return setAngleInRange(IMU_Object.yaw() + IMU_yaw_offset);
     }
 
+    // ----------------------------------------------------------------------
     // all inputs from -1 to 1, rotation as well
     public void run_Motors_no_encoder(double X_of_robot, double Y_of_robot, double rotation) {
         double LF = Y_of_robot + X_of_robot - rotation;
@@ -79,29 +82,28 @@ public class Mecanum
         motorRR.setPower(RR / normalized);
     }
 
+    // ----------------------------------------------------
     public void setCurrentAngle(double setAngle) {  // set the robot orientation to a known angle
-        IMU_yaw_offset = setAngle - IMU_getAngle();
+        IMU_yaw_offset = setAngleInRange( setAngle - IMU_getAngle());
     }
 
+    // ------------------------------------------------------
     public void set_angle_locked(double yaw_locked_angle) {    // start locking an orientation
         Yaw_locked_angle = yaw_locked_angle;
         Yaw_Ki_sum = 0.0f;           // reset the PID error sum
     }
 
+    // --------------------------------------------------------
     public double get_locked_angle () { return Yaw_locked_angle; }
     //public void set_current_angle_locked() {    // start locking the current orientation
     //    set_angle_locked(IMU_getAngle()+IMU_yaw_offset);
     //}
 
+    // --------------------------------------------------------
     public void run_Motor_angle_locked(double X_of_robot, double Y_of_robot ) { // move with locked orientation
 
-        double angle_deviation = Yaw_locked_angle - getRobotAngle();
-        // to avoid spinning more than 180 degree either direction for efficiency
-        if (angle_deviation>180f) {
-            angle_deviation -= 360f;
-        } else if (angle_deviation < -180f) {
-            angle_deviation += 360f;
-        }
+        double angle_deviation = setAngleInRange(Yaw_locked_angle - getRobotAngle());
+
         Yaw_Ki_sum += angle_deviation * YAW_PID_KI;
         if (Yaw_Ki_sum > 0.8) {
             Yaw_Ki_sum = 0.8f;
@@ -111,11 +113,12 @@ public class Mecanum
         double rotation = YAW_PID_KP * angle_deviation + Yaw_Ki_sum;
 
         if (Math.abs(rotation) > 1.0) {
-            rotation = 1.0f * Math.signum(rotation);
+            rotation = 1.0 * Math.signum(rotation);
         }
         run_Motors_no_encoder(X_of_robot, Y_of_robot, rotation);
     }
 
+    // -----------------------------------------------------------------
     // Drive the robot relative to the driver X-Y instead of the robot X-Y
     public void run_Motor_angle_locked_relative_to_driver(float X_of_Joystick, float Y_of_Joystick) {
         // angle difference between the joystick and the robot in radiant
@@ -127,6 +130,14 @@ public class Mecanum
         run_Motor_angle_locked(ref_X, ref_Y);
     }
 
+    // --------------- Set angle within -180 to 180 ---------------------------
+    private double setAngleInRange(double angle) {
+        while (angle >  180) angle -= 360;
+        while (angle < -180) angle += 360;
+        return angle;
+    }
+
+    // -------------------------------------------------------------------------
     public void spin_Motors_no_encoder(float power) {  // -1 to 1 positive for counter clockwise
         run_Motors_no_encoder(0,0, power);
     }

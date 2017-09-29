@@ -198,7 +198,7 @@ public abstract class BaseNavigation extends LinearOpMode {
             }
             idle();
         }
-
+        mecanumDrive.run_Motor_angle_locked(0.0, 0.0);  // stop
     }
 
     // ====================================================================
