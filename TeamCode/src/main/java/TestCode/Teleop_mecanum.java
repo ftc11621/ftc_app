@@ -30,7 +30,15 @@ public class Teleop_mecanum extends LinearOpMode
 
 
             if(is_angle_locked) {   // angle locked to left joystick where it points to
-
+                if(gamepad1.dpad_down) {
+                    mecanumDrive.set_max_power(0.3);
+                } else if(gamepad1.dpad_left) {
+                    mecanumDrive.set_max_power(0.5);
+                } else if(gamepad1.dpad_up) {
+                    mecanumDrive.set_max_power(0.7);
+                } else if(gamepad1.dpad_right) {
+                    mecanumDrive.set_max_power(1.0);
+                }
                 mecanumDrive.run_Motor_angle_locked_relative_to_driver(gamepad1.right_stick_x, gamepad1.right_stick_y);
 
                 if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.5) { // left stick actually points somewhere
