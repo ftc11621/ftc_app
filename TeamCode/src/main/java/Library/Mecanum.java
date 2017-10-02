@@ -17,11 +17,11 @@ public class Mecanum
     private static final double     WHEELS_SPACING_CM       = 40.8;     // spacing between wheels for turns
     private static final double     SMOOTHING_COEFFICIENT   = 0.1;      // to smooth out power changes, smaller=smoother
 
-    private static final double     YAW_PID_KP                = 0.03;       // PID KP coefficient
+    private static final double     YAW_PID_KP                = 0.01;       // PID KP coefficient
     private static final double     YAW_PID_KI                = 0.00;      // PID KI coefficient
     private double                  Yaw_Ki_sum                = 0.0;        // PID KI integration
     private double                  Yaw_locked_angle;                       // angle to lock the robot orientation
-    private double  max_speed                                 = 0.7;
+    private double  max_speed                                 = 0.5;
 
     private IMU IMU_Object = null;
     private double IMU_yaw_offset = 0;

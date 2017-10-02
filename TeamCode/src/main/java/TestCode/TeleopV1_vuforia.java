@@ -34,7 +34,7 @@ public class TeleopV1_vuforia extends LinearOpMode
 
                 telemetry.addData("X (inch): ", formatDouble(vuforia_test.getX() / 25.4));
                 telemetry.addData("Y (inch): ", formatDouble(vuforia_test.getY() / 25.4));
-                //telemetry.addData("Z (inch): ", formatDouble(vuforia_test.getZ() / 25.4));
+                telemetry.addData("Y2(inch): ", formatDouble(vuforia_test.getY_vuforia() / 25.4));
 
 
                 //telemetry.addData("Distance to Relic Template (inch): ",

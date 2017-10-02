@@ -27,6 +27,9 @@ public class Teleop_Glypher extends LinearOpMode
             GlypherObject.RunGlypherMotor(-gamepad2.left_stick_y);
 
             GlypherObject.Tilt(-gamepad2.right_stick_y);
+
+            telemetry.addData("Tilt Encoder: ", GlypherObject.Tilt_getCurrentEncoder());
+            telemetry.update();
             idle();
         }
 

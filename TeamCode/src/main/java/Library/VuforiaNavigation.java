@@ -160,7 +160,7 @@ public class VuforiaNavigation  {
                 .translation(0, 0, 0)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.YZY,
-                        AngleUnit.DEGREES, -90, 45, 90));  // insert phone from the left front
+                        AngleUnit.DEGREES, -90, 45, 0));  // insert phone from the left front
 
         //AngleUnit.DEGREES, -90, 90, 0));  // -90,0,0 for the right side
 
@@ -258,12 +258,12 @@ public class VuforiaNavigation  {
         //return coordinates[0];
         return trans.get(0);
     }
-    /*
-    private double getY_vuforia() { // vuforia y location
+
+    public double getY_vuforia() { // vuforia y location
         //float[] coordinates = lastRobotLocation.getTranslation().getData();
         //return coordinates[1];
         return trans.get(1);
-    }*/
+    }
     public double getY() { // robot y location actually
         //float[] coordinates = lastRobotLocation.getTranslation().getData();
         //return coordinates[1];

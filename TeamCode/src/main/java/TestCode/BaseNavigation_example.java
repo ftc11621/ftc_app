@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import Navigation.BaseNavigation;
 
-@Autonomous(name = "BaseNavigation Red Alliance Example", group = "TestCode")
+@Autonomous(name = "BaseNavigation Flicker", group = "TestCode")
 // @Disabled
 public class BaseNavigation_example extends BaseNavigation
 {
@@ -14,9 +14,9 @@ public class BaseNavigation_example extends BaseNavigation
 
         flickJewel(true);                 // for Red alliance
 
-        getOutofBalancingStone(true);     //  Red alliance on the left side
+        //getOutofBalancingStone(true);     //  Red alliance on the left side
 
-        goTo_Red_left_Crytobox();
+        //goTo_Red_left_Crytobox();
 
     }
 
