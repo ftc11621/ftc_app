@@ -14,7 +14,7 @@ public abstract class BaseNavigation extends LinearOpMode {
     private final float Wall_PID_KP        =  0.2f;       // PID for KP to keep distance to the wall.
 
     private JewelServo JewelFlicker = null;
-    private REVColorDistance Colordistance = null;
+    //private REVColorDistance Colordistance = null;
     private Mecanum mecanumDrive = null;
     private RangeSensor rangesensors = null;
     private VuforiaNavigation vuforia = null;
@@ -26,20 +26,21 @@ public abstract class BaseNavigation extends LinearOpMode {
     public void runOpMode() {
 
         JewelFlicker  = new JewelServo(hardwareMap);
-        Colordistance = new REVColorDistance(hardwareMap);
+        //Colordistance = new REVColorDistance(hardwareMap);
         mecanumDrive  = new Mecanum(hardwareMap);
         rangesensors  = new RangeSensor(hardwareMap);
         vuforia       = new VuforiaNavigation(true);
 
 
         JewelFlicker.LeftFlick();       // so it doesn't go over 18"
+        JewelFlicker.RaiseBeam();
 
         waitForStart();
 
         mecanumDrive.Start();
         mecanumDrive.set_max_power(0.6);  // max speed/power to be modified later if needed
 
-        JewelFlicker.CenterFlick();
+        //JewelFlicker.runFlickJewel();     // flick a jewel
 
         navigate();
 
@@ -51,47 +52,27 @@ public abstract class BaseNavigation extends LinearOpMode {
 
     protected abstract void navigate();
 
-    // ====================================================================
-    // Jewel Flicker method
-    public void flickJewel(boolean isRedAlliance) {
 
-        JewelFlicker.LowerBeam();
-
-        Colordistance.measure();
-
-        if (isRedAlliance) { // for Red alliance
-            if (Colordistance.getBlue() > 20 && Colordistance.getRed() < 15) {
-                JewelFlicker.LeftFlick();
-            } else if (Colordistance.getRed() > 20 && Colordistance.getBlue() < 15) {
-                JewelFlicker.RightFlick();
-            }
-        } else {              // for Blue alliance
-            if (Colordistance.getRed() > 20 && Colordistance.getBlue() < 15) {
-                JewelFlicker.LeftFlick();
-            } else if (Colordistance.getBlue() > 20 && Colordistance.getRed() < 15) {
-                JewelFlicker.RightFlick();
-            }
-        }
-
-        JewelFlicker.RaiseBeam();
+    // Flicker
+    public void runFlicker(boolean isRedAlliance) {
+        JewelFlicker.runFlickJewel(isRedAlliance);
     }
-    // ====================================================================
 
-    // Getting robot off Balancing Stone
+    // Getting robot off Balancing Stone =============================================
     public void getOutofBalancingStone(boolean isRedAlliance) {
 
         double time_to_get_off = 3.0;
 
         basenavigateion_runtime.reset();
-        mecanumDrive.setCurrentAngle(180.0);
-        mecanumDrive.set_angle_locked(180.0);
+        mecanumDrive.setCurrentAngle(90.0);
+        mecanumDrive.set_angle_locked(90.0);
 
-        double robot_x_dir = -1.0;
+        double robot_y_dir = -1.0;
         if (isRedAlliance) {
-            robot_x_dir = 1.0;
+            robot_y_dir = 1.0;
         }
         while(basenavigateion_runtime.seconds() < time_to_get_off) {
-            mecanumDrive.run_Motor_angle_locked(robot_x_dir, 0.0); // move to the right
+            mecanumDrive.run_Motor_angle_locked(0.0, robot_y_dir); // move to the right
             idle();
         }
         mecanumDrive.run_Motor_angle_locked(0.0, 0.0);  // stop

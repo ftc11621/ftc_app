@@ -44,11 +44,9 @@ public class Glypher
     public void Tilt(double power) {
         TiltGlypher.setPower(power);
     }
-
     public int Tilt_getCurrentEncoder() {
         return TiltGlypher.getCurrentPosition();
     }
-
     public void Tilt_goDown() {
         Tilt_goToEncoder(TILT_DOWN_ENCODER);
     }
