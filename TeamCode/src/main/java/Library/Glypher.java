@@ -23,10 +23,10 @@ public class Glypher
         TiltGlypher = hardwareMap.dcMotor.get("GlypherTilter");
         Booter = hardwareMap.get(Servo.class, "ServoBooter");
 
-        motorGlypher.setDirection(DcMotor.Direction.REVERSE);
-        TiltGlypher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorGlypher.setDirection(DcMotor.Direction.FORWARD);
+        //TiltGlypher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         TiltGlypher.setDirection(DcMotor.Direction.FORWARD);
-        TiltGlypher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //TiltGlypher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
 

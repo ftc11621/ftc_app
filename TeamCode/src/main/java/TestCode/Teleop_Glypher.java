@@ -25,7 +25,7 @@ public class Teleop_Glypher extends LinearOpMode
         while(opModeIsActive())
         {
             GlypherObject.RunGlypherMotor(-gamepad2.left_stick_y);
-
+            idle();
             GlypherObject.Tilt(-gamepad2.right_stick_y);
 
             if (gamepad2.y) {
