@@ -23,6 +23,7 @@ public class JewelServo {
         flickerbeam.setPosition(BEAM_RAISE); //Initialzation sticker add to bot
     }
 
+    
     public void CenterFlick() {flicker.setPosition(0.2);}
 
     public void LeftFlick()  { flicker.setPosition(0.7);}
