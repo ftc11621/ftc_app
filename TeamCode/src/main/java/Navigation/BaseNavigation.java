@@ -39,11 +39,6 @@ public abstract class BaseNavigation extends LinearOpMode {
     protected abstract void navigate();
 
     // ====================================================================
-
-    //public void flickJewel_test() {
-     //   JewelFlicker.RaiseBeam();
-     //   JewelFlicker.LowerBeam();
-    //
     // Jewel Flicker method
     public void flickJewel(boolean isRedAlliance) {
 
@@ -51,20 +46,16 @@ public abstract class BaseNavigation extends LinearOpMode {
 
         Colordistance.measure();
 
-        telemetry.addData("Red: ", Colordistance.getRed());
-        telemetry.addData("Blue:", Colordistance.getBlue());
-        telemetry.update();
-
         if (isRedAlliance) { // for Red alliance
-            if (Colordistance.getBlue() > 20 && (Colordistance.getBlue()-Colordistance.getRed()) > 8) {
+            if (Colordistance.getBlue() > 20 && Colordistance.getRed() < 15) {
                 JewelFlicker.LeftFlick();
-            } else if (Colordistance.getRed() > 20 && (Colordistance.getRed()-Colordistance.getBlue()) > 8) {
+            } else if (Colordistance.getRed() > 20 && Colordistance.getBlue() < 15) {
                 JewelFlicker.RightFlick();
             }
         } else {              // for Blue alliance
-            if (Colordistance.getRed() > 20 && (Colordistance.getRed()-Colordistance.getBlue()) > 8) {
+            if (Colordistance.getRed() > 20 && Colordistance.getBlue() < 15) {
                 JewelFlicker.LeftFlick();
-            } else if (Colordistance.getBlue() > 20 && (Colordistance.getBlue()-Colordistance.getRed()) > 8) {
+            } else if (Colordistance.getBlue() > 20 && Colordistance.getRed() < 15) {
                 JewelFlicker.RightFlick();
             }
         }

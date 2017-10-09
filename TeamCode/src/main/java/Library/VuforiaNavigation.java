@@ -58,9 +58,16 @@ import java.util.List;
 public class VuforiaNavigation  {
 
     // settings
-    float mmPerInch        = 25.4f;
+    public final float mmPerInch        = 25.4f;
     float mmBotWidth       = 18 * mmPerInch;            // ... or whatever is right for your robot
     float mmFTCFieldWidth  = (12*12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
+
+    public final double Crytobox_red_left_mm = 27.0 * mmPerInch; // distance picture to the center of crytobox
+    public final double Crytobox_red_right_x_mm = 39.0 * mmPerInch; // distance to the wall
+    public final double Crytobox_red_right_y_mm = 36.0 * mmPerInch; // distance to the center of crytobox
+    public final double Crytobox_blue_right_mm = 45.0 * mmPerInch; // distance picture to the center of crytobox
+    public final double Crytobox_blue_left_x_mm = 57.0 * mmPerInch; // distance to the wall
+    public final double Crytobox_blue_left_y_mm = 36.0 * mmPerInch; // distance to the center of crytobox
 
     // target location in mm
     //public final float wheels_x_mm = 12 * mmPerInch, wheels_y_mm = 71 * mmPerInch;
@@ -89,7 +96,7 @@ public class VuforiaNavigation  {
         //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
         parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
         parameters.vuforiaLicenseKey = "AdksQ3j/////AAAAGVB9GUsSEE0BlMaVB7HcRZRM4Sv74bxusFbCpn3gwnUkr3GuOtSWhrTCHnTU/93+Im+JlrYI6///bytu1igZT48xQ6182nSTpVzJ2ZP+Q/sNzSg3qvIOMnjEptutngqB+e3mQ1+YTiDa9aZod1e8X7UvGsAJ3cfV+X/S3E4M/81d1IRSMPRPEaLpKFdMqN3AcbDpBHoqp82fAp7XWVN3qd/BRe0CAAoNsr26scPBAxvm9cizRG1WeRSFms3XkwFN6eGpH7VpNAdPPXep9RQ3lLZMTFQGOfiV/vRQXq/Tlaj/b7dkA12zBSW81MfBiXRxp06NGieFe7KvXNuu2aDyyXoaPFsI44FEGp1z/SVSEVR4"; // Insert your own key here
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
         parameters.useExtendedTracking = enableExtendedTracking;        // true by default,whether to use extended tracking
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
@@ -150,11 +157,11 @@ public class VuforiaNavigation  {
         // for phone in front, 6mm to the left
         /*
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
-                .translation(-50, 0, 30)
+                .translation(0, 0, 0)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.YZY,
-                        AngleUnit.DEGREES, -90, 90, 180));  // insert phone from the left front
-                        */
+                        AngleUnit.DEGREES, 0, 45, 0));  // insert phone from the left front
+        */
         //AngleUnit.DEGREES, -90, 90, 0));  // -90,0,0 for the right side
 
         //relicTemplate.setLocation(relicLocationOnField);
@@ -170,7 +177,7 @@ public class VuforiaNavigation  {
         //RobotLog.ii(TAG, "Gears Target=%s", format(gearsLocationOnField));
         //RobotLog.ii(TAG, "phone=%s", format(phoneLocationOnRobot));
 
-       // ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
+        //((VuforiaTrackableDefaultListener)relicTemplate.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         //((VuforiaTrackableDefaultListener)wheels.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         //((VuforiaTrackableDefaultListener)legos.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         //((VuforiaTrackableDefaultListener)tools.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
@@ -251,12 +258,12 @@ public class VuforiaNavigation  {
         //return coordinates[0];
         return trans.get(0);
     }
-    /*
-    private double getY_vuforia() { // vuforia y location
+
+    public double getY_vuforia() { // vuforia y location
         //float[] coordinates = lastRobotLocation.getTranslation().getData();
         //return coordinates[1];
         return trans.get(1);
-    }*/
+    }
     public double getY() { // robot y location actually
         //float[] coordinates = lastRobotLocation.getTranslation().getData();
         //return coordinates[1];

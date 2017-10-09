@@ -16,13 +16,10 @@ public class Teleop_mecanum extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         mecanumDrive = new Mecanum(hardwareMap);
-
+        mecanumDrive.Start();  // default to start mecanum and its IMU, robot point away from the driver
 
         waitForStart();
 
-        mecanumDrive.Start();  // default to start mecanum and its IMU, robot point away from the driver
-        //is_angle_locked = false;
-        // Start with pointing the joystick to where the robot points to, then press X
 
         while(opModeIsActive())
         {
@@ -33,12 +30,16 @@ public class Teleop_mecanum extends LinearOpMode
 
 
             if(is_angle_locked) {   // angle locked to left joystick where it points to
-                //if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.5) { // left stick actually point somewhere
-                    //float angle_robot = (float) Math.toDegrees(Math.atan2((double) gamepad1.left_stick_y, (double) gamepad1.left_stick_x));
-                    //mecanumDrive.set_angle_locked(angle_robot);
-                //}
+                if(gamepad1.dpad_down) {
+                    mecanumDrive.set_max_power(0.3);
+                } else if(gamepad1.dpad_left) {
+                    mecanumDrive.set_max_power(0.5);
+                } else if(gamepad1.dpad_up) {
+                    mecanumDrive.set_max_power(0.7);
+                } else if(gamepad1.dpad_right) {
+                    mecanumDrive.set_max_power(1.0);
+                }
                 mecanumDrive.run_Motor_angle_locked_relative_to_driver(gamepad1.right_stick_x, gamepad1.right_stick_y);
-                //mecanumDrive.run_Motor_angle_locked(gamepad1.right_stick_x, -gamepad1.right_stick_y);
 
                 if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.5) { // left stick actually points somewhere
                     float angle_lock = (float) Math.toDegrees(Math.atan2((double) gamepad1.left_stick_x, (double) gamepad1.left_stick_y));

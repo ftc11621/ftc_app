@@ -20,21 +20,21 @@ public class RangeSensor {
         RANGE_1_Reader.engage();
     }
 
-    public int getDistance_1_cm(int max_distance) {
+    public double getDistance_1_cm(int max_distance) {
         return getSensorDistance(max_distance, RANGE_1_Reader);
     }
 
-    private int getSensorDistance(int max_distance, I2cDeviceSynchImpl reader) {
+    private double getSensorDistance(int max_distance, I2cDeviceSynchImpl reader) {
         byte[] range_Cache;
 
         range_Cache = reader.read(RANGE_REG_START, RANGE_READ_LENGTH);
         int dist = range_Cache[0] & 0xFF;
-        while(dist > max_distance) {
+        while(dist > max_distance || dist == 0) {
             range_Cache = reader.read(RANGE_REG_START, RANGE_READ_LENGTH);
             dist = range_Cache[0] & 0xFF;
             sleep(10);
         }
-        return dist;
+        return (double) dist;
     }
 
 }

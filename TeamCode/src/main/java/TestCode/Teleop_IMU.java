@@ -39,6 +39,7 @@ public class Teleop_IMU extends LinearOpMode
         telemetry.addAction(new Runnable() { @Override public void run()
         {
             IMU_Object.measure();
+            IMU_Object.getGravity();
         }
         });
 
@@ -61,6 +62,27 @@ public class Teleop_IMU extends LinearOpMode
                     @Override
                     public String value() {
                         return String.format(Locale.getDefault(), "%.1f", IMU_Object.pitch());
+                    }
+                });
+        telemetry.addLine()
+                .addData("Pitch: ", new Func<String>() {
+                    @Override
+                    public String value() {
+                        return String.format(Locale.getDefault(), "%.1f", IMU_Object.gravity_x);
+                    }
+                });
+        telemetry.addLine()
+                .addData("Pitch: ", new Func<String>() {
+                    @Override
+                    public String value() {
+                        return String.format(Locale.getDefault(), "%.1f", IMU_Object.gravity_y);
+                    }
+                });
+        telemetry.addLine()
+                .addData("Pitch: ", new Func<String>() {
+                    @Override
+                    public String value() {
+                        return String.format(Locale.getDefault(), "%.1f", IMU_Object.gravity_z);
                     }
                 });
 

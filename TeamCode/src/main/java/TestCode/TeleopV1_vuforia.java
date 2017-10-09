@@ -11,6 +11,7 @@ import Library.VuforiaNavigation;
 public class TeleopV1_vuforia extends LinearOpMode
 {
     private VuforiaNavigation vuforia_test = null;
+    private double cos45degree             = 0.707; // cos(45) or sin(45)
 
     public void runOpMode() throws InterruptedException
     {
@@ -34,7 +35,13 @@ public class TeleopV1_vuforia extends LinearOpMode
 
                 telemetry.addData("X (inch): ", formatDouble(vuforia_test.getX() / 25.4));
                 telemetry.addData("Y (inch): ", formatDouble(vuforia_test.getY() / 25.4));
-                //telemetry.addData("Z (inch): ", formatDouble(vuforia_test.getZ() / 25.4));
+                telemetry.addData("Y2(inch): ", formatDouble(vuforia_test.getY_vuforia() / 25.4));
+
+                double signofX = Math.signum(vuforia_test.getOrientation());
+
+                telemetry.addData("45-degree X (inch): ", formatDouble((vuforia_test.getY() + signofX * vuforia_test.getX())*cos45degree / 25.4));
+                telemetry.addData("45-degree Y (inch): ", formatDouble((vuforia_test.getY() - signofX * vuforia_test.getX())*cos45degree / 25.4));
+
 
 
                 //telemetry.addData("Distance to Relic Template (inch): ",
