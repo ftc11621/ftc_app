@@ -46,21 +46,28 @@ public abstract class BaseNavigation extends LinearOpMode {
 
         Colordistance.measure();
 
+        telemetry.addData("Red :", Colordistance.getRed());
+        telemetry.addData("Blue:", Colordistance.getBlue());
+        telemetry.update();
+
         if (isRedAlliance) { // for Red alliance
-            if (Colordistance.getBlue() > 20 && (Colordistance.getBlue()-Colordistance.getRed()) > 8) {
+            if (Colordistance.getBlue() > 15 && (Colordistance.getBlue()-Colordistance.getRed()) > 8) {
                 JewelFlicker.LeftFlick();
-            } else if (Colordistance.getRed() > 20 && (Colordistance.getRed()-Colordistance.getBlue()) > 8) {
+            } else if (Colordistance.getRed() > 15 && (Colordistance.getRed()-Colordistance.getBlue()) > 8) {
                 JewelFlicker.RightFlick();
             }
         } else {              // for Blue alliance
-            if (Colordistance.getRed() > 20 && (Colordistance.getRed()-Colordistance.getBlue()) > 8) {
+            if (Colordistance.getRed() > 15 && (Colordistance.getRed()-Colordistance.getBlue()) > 8) {
                 JewelFlicker.LeftFlick();
-            } else if (Colordistance.getBlue() > 20 && (Colordistance.getBlue()-Colordistance.getRed()) > 8 ) {
+            } else if (Colordistance.getBlue() > 15 && (Colordistance.getBlue()-Colordistance.getRed()) > 8 ) {
                 JewelFlicker.RightFlick();
             }
         }
 
+
+
         JewelFlicker.RaiseBeam();
+        //JewelFlicker.RightFlick();
         JewelFlicker.LeftFlick();
     }
     // ====================================================================
