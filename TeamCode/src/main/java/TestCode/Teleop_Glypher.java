@@ -34,6 +34,12 @@ public class Teleop_Glypher extends LinearOpMode
                 GlypherObject.BooterRetract();
             }
 
+            if (gamepad2.dpad_up) {
+                GlypherObject.BooterSlowKickOut();
+            } else if (gamepad2.dpad_down) {
+                GlypherObject.BooterSlowRetract();
+            }
+
             telemetry.addData("Tilt Encoder: ", GlypherObject.Tilt_getCurrentEncoder());
             telemetry.update();
             idle();

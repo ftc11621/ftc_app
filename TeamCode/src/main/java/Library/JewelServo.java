@@ -48,11 +48,8 @@ public class JewelServo {
             flickerbeam.setPosition(ns);
 
             while (flicker_elapsetime.milliseconds() < 30 ) {
-
             }
-
         }
-
     }
 
 

@@ -16,6 +16,7 @@ public class Glypher
     private DcMotor motorGlypher;
     private DcMotor TiltGlypher;
     private ElapsedTime glypher_runtime = new ElapsedTime();
+    private double lastBooterPosition = 0.0;
 
     public Glypher(HardwareMap hardwareMap){    // constructor to create object
 
@@ -34,10 +35,26 @@ public class Glypher
         motorGlypher.setPower(power);
     }
     public void BooterKickOut() {
-        Booter.setPosition(0.5);
+        lastBooterPosition = 0.5;
+        setBooterPosition();
     }
     public void BooterRetract() {
-        Booter.setPosition(0.0);
+        lastBooterPosition = 0.0;
+        setBooterPosition();
+    }
+
+    public void BooterSlowKickOut() {
+        lastBooterPosition += 0.001;
+        setBooterPosition();
+    }
+    public void BooterSlowRetract() {
+        lastBooterPosition -= 0.001;
+        setBooterPosition();
+    }
+    private void setBooterPosition () {
+        if (lastBooterPosition > 0.5) { lastBooterPosition = 0.5; }
+        if (lastBooterPosition < 0.0) { lastBooterPosition = 0.0; }
+        Booter.setPosition(lastBooterPosition);
     }
 
     // =============== Tilt ===========================
