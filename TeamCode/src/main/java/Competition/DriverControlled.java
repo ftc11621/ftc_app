@@ -61,11 +61,14 @@ public class DriverControlled extends LinearOpMode
                 } else if(gamepad1.dpad_right) {
                     mecanumDrive.set_max_power(1.0);
                 }
-                mecanumDrive.run_Motor_angle_locked_relative_to_driver(gamepad1.right_stick_x, gamepad1.right_stick_y);
+                //mecanumDrive.run_Motor_angle_locked_relative_to_driver(gamepad1.right_stick_x, gamepad1.right_stick_y);
 
                 if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.5) { // left stick actually points somewhere
                     float angle_lock = (float) Math.toDegrees(Math.atan2((double) gamepad1.left_stick_x, (double) gamepad1.left_stick_y));
                     mecanumDrive.set_angle_locked(angle_lock);
+                    mecanumDrive.run_Motor_angle_locked_relative_to_driver(gamepad1.right_stick_x, gamepad1.right_stick_y);
+                } else {
+                    mecanumDrive.run_Motor_relative_to_driver(gamepad1.right_stick_x, gamepad1.right_stick_y);
                 }
             } else {
 

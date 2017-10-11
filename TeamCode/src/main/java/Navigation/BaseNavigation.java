@@ -58,9 +58,9 @@ public abstract class BaseNavigation extends LinearOpMode {
                     JewelFlicker.RightFlick();
                 }
             } else {              // for Blue alliance
-                if ((Colordistance.getRed() - Colordistance.getBlue()) > 8) {
+                if ((Colordistance.getRed() - Colordistance.getBlue()) > 4) {
                     JewelFlicker.LeftFlick();
-                } else if ((Colordistance.getBlue() - Colordistance.getRed()) > 8) {
+                } else if ((Colordistance.getBlue() - Colordistance.getRed()) > 4) {
                     JewelFlicker.RightFlick();
                 }
             }
@@ -92,5 +92,4 @@ public abstract class BaseNavigation extends LinearOpMode {
             }
         }
     }
-
 }

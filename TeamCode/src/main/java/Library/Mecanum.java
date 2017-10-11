@@ -129,6 +129,23 @@ public class Mecanum
         double ref_Y = mag * Math.sin(angle_diff);
         run_Motor_angle_locked(ref_X, ref_Y);
     }
+    // Drive the robot relative to the driver X-Y instead of the robot X-Y
+    public void run_Motor_relative_to_driver(float X_of_Joystick, float Y_of_Joystick) {
+        // angle difference between the joystick and the robot in radiant
+        double mag = Math.sqrt(X_of_Joystick*X_of_Joystick+Y_of_Joystick*Y_of_Joystick);
+
+        double angle_diff = (Math.PI / 180.0) * (90.0+Math.toDegrees(Math.atan2(X_of_Joystick, Y_of_Joystick)) - getRobotAngle());
+        double ref_X = mag * Math.cos(angle_diff);
+        double ref_Y = mag * Math.sin(angle_diff);
+
+        double angle_deviation = setAngleInRange(Yaw_locked_angle - getRobotAngle());
+
+        if (Math.abs(angle_deviation) < 10.0) {     // if less than 10 degree
+            run_Motors_no_encoder(ref_X, ref_Y, 0.0);
+        } else {
+            run_Motor_angle_locked(ref_X, ref_Y);
+        }
+    }
 
     // --------------- Set angle within -180 to 180 ---------------------------
     private double setAngleInRange(double angle) {
