@@ -66,7 +66,6 @@ public abstract class BaseNavigation extends LinearOpMode {
             }
         }
 
-
         JewelFlicker.RaiseBeam();
         //JewelFlicker.RightFlick();
         JewelFlicker.LeftFlick();
