@@ -1,6 +1,7 @@
 package Navigation;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import Library.JewelServo;
 import Library.Mecanum;
@@ -11,7 +12,7 @@ public abstract class BaseNavigation extends LinearOpMode {
     private JewelServo JewelFlicker = null;
     private REVColorDistance Colordistance = null;
     private Mecanum mecanumDrive = null;
-
+    ElapsedTime basenavigation_elapsetime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
@@ -76,18 +77,26 @@ public abstract class BaseNavigation extends LinearOpMode {
     // Getting off Balancing Stone
     public void offBalancingStone(boolean isRedAlliance, boolean isLeftSide) {
 
-        if (isRedAlliance) {
-            if(isLeftSide) {
+        double timeoutsec = 10.0;
 
-            } else {
+        basenavigation_elapsetime.reset();
 
-            }
+        while(basenavigation_elapsetime.seconds() < timeoutsec) {
+            if (isRedAlliance) {
+                mecanumDrive.set_angle_locked(90.0);
+                if (isLeftSide) {
+                    mecanumDrive.run_Motor_angle_locked(0.2, 0.8);
+                } else {
+                    mecanumDrive.run_Motor_angle_locked(-0.2, 0.8);
+                }
 
-        } else {    // Blue alliance
-            if(isLeftSide) {
-
-            } else {
-
+            } else {    // Blue alliance
+                mecanumDrive.set_angle_locked(-90.0);
+                if (isLeftSide) {
+                    mecanumDrive.run_Motor_angle_locked(0.2, 0.8);
+                } else {
+                    mecanumDrive.run_Motor_angle_locked(-0.2, 0.8);
+                }
             }
         }
     }
