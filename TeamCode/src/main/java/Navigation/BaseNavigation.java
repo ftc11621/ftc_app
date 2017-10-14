@@ -77,27 +77,29 @@ public abstract class BaseNavigation extends LinearOpMode {
     // Getting off Balancing Stone
     public void offBalancingStone(boolean isRedAlliance, boolean isLeftSide) {
 
-        double timeoutsec = 10.0;
-
         basenavigation_elapsetime.reset();
-
-        while(basenavigation_elapsetime.seconds() < timeoutsec) {
+        while(basenavigation_elapsetime.seconds() < 10.0) {
             if (isRedAlliance) {
-                mecanumDrive.set_angle_locked(90.0);
                 if (isLeftSide) {
-                    mecanumDrive.run_Motor_angle_locked(0.2, 0.8);
+                    mecanumDrive.set_angle_locked(0.0);
+                    mecanumDrive.run_Motor_angle_locked(-0.8, 0.2);
                 } else {
+                    mecanumDrive.set_angle_locked(90.0);
                     mecanumDrive.run_Motor_angle_locked(-0.2, 0.8);
                 }
-
             } else {    // Blue alliance
-                mecanumDrive.set_angle_locked(-90.0);
                 if (isLeftSide) {
+                    mecanumDrive.set_angle_locked(-90.0);
                     mecanumDrive.run_Motor_angle_locked(0.2, 0.8);
                 } else {
-                    mecanumDrive.run_Motor_angle_locked(-0.2, 0.8);
+                    mecanumDrive.set_angle_locked(0.0);
+                    mecanumDrive.run_Motor_angle_locked(0.8, 0.2);
                 }
             }
+        }
+        basenavigation_elapsetime.reset();
+        while(basenavigation_elapsetime.seconds() < 3.0) {
+            mecanumDrive.run_Motor_angle_locked(0.0, 0.4);
         }
     }
 }
