@@ -49,27 +49,33 @@ public abstract class BaseNavigation extends LinearOpMode {
 
         telemetry.addData("Red :", Colordistance.getRed());
         telemetry.addData("Blue:", Colordistance.getBlue());
-        telemetry.update();
+
 
         if (Colordistance.getDistance_CM() < 10.0) {
             if (isRedAlliance) { // for Red alliance
                 if ((Colordistance.getBlue() - Colordistance.getRed()) > 4) {
-                    JewelFlicker.LeftFlick();
+                    telemetry.addData("Flick: ", "Left");
+                    //JewelFlicker.LeftFlick();
                 } else if ((Colordistance.getRed() - Colordistance.getBlue()) > 4) {
-                    JewelFlicker.RightFlick();
+                    telemetry.addData("Flick: ", "Right");
+                    //JewelFlicker.RightFlick();
                 }
             } else {              // for Blue alliance
                 if ((Colordistance.getRed() - Colordistance.getBlue()) > 4) {
-                    JewelFlicker.LeftFlick();
+                    telemetry.addData("Flick: ", "Left");
+                    //JewelFlicker.LeftFlick();
                 } else if ((Colordistance.getBlue() - Colordistance.getRed()) > 4) {
-                    JewelFlicker.RightFlick();
+                    telemetry.addData("Flick: ", "Right");
+                    //JewelFlicker.RightFlick();
                 }
             }
         }
 
         JewelFlicker.RaiseBeam();
         //JewelFlicker.RightFlick();
-        JewelFlicker.LeftFlick();
+        //JewelFlicker.LeftFlick();
+
+        telemetry.update();
     }
     // ====================================================================
 

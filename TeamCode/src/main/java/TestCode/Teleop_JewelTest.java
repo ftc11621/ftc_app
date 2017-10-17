@@ -20,13 +20,15 @@ public class Teleop_JewelTest extends LinearOpMode
 
         waitForStart();
 
-        JewelFlicker.CenterFlick();
+        //JewelFlicker.CenterFlick();
 
         JewelFlicker.LowerBeam();
 
         while(opModeIsActive())
         {
             Colordistance.measure();
+
+
             if (Colordistance.getBlue() > 20 && Colordistance.getRed()<15) {
                 JewelFlicker.LeftFlick();
             }else if (Colordistance.getRed()>20 && Colordistance.getBlue()<15){
