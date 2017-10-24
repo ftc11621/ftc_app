@@ -5,7 +5,9 @@ import java.lang.Thread;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoControllerEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class JewelServo {
@@ -14,6 +16,7 @@ public class JewelServo {
 
     Servo flicker;
     Servo flickerbeam;
+
     ElapsedTime flicker_elapsetime = new ElapsedTime();
 
     public JewelServo(HardwareMap hardwareMap) {    // constructor to create object
@@ -38,7 +41,6 @@ public class JewelServo {
         RotateBeam(BEAM_RAISE, BEAM_LOWER);
     }
     private void RotateBeam(double init_position, double final_location){
-        //double init_position = flickerbeam.getPosition();
         double step = (final_location-init_position)/100.0;
 
         for (int nn = 0; nn < 100; nn++)
@@ -49,6 +51,16 @@ public class JewelServo {
 
             while (flicker_elapsetime.milliseconds() < 30 ) {
             }
+        }
+    }
+
+    // Change the servo angle range
+    private void setServoRange() {
+        if (flicker.getController()instanceof ServoControllerEx) { // prevent crash
+            ServoControllerEx theControl = (ServoControllerEx) flicker.getController();
+            int thePort = flicker.getPortNumber();
+            PwmControl.PwmRange theRange = new PwmControl.PwmRange(800, 2000);
+            theControl.setServoPwmRange(thePort, theRange);
         }
     }
 

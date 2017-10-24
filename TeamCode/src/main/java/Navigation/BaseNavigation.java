@@ -12,6 +12,7 @@ public abstract class BaseNavigation extends LinearOpMode {
     private JewelServo JewelFlicker = null;
     private REVColorDistance Colordistance = null;
     private Mecanum mecanumDrive = null;
+    boolean isRedAlliance, isLeftSide;
     ElapsedTime basenavigation_elapsetime = new ElapsedTime();
 
     @Override
@@ -39,9 +40,16 @@ public abstract class BaseNavigation extends LinearOpMode {
 
     protected abstract void navigate();
 
+    // =========================== Initial Robot placement ==================
+    public void robotInitial(boolean isRed, boolean isLeft) {
+        isRedAlliance = isRed;
+        isLeftSide = isLeft;
+        mecanumDrive.setCurrentAngle(90.0);     // to the right of Jewel
+    }
+
     // ====================================================================
     // Jewel Flicker method
-    public void flickJewel(boolean isRedAlliance) {
+    public void flickJewel() {
 
         JewelFlicker.LowerBeam();
 
@@ -55,17 +63,21 @@ public abstract class BaseNavigation extends LinearOpMode {
             if (isRedAlliance) { // for Red alliance
                 if ((Colordistance.getBlue() - Colordistance.getRed()) > 4) {
                     telemetry.addData("Flick: ", "Left");
+                    mecanumDrive.set_angle_locked(90.0 + 15.0);
                     //JewelFlicker.LeftFlick();
                 } else if ((Colordistance.getRed() - Colordistance.getBlue()) > 4) {
                     telemetry.addData("Flick: ", "Right");
+                    mecanumDrive.set_angle_locked(90.0 - 15.0);
                     //JewelFlicker.RightFlick();
                 }
             } else {              // for Blue alliance
                 if ((Colordistance.getRed() - Colordistance.getBlue()) > 4) {
                     telemetry.addData("Flick: ", "Left");
+                    mecanumDrive.set_angle_locked(90.0 + 15.0);
                     //JewelFlicker.LeftFlick();
                 } else if ((Colordistance.getBlue() - Colordistance.getRed()) > 4) {
                     telemetry.addData("Flick: ", "Right");
+                    mecanumDrive.set_angle_locked(90.0 - 15.0);
                     //JewelFlicker.RightFlick();
                 }
             }
@@ -74,6 +86,7 @@ public abstract class BaseNavigation extends LinearOpMode {
         JewelFlicker.RaiseBeam();
         //JewelFlicker.RightFlick();
         //JewelFlicker.LeftFlick();
+        mecanumDrive.set_angle_locked(90.0);
 
         telemetry.update();
     }
@@ -81,7 +94,7 @@ public abstract class BaseNavigation extends LinearOpMode {
 
     // ====================================================================
     // Getting off Balancing Stone
-    public void offBalancingStone(boolean isRedAlliance, boolean isLeftSide) {
+    public void offBalancingStone() {
 
         basenavigation_elapsetime.reset();
         while(basenavigation_elapsetime.seconds() < 10.0) {

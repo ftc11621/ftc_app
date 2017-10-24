@@ -141,7 +141,7 @@ public class Mecanum
 
         double angle_deviation = setAngleInRange(Yaw_locked_angle - getRobotAngle());
 
-        if (Math.abs(angle_deviation) < 10.0) {     // if less than 10 degree
+        if (Math.abs(angle_deviation) < 5.0) {     // if less than 5 degree
             run_Motors_no_encoder(ref_X, ref_Y, 0.0);
         } else {
             run_Motor_angle_locked(ref_X, ref_Y);
