@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.hardware.ServoControllerEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class JewelServo {
-    final double BEAM_RAISE     = 0.85;
-    final double BEAM_LOWER     = 0.35;
+    final double BEAM_RAISE     = 1.0;
+    final double BEAM_LOWER     = 0.5;
 
     Servo flicker;
     Servo flickerbeam;

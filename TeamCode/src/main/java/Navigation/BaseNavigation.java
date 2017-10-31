@@ -50,6 +50,11 @@ public abstract class BaseNavigation extends LinearOpMode {
         mecanumDrive.set_angle_locked(Initial_orientation);     // to the right of Jewel
     }
 
+    public void flickerTest() {
+        JewelFlicker.LowerBeam();
+        JewelFlicker.RaiseBeam();
+    }
+
     // ====================================================================
     // Jewel Flicker method
     public void flickJewel() {
@@ -61,7 +66,6 @@ public abstract class BaseNavigation extends LinearOpMode {
         telemetry.addData("Red :", Colordistance.getRed());
         telemetry.addData("Blue:", Colordistance.getBlue());
 
-
         if (Colordistance.getDistance_CM() < 10.0) {
             if (isRedAlliance) { // for Red alliance
                 if ((Colordistance.getBlue() - Colordistance.getRed()) > 4) {
@@ -70,7 +74,7 @@ public abstract class BaseNavigation extends LinearOpMode {
                     //JewelFlicker.LeftFlick();
                 } else if ((Colordistance.getRed() - Colordistance.getBlue()) > 4) {
                     telemetry.addData("Flick: ", "Right");
-                    mecanumDrive.set_angle_locked(Initial_orientation - 15.0);
+                    //mecanumDrive.set_angle_locked(Initial_orientation - 15.0);
                     //JewelFlicker.RightFlick();
                 }
             } else {              // for Blue alliance
@@ -80,7 +84,7 @@ public abstract class BaseNavigation extends LinearOpMode {
                     //JewelFlicker.LeftFlick();
                 } else if ((Colordistance.getBlue() - Colordistance.getRed()) > 4) {
                     telemetry.addData("Flick: ", "Right");
-                    mecanumDrive.set_angle_locked(Initial_orientation - 15.0);
+                    //mecanumDrive.set_angle_locked(Initial_orientation - 15.0);
                     //JewelFlicker.RightFlick();
                 }
             }

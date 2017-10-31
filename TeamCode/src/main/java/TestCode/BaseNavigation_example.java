@@ -11,8 +11,9 @@ public class BaseNavigation_example extends BaseNavigation
     @Override
 
     protected void navigate() {
+        //flickerTest();
+        //robotInitial(true,true);       //
 
-        robotInitial(true,true);       //
         flickJewel();                 // for Red alliance
         //offBalancingStone();     //  Red alliance on the left side
     }

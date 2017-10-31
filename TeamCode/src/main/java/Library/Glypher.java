@@ -12,7 +12,9 @@ public class Glypher
     final int TILT_DOWN_ENCODER  =                  0;    // encoder location when the glyper tilt is down
     final int TILT_UP_ENCODER =                     5000; // encoder location when the glypher is up
 
-    Servo Booter;
+    private Servo Booter;
+    private Servo LeftIntake;
+    private Servo RightIntake;
     private DcMotor motorGlypher;
     private DcMotor TiltGlypher;
     private ElapsedTime glypher_runtime = new ElapsedTime();
@@ -23,11 +25,15 @@ public class Glypher
         motorGlypher = hardwareMap.dcMotor.get("GlypherDrive");
         TiltGlypher = hardwareMap.dcMotor.get("GlypherTilter");
         Booter = hardwareMap.get(Servo.class, "ServoBooter");
+        LeftIntake = hardwareMap.get(Servo.class, "ServoLeftIntake");
+        RightIntake = hardwareMap.get(Servo.class, "ServoRightIntake");
 
         motorGlypher.setDirection(DcMotor.Direction.FORWARD);
         //TiltGlypher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         TiltGlypher.setDirection(DcMotor.Direction.FORWARD);
         //TiltGlypher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        StopIntakeLeft();
+        StopIntakeRight();
     }
 
 
@@ -51,6 +57,26 @@ public class Glypher
         lastBooterPosition -= 0.001;
         setBooterPosition();
     }
+    public void LeftIntakeIn() {
+        LeftIntake.setPosition(1.0);
+    }
+    public void RightIntakeIn() {
+        RightIntake.setPosition(0.0);
+    }
+    public void StopIntakeLeft() {
+        LeftIntake.setPosition(0.5);
+    }
+    public void StopIntakeRight() {
+        RightIntake.setPosition(0.5);
+    }
+    public void LeftIntakeOut() {
+        LeftIntake.setPosition(0.0);
+    }
+
+    public void RightIntakeOut() {
+        RightIntake.setPosition(1.0);
+    }
+
     private void setBooterPosition () {
         if (lastBooterPosition > 0.5) { lastBooterPosition = 0.5; }
         if (lastBooterPosition < 0.0) { lastBooterPosition = 0.0; }

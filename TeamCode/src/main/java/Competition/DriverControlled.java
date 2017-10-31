@@ -44,6 +44,21 @@ public class DriverControlled extends LinearOpMode
             } else if (gamepad2.dpad_down) {
                 GlypherObject.BooterSlowRetract();
             }
+            if (gamepad2.left_bumper) {
+                GlypherObject.LeftIntakeIn();
+            }  else if (gamepad2.left_trigger > 0.1) {
+                GlypherObject.LeftIntakeOut();
+            }  else{
+                GlypherObject.StopIntakeLeft();
+            }
+
+            if (gamepad2.right_bumper) {
+                GlypherObject.RightIntakeIn();
+            } else if (gamepad2.right_trigger > 0.1) {
+                GlypherObject.RightIntakeOut();
+            }  else{
+                GlypherObject.StopIntakeRight();
+            }
 
 
             // Driving section -----------------------------------------
