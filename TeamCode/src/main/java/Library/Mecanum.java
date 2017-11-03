@@ -148,6 +148,15 @@ public class Mecanum
         }
     }
 
+    // Run with timer :
+    public void run_Motor_angle_locked_with_Timer(double X_of_robot, double Y_of_robot, double time_sec) {
+        chassis_runtime.reset();
+        while(chassis_runtime.seconds() < time_sec) {
+            run_Motor_angle_locked(X_of_robot,Y_of_robot);
+        }
+        run_Motor_angle_locked(0.0, 0.0);       // motor stop
+    }
+
     // --------------- Set angle within -180 to 180 ---------------------------
     private double setAngleInRange(double angle) {
         while (angle >  180) angle -= 360;

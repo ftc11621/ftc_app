@@ -71,11 +71,9 @@ public abstract class BaseNavigation extends LinearOpMode {
                 if ((Colordistance.getBlue() - Colordistance.getRed()) > 4) {
                     telemetry.addData("Flick: ", "Left");
                     mecanumDrive.set_angle_locked(Initial_orientation + 15.0);
-                    //JewelFlicker.LeftFlick();
                 } else if ((Colordistance.getRed() - Colordistance.getBlue()) > 4) {
                     telemetry.addData("Flick: ", "Right");
-                    //mecanumDrive.set_angle_locked(Initial_orientation - 15.0);
-                    //JewelFlicker.RightFlick();
+                    mecanumDrive.set_angle_locked(Initial_orientation - 15.0);
                 }
             } else {              // for Blue alliance
                 if ((Colordistance.getRed() - Colordistance.getBlue()) > 4) {
@@ -84,8 +82,7 @@ public abstract class BaseNavigation extends LinearOpMode {
                     //JewelFlicker.LeftFlick();
                 } else if ((Colordistance.getBlue() - Colordistance.getRed()) > 4) {
                     telemetry.addData("Flick: ", "Right");
-                    //mecanumDrive.set_angle_locked(Initial_orientation - 15.0);
-                    //JewelFlicker.RightFlick();
+                    mecanumDrive.set_angle_locked(Initial_orientation - 15.0);
                 }
             }
             mecanumDrive.run_Motor_angle_locked(0.0,0.0);   // only spin, no X-Y movement
