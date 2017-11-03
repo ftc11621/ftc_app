@@ -12,7 +12,7 @@ public class BaseNavigation_example extends BaseNavigation
 
     protected void navigate() {
         //flickerTest();
-        //robotInitial(true,true);       //
+        robotInitial(true,true);       //
 
         flickJewel();                 // for Red alliance
         //offBalancingStone();     //  Red alliance on the left side
