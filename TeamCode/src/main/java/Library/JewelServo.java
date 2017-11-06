@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.hardware.ServoControllerEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class JewelServo {
-    final double BEAM_RAISE     = 1.0;
-    final double BEAM_LOWER     = 0.5;
+    final double BEAM_RAISE     = 0.55;
+    final double BEAM_LOWER     = 0.0;
 
     Servo flicker;
     Servo flickerbeam;
@@ -20,18 +20,11 @@ public class JewelServo {
     ElapsedTime flicker_elapsetime = new ElapsedTime();
 
     public JewelServo(HardwareMap hardwareMap) {    // constructor to create object
-        flicker = hardwareMap.get(Servo.class, "JewelServoFlicker");
+        //flicker = hardwareMap.get(Servo.class, "JewelServoFlicker");
         flickerbeam = hardwareMap.get(Servo.class, "JewelServoBeam");
         //flicker.setPosition(0.5);
         flickerbeam.setPosition(BEAM_RAISE); //Initialzation sticker add to bot
     }
-
-
-    public void CenterFlick() {flicker.setPosition(0.5);}
-
-    public void LeftFlick()  { flicker.setPosition(0);}
-
-    public void RightFlick() { flicker.setPosition(1.0); }
 
     // =============== Beam methods ==================
     public void RaiseBeam() {
@@ -49,9 +42,13 @@ public class JewelServo {
             double ns = init_position + nn * step;
             flickerbeam.setPosition(ns);
 
-            while (flicker_elapsetime.milliseconds() < 30 ) {
+            while (flicker_elapsetime.milliseconds() < 20 ) {
             }
         }
+    }
+
+    public void Initial() {
+        flickerbeam.setPosition(BEAM_RAISE); //Initialzation sticker add to bot
     }
 
     // Change the servo angle range

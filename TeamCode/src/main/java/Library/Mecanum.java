@@ -17,11 +17,11 @@ public class Mecanum
     private static final double     WHEELS_SPACING_CM       = 40.8;     // spacing between wheels for turns
     private static final double     SMOOTHING_COEFFICIENT   = 0.1;      // to smooth out power changes, smaller=smoother
 
-    private static final double     YAW_PID_KP                = 0.01;       // PID KP coefficient
-    private static final double     YAW_PID_KI                = 0.00;      // PID KI coefficient
+    private static final double     YAW_PID_KP                = 0.002;       // PID KP coefficient
+    private static final double     YAW_PID_KI                = 0.000;      // PID KI coefficient
     private double                  Yaw_Ki_sum                = 0.0;        // PID KI integration
     private double                  Yaw_locked_angle;                       // angle to lock the robot orientation
-    private double  max_speed                                 = 0.5;
+    private double  max_speed                                 = 0.15;
 
     private IMU IMU_Object = null;
     private double IMU_yaw_offset = 0;
@@ -102,6 +102,8 @@ public class Mecanum
     // --------------------------------------------------------
     public void run_Motor_angle_locked(double X_of_robot, double Y_of_robot ) { // move with locked orientation
 
+        //IMU_Object.measure();   // read angle
+
         double angle_deviation = setAngleInRange(Yaw_locked_angle - getRobotAngle());
 
         Yaw_Ki_sum += angle_deviation * YAW_PID_KI;
@@ -121,6 +123,9 @@ public class Mecanum
     // -----------------------------------------------------------------
     // Drive the robot relative to the driver X-Y instead of the robot X-Y
     public void run_Motor_angle_locked_relative_to_driver(float X_of_Joystick, float Y_of_Joystick) {
+
+        IMU_Object.measure();
+
         // angle difference between the joystick and the robot in radiant
         double mag = Math.sqrt(X_of_Joystick*X_of_Joystick+Y_of_Joystick*Y_of_Joystick);
 
@@ -132,6 +137,8 @@ public class Mecanum
 
     // Drive the robot relative to the driver X-Y instead of the robot X-Y
     public void run_Motor_relative_to_driver(float X_of_Joystick, float Y_of_Joystick) {
+
+        IMU_Object.measure();
         // angle difference between the joystick and the robot in radiant
         double mag = Math.sqrt(X_of_Joystick*X_of_Joystick+Y_of_Joystick*Y_of_Joystick);
 
@@ -141,7 +148,7 @@ public class Mecanum
 
         double angle_deviation = setAngleInRange(Yaw_locked_angle - getRobotAngle());
 
-        if (Math.abs(angle_deviation) < 5.0) {     // if less than 5 degree
+        if (Math.abs(angle_deviation) < 10.0) {     // if less than 10 degree
             run_Motors_no_encoder(ref_X, ref_Y, 0.0);
         } else {
             run_Motor_angle_locked(ref_X, ref_Y);
@@ -150,10 +157,13 @@ public class Mecanum
 
     // Run with timer :
     public void run_Motor_angle_locked_with_Timer(double X_of_robot, double Y_of_robot, double time_sec) {
+
         chassis_runtime.reset();
         while(chassis_runtime.seconds() < time_sec) {
+            IMU_Object.measure();   // read angle
             run_Motor_angle_locked(X_of_robot,Y_of_robot);
         }
+        IMU_Object.measure();   // read angle
         run_Motor_angle_locked(0.0, 0.0);       // motor stop
     }
 

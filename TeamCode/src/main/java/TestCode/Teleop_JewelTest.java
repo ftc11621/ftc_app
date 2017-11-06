@@ -30,9 +30,9 @@ public class Teleop_JewelTest extends LinearOpMode
 
 
             if (Colordistance.getBlue() > 20 && Colordistance.getRed()<15) {
-                JewelFlicker.LeftFlick();
+            //    JewelFlicker.LeftFlick();
             }else if (Colordistance.getRed()>20 && Colordistance.getBlue()<15){
-                JewelFlicker.RightFlick();
+            //    JewelFlicker.RightFlick();
 
 
             }

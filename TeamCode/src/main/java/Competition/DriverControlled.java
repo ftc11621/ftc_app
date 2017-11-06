@@ -6,12 +6,15 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import Archives.Chassis_motors;
 import Library.Glypher;
+import Library.JewelServo;
 import Library.Mecanum;
 
 @TeleOp(name = "Driver Controlled", group = "Competition")
 // @Disabled
 public class DriverControlled extends LinearOpMode
 {
+
+    private JewelServo JewelFlicker = null;
     private Mecanum mecanumDrive = null;
     private Glypher GlypherObject = null;
 
@@ -22,11 +25,14 @@ public class DriverControlled extends LinearOpMode
     {
         mecanumDrive = new Mecanum(hardwareMap);
         GlypherObject = new Glypher(hardwareMap);
+        JewelFlicker = new JewelServo(hardwareMap);
+
 
         mecanumDrive.Start();  // default to start mecanum and its IMU, robot point away from the driver
 
         waitForStart();
 
+        JewelFlicker.Initial();
 
         while(opModeIsActive())
         {
@@ -41,6 +47,7 @@ public class DriverControlled extends LinearOpMode
             }
             if (gamepad2.dpad_up) {
                 GlypherObject.BooterSlowKickOut();
+                GlypherObject.BooterRetract();
             } else if (gamepad2.dpad_down) {
                 GlypherObject.BooterSlowRetract();
             }
@@ -67,24 +74,34 @@ public class DriverControlled extends LinearOpMode
             }
 
             if(is_angle_locked) {   // angle locked to left joystick where it points to
+                //mecanumDrive.set_max_power(0.1);
                 if(gamepad1.dpad_down) {
-                    mecanumDrive.set_max_power(0.15);
+                    mecanumDrive.set_max_power(0.1);
                 } else if(gamepad1.dpad_left) {
-                    mecanumDrive.set_max_power(0.3);
+                    mecanumDrive.set_max_power(0.2);
                 } else if(gamepad1.dpad_up) {
-                    mecanumDrive.set_max_power(0.5);
+                    mecanumDrive.set_max_power(0.3);
                 } else if(gamepad1.dpad_right) {
-                    mecanumDrive.set_max_power(0.7);
+                    mecanumDrive.set_max_power(0.4);
                 }
-                //mecanumDrive.run_Motor_angle_locked_relative_to_driver(gamepad1.right_stick_x, gamepad1.right_stick_y);
 
+
+                if(gamepad1.left_trigger > 0.1) {
+                    mecanumDrive.set_max_power(0.2);
+                    mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()+2*gamepad1.left_trigger);
+                }
+                if(gamepad1.right_trigger > 0.1) {
+                    mecanumDrive.set_max_power(0.2);
+                    mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()-2*gamepad1.right_trigger);
+                }
 
                 if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.5) { // left stick actually points somewhere
                     float angle_lock = (float) Math.toDegrees(Math.atan2((double) gamepad1.left_stick_x, (double) gamepad1.left_stick_y));
                     mecanumDrive.set_angle_locked(angle_lock);
                     mecanumDrive.run_Motor_angle_locked_relative_to_driver(gamepad1.right_stick_x, gamepad1.right_stick_y);
                 } else {
-                    mecanumDrive.run_Motor_relative_to_driver(gamepad1.right_stick_x, gamepad1.right_stick_y);
+
+                    mecanumDrive.run_Motor_relative_to_driver(gamepad1.right_stick_x , gamepad1.right_stick_y );
                 }
             } else {
 

@@ -23,12 +23,12 @@ public abstract class BaseNavigation_archive extends LinearOpMode {
         JewelFlicker = new JewelServo(hardwareMap);
         Colordistance = new REVColorDistance(hardwareMap);
 
-        JewelFlicker.LeftFlick();       // so it doesn't go over 18"
+        //JewelFlicker.LeftFlick();       // so it doesn't go over 18"
 
         waitForStart();
 
         IMU_Object.start();
-        JewelFlicker.CenterFlick();
+        //JewelFlicker.CenterFlick();
 
         navigate();
 
@@ -50,15 +50,15 @@ public abstract class BaseNavigation_archive extends LinearOpMode {
 
         if (isRedAlliance) { // for Red alliance
             if (Colordistance.getBlue() > 20 && Colordistance.getRed() < 15) {
-                JewelFlicker.LeftFlick();
+                //JewelFlicker.LeftFlick();
             } else if (Colordistance.getRed() > 20 && Colordistance.getBlue() < 15) {
-                JewelFlicker.RightFlick();
+                //JewelFlicker.RightFlick();
             }
         } else {              // for Blue alliance
             if (Colordistance.getRed() > 20 && Colordistance.getBlue() < 15) {
-                JewelFlicker.LeftFlick();
+                //JewelFlicker.LeftFlick();
             } else if (Colordistance.getBlue() > 20 && Colordistance.getRed() < 15) {
-                JewelFlicker.RightFlick();
+                //JewelFlicker.RightFlick();
             }
         }
 
