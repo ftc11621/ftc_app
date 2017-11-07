@@ -114,6 +114,25 @@ public abstract class BaseNavigation extends LinearOpMode {
                 }
             }
             mecanumDrive.run_Motor_angle_locked(0.0,0.0);   // only spin, no X-Y movement
+        } else if (JewelFlicker.isJewelDetected) {  // if detected when lowering the beam near jewel
+            if (isRedAlliance) { // for Red alliance
+                if (JewelFlicker.isJewelRed) {
+                    telemetry.addData("Detected, Flick: ", "Right");
+                    Robot_Turn(false);
+                } else {
+                    telemetry.addData("Detected, Flick: ", "Left");
+                    Robot_Turn(true);
+                }
+            } else {              // Blue alliance
+                if (JewelFlicker.isJewelRed) {
+                    telemetry.addData("Detected, Flick: ", "Left");
+                    Robot_Turn(true);
+                } else {
+                    telemetry.addData("Detected Flick: ", "Right");
+                    Robot_Turn(false);
+                }
+            }
+            mecanumDrive.run_Motor_angle_locked(0.0,0.0);   // only spin, no X-Y movement
         }
 
         JewelFlicker.RaiseBeam();
