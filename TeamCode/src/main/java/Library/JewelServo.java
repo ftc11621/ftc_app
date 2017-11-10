@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.hardware.ServoControllerEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class JewelServo {
-    final double BEAM_RAISE     = 0.55;
-    final double BEAM_LOWER     = 0.0;
+    public final double BEAM_RAISE     = 0.33;
+    final double BEAM_LOWER     = 0.85;
 
     public boolean isJewelDetected     = false;
     public boolean isJewelRed          = true;
@@ -53,7 +53,7 @@ public class JewelServo {
                     detectJewel();
                 }
             } else {
-                while (flicker_elapsetime.milliseconds() < 20 ) {
+                while (flicker_elapsetime.milliseconds() < 5 ) {
                 }
             }
         }

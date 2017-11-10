@@ -3,6 +3,9 @@ package Navigation;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import javax.microedition.khronos.opengles.GL;
+
+import Library.Glypher;
 import Library.JewelServo;
 import Library.Mecanum;
 import Library.REVColorDistance;
@@ -12,6 +15,8 @@ public abstract class BaseNavigation extends LinearOpMode {
     private JewelServo JewelFlicker = null;
     private REVColorDistance Colordistance = null;
     private Mecanum mecanumDrive = null;
+    private Glypher GlypherObject = null;
+
     boolean isRedAlliance, isLeftSide;
     ElapsedTime basenavigation_elapsetime = new ElapsedTime();
 
@@ -23,6 +28,7 @@ public abstract class BaseNavigation extends LinearOpMode {
         JewelFlicker = new JewelServo(hardwareMap);
         Colordistance = new REVColorDistance(hardwareMap);
         mecanumDrive = new Mecanum(hardwareMap);
+        GlypherObject = new Glypher(hardwareMap);
 
 
         //JewelFlicker.LeftFlick();       // so it doesn't go over 18"
@@ -56,7 +62,7 @@ public abstract class BaseNavigation extends LinearOpMode {
         mecanumDrive.set_angle_locked(10.0); //Initial_orientation + 15.0);
 
         //while (Math.abs( mecanumDrive.getRobotAngle() - 10.0) > 2.0) {
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 0.5);
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 1.5);
         //}
         mecanumDrive.set_max_power(0);
         mecanumDrive.run_Motor_angle_locked_with_Timer(0.0,0.0,0.05);
@@ -73,7 +79,7 @@ public abstract class BaseNavigation extends LinearOpMode {
         else{
             mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()-15.0); //Initial_orientation - 15.0);
         }
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 0.5);
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 2.5);
         mecanumDrive.set_max_power(0);
         mecanumDrive.run_Motor_angle_locked_with_Timer(0.0,0.0,0.05);
         mecanumDrive.set_angle_locked(Initial_orientation);
@@ -90,7 +96,7 @@ public abstract class BaseNavigation extends LinearOpMode {
         telemetry.addData("Red :", Colordistance.getRed());
         telemetry.addData("Blue:", Colordistance.getBlue());
 
-        if (Colordistance.getDistance_CM() < 10.0) {
+        if (Colordistance.getDistance_CM() < 11.0) {
             if (isRedAlliance) { // for Red alliance
                 if ((Colordistance.getBlue() - Colordistance.getRed()) > 4) {
                     telemetry.addData("Flick: ", "Left");
@@ -135,9 +141,54 @@ public abstract class BaseNavigation extends LinearOpMode {
             mecanumDrive.run_Motor_angle_locked(0.0,0.0);   // only spin, no X-Y movement
         }
 
-        JewelFlicker.RaiseBeam();
+        JewelFlicker.Initial();
 
         mecanumDrive.set_angle_locked(Initial_orientation);
+        mecanumDrive.set_max_power(0.3);
+        if (isRedAlliance) {    // move toward crytobox
+            mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 0.7);
+        } else {
+            mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 0.7);
+        }
+        mecanumDrive.set_max_power(0.0);  // to stop
+        mecanumDrive.run_Motor_angle_locked(0.0,0.0);
+
+        //JewelFlicker.RaiseBeam();
+        JewelFlicker.Initial();
+
+        if (isRedAlliance) {   // to face the crytobox
+            if (isLeftSide) {
+                mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()-90);
+            }
+        } else {
+            if (isLeftSide) {
+                mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()+180);
+            } else {
+                mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()-90);
+            }
+        }
+        //mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()+180);
+        mecanumDrive.set_max_power(0.3);
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0,0,0.7);
+        mecanumDrive.set_max_power(0.0); // to stop
+        mecanumDrive.run_Motor_angle_locked(0.0,0.0);
+
+
+//        mecanumDrive.set_angle_locked(Initial_orientation);
+
+        JewelFlicker.Initial();
+
+        // kick glyph out
+        GlypherObject.BooterKickOut();
+
+        // turn 90 degree and push the glyph in
+        mecanumDrive.set_max_power(0.2);
+        mecanumDrive.set_angle_locked(Initial_orientation+180);
+        mecanumDrive.run_Motor_angle_locked_with_Timer(-1,0,1.0);
+        mecanumDrive.set_max_power(0.0); // to stop
+        mecanumDrive.run_Motor_angle_locked(0.0,0.0);
+
+        //mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 1.0, 2.0);
 
         telemetry.update();
     }
