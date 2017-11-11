@@ -20,7 +20,7 @@ public abstract class BaseNavigation extends LinearOpMode {
     boolean isRedAlliance, isLeftSide;
     ElapsedTime basenavigation_elapsetime = new ElapsedTime();
 
-    final double Initial_orientation = -90.0;   // initial robot orientatian respect to Jewels
+    final double Initial_orientation = 90.0;   // initial robot orientatian respect to Jewels
 
     @Override
     public void runOpMode() {
@@ -64,8 +64,8 @@ public abstract class BaseNavigation extends LinearOpMode {
         //while (Math.abs( mecanumDrive.getRobotAngle() - 10.0) > 2.0) {
         mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 1.5);
         //}
-        mecanumDrive.set_max_power(0);
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0,0.0,0.05);
+        mecanumDrive.stop_Motor_with_locked();
+
         telemetry.update();
         //mecanumDrive.run_Motor_angle_locked(0.0,0.0);
     }
@@ -80,9 +80,8 @@ public abstract class BaseNavigation extends LinearOpMode {
             mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()-15.0); //Initial_orientation - 15.0);
         }
         mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 2.5);
-        mecanumDrive.set_max_power(0);
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0,0.0,0.05);
-        mecanumDrive.set_angle_locked(Initial_orientation);
+        mecanumDrive.stop_Motor_with_locked();
+        //mecanumDrive.set_angle_locked(Initial_orientation);
     }
 
     // ====================================================================
@@ -145,13 +144,19 @@ public abstract class BaseNavigation extends LinearOpMode {
 
         mecanumDrive.set_angle_locked(Initial_orientation);
         mecanumDrive.set_max_power(0.3);
-        if (isRedAlliance) {    // move toward crytobox
+        if (isRedAlliance) {    // move toward
+            if (!isLeftSide) {
+                mecanumDrive.set_angle_locked(Initial_orientation+20);
+            }
             mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 0.7);
         } else {
+            if (isLeftSide) {
+                mecanumDrive.set_angle_locked(Initial_orientation-20);
+            }
             mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 0.7);
         }
-        mecanumDrive.set_max_power(0.0);  // to stop
-        mecanumDrive.run_Motor_angle_locked(0.0,0.0);
+        mecanumDrive.stop_Motor_with_locked();
+        mecanumDrive.set_angle_locked(Initial_orientation);
 
         //JewelFlicker.RaiseBeam();
         JewelFlicker.Initial();
@@ -162,17 +167,15 @@ public abstract class BaseNavigation extends LinearOpMode {
             }
         } else {
             if (isLeftSide) {
-                mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()+180);
+                mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()-180);
             } else {
                 mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()-90);
             }
         }
         //mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()+180);
-        mecanumDrive.set_max_power(0.3);
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0,0,0.7);
-        mecanumDrive.set_max_power(0.0); // to stop
-        mecanumDrive.run_Motor_angle_locked(0.0,0.0);
-
+        mecanumDrive.set_max_power(0.2);
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0,0,1.0);
+        mecanumDrive.stop_Motor_with_locked();
 
 //        mecanumDrive.set_angle_locked(Initial_orientation);
 
@@ -180,13 +183,15 @@ public abstract class BaseNavigation extends LinearOpMode {
 
         // kick glyph out
         GlypherObject.BooterKickOut();
+        mecanumDrive.set_max_power(0.2);
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0,-1,0.5); // move back a little
+        mecanumDrive.stop_Motor_with_locked();
 
         // turn 90 degree and push the glyph in
         mecanumDrive.set_max_power(0.2);
-        mecanumDrive.set_angle_locked(Initial_orientation+180);
-        mecanumDrive.run_Motor_angle_locked_with_Timer(-1,0,1.0);
-        mecanumDrive.set_max_power(0.0); // to stop
-        mecanumDrive.run_Motor_angle_locked(0.0,0.0);
+        mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()-90);
+        mecanumDrive.run_Motor_angle_locked_with_Timer(-1,0,1.0); // hit glyph from the side
+        mecanumDrive.stop_Motor_with_locked();
 
         //mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 1.0, 2.0);
 

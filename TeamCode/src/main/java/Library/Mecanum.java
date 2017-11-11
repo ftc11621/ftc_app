@@ -167,6 +167,11 @@ public class Mecanum
         run_Motor_angle_locked(0.0, 0.0);       // motor stop
     }
 
+    public void stop_Motor_with_locked() {
+        set_max_power(0.0);
+        run_Motor_angle_locked(0.0,0.0);
+    }
+
     // --------------- Set angle within -180 to 180 ---------------------------
     private double setAngleInRange(double angle) {
         while (angle >  180) angle -= 360;
