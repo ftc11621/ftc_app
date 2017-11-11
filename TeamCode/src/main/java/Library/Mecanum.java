@@ -156,16 +156,18 @@ public class Mecanum
     }
 
     // Run with timer :
-    public void run_Motor_angle_locked_with_Timer(double X_of_robot, double Y_of_robot, double time_sec) {
+    public void run_Motor_angle_locked_with_Timer(double X_of_robot, double Y_of_robot, double time_sec, double power) {
 
         chassis_runtime.reset();
+        max_speed = power;
         while(chassis_runtime.seconds() < time_sec) {
             IMU_Object.measure();   // read angle
             run_Motor_angle_locked(X_of_robot,Y_of_robot);
         }
         IMU_Object.measure();   // read angle
-        run_Motor_angle_locked(0.0, 0.0);       // motor stop
+        stop_Motor_with_locked();
     }
+
 
     public void stop_Motor_with_locked() {
         set_max_power(0.0);
