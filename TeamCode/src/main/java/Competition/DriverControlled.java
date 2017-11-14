@@ -30,9 +30,11 @@ public class DriverControlled extends LinearOpMode
 
         mecanumDrive.Start();  // default to start mecanum and its IMU, robot point away from the driver
 
+        JewelFlicker.Initial();
+
         waitForStart();
 
-        JewelFlicker.Initial();
+
 
         while(opModeIsActive())
         {
@@ -45,6 +47,7 @@ public class DriverControlled extends LinearOpMode
             } else if (gamepad2.a) {
                 GlypherObject.BooterRetract();
             }
+            /*
             if (gamepad2.dpad_up) {
                 GlypherObject.BooterSlowKickOut();
                 GlypherObject.BooterRetract();
@@ -53,8 +56,12 @@ public class DriverControlled extends LinearOpMode
             }
             if (gamepad2.left_bumper) {
                 GlypherObject.LeftIntakeIn();
-            }  else if (gamepad2.left_trigger > 0.1) {
-                GlypherObject.LeftIntakeOut();
+                */
+            if (gamepad2.left_trigger > 0.1) {
+                GlypherObject.BooterKickOut();
+                GlypherObject.BooterRetract();
+            }
+            /*
             }  else{
                 GlypherObject.StopIntakeLeft();
             }
@@ -66,7 +73,7 @@ public class DriverControlled extends LinearOpMode
             }  else{
                 GlypherObject.StopIntakeRight();
             }
-
+*/
 
             // Driving section -----------------------------------------
             if (gamepad1.b) {  // unlock robot orientation from left joystick. Do this before gamepad1.x below
@@ -86,13 +93,13 @@ public class DriverControlled extends LinearOpMode
                 }
 
 
-                if(gamepad1.left_trigger > 0.1) {
+                if(gamepad1.left_trigger > 0.8) {
                     mecanumDrive.set_max_power(0.2);
-                    mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()+2*gamepad1.left_trigger);
+                    mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()+2);
                 }
-                if(gamepad1.right_trigger > 0.1) {
+                if(gamepad1.right_trigger > 0.8) {
                     mecanumDrive.set_max_power(0.2);
-                    mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()-2*gamepad1.right_trigger);
+                    mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()-2);
                 }
 
                 if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.5) { // left stick actually points somewhere
