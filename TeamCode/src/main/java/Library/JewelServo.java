@@ -60,6 +60,7 @@ public class JewelServo {
     }
 
     public void detectJewel() {
+        Colordistance.measure();
         if (Colordistance.getDistance_CM() < 11.0) {
             if ((Colordistance.getBlue() - Colordistance.getRed()) > 4) {
                 isJewelDetected = true;

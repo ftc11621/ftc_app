@@ -65,9 +65,10 @@ public class IMU    {
 
     // State used for updating telemetry
     private Orientation angles;
-    private double yaw_initial, roll_initial, pitch_initial;
+    //private double yaw_initial, roll_initial, pitch_initial;
     private Acceleration gravity;
     public double gravity_x, gravity_y, gravity_z;
+    private double yaw_value;
 
     private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -75,7 +76,7 @@ public class IMU    {
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
+        parameters.loggingEnabled      = false; //  true;
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
@@ -86,16 +87,14 @@ public class IMU    {
     }
 
     public void start ()  {  // Start the logging of measured acceleration
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+        imu.startAccelerationIntegration(new Position(), new Velocity(), 20);
         measure();           // get initial angles as the reference
-        //yaw_initial = get_yaw();
-        //roll_initial = get_roll();
-        //pitch_initial = get_pitch();
     }
 
 
     public void measure () {   // measure angles
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        yaw_value = AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle));
     }
     public void getGravity() {
         gravity  = imu.getGravity();
@@ -104,7 +103,8 @@ public class IMU    {
         gravity_z = gravity.zAccel*gravity.zAccel;
     }
     public double yaw() {   // yaw, positive counterclockwise -180 to 180
-        return AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle));
+        return yaw_value;
+        //return AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle));
     }
     public double roll() {   // positive when fall back
         return AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.secondAngle));
@@ -112,13 +112,4 @@ public class IMU    {
     public double pitch() {   // positive tilt to the right
         return AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.thirdAngle));
     }
-    //public double yaw() {
-    //    return get_yaw() - yaw_initial;
-    //}
-    //public double roll() {
-    //    return get_roll() - roll_initial;
-    //}
-    //public double pitch() {
-    //    return get_pitch() - pitch_initial;
-    //}
 }
