@@ -15,12 +15,13 @@ public class Red_Right_Side extends BaseNavigation
         robotInitial(true,false);
 
         flickJewel();
-
+/*
         Robot_Forward(0.7,0.3,20); // to crytobox
 
         Robot_Turn(1.0, 0.2, 0); // turn toward crytobox
 
         Robot_Glyph_Deposit();  // to deposit glyph
+        */
     }
 
 }

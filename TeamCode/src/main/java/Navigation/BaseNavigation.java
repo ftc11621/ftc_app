@@ -30,13 +30,9 @@ public abstract class BaseNavigation extends LinearOpMode {
         mecanumDrive = new Mecanum(hardwareMap);
         GlypherObject = new Glypher(hardwareMap);
 
-
-        //JewelFlicker.LeftFlick();       // so it doesn't go over 18"
-
         waitForStart();
 
         mecanumDrive.Start();
-        //JewelFlicker.CenterFlick();
 
         navigate();
 
@@ -113,77 +109,10 @@ public abstract class BaseNavigation extends LinearOpMode {
     // ====================================================================
     // Jewel Flicker method
     public void flickJewel() {
-
-        double turn_power = 0.2;
-        double turn_time_sec = 2.5;
-        double turn_angle = 15.0;
-
-        JewelFlicker.LowerBeam();
-
-        Colordistance.measure();
-
-        telemetry.addData("Red :", Colordistance.getRed());
-        telemetry.addData("Blue:", Colordistance.getBlue());
-
-        if (Colordistance.getDistance_CM() < 11.0) {
-            if (isRedAlliance) { // for Red alliance
-                if ((Colordistance.getBlue() - Colordistance.getRed()) > 4) {
-                    telemetry.addData("Flick: ", "Left");
-                    Robot_Turn(turn_time_sec, turn_power, turn_angle);
-                    //mecanumDrive.set_angle_locked(Initial_orientation + 15.0);
-                } else if ((Colordistance.getRed() - Colordistance.getBlue()) > 4) {
-                    telemetry.addData("Flick: ", "Right");
-                    Robot_Turn(turn_time_sec, turn_power, -1 * turn_angle);
-                    //mecanumDrive.set_angle_locked(Initial_orientation - 15.0);
-                }
-            } else {              // for Blue alliance
-                if ((Colordistance.getRed() - Colordistance.getBlue()) > 4) {
-                    telemetry.addData("Flick: ", "Left");
-                    //mecanumDrive.set_angle_locked(Initial_orientation + 15.0);
-//                    Robot_Turn(true);
-                    Robot_Turn(turn_time_sec, turn_power, turn_angle);
-
-                    //JewelFlicker.LeftFlick();
-                } else if ((Colordistance.getBlue() - Colordistance.getRed()) > 4) {
-                    telemetry.addData("Flick: ", "Right");
-//                    Robot_Turn(false);
-                    Robot_Turn(turn_time_sec, turn_power, -1 * turn_angle);
-
-                    //mecanumDrive.set_angle_locked(Initial_orientation - 15.0);
-                }
-            }
-            //        mecanumDrive.run_Motor_angle_locked(0.0,0.0);   // only spin, no X-Y movement
-        } else if (JewelFlicker.isJewelDetected) {  // if detected when lowering the beam near jewel
-            if (isRedAlliance) { // for Red alliance
-                if (JewelFlicker.isJewelRed) {
-                    telemetry.addData("Detected, Flick: ", "Right");
-//                    Robot_Turn(false);
-                    Robot_Turn(turn_time_sec, turn_power, -1 * turn_angle);
-
-                } else {
-                    telemetry.addData("Detected, Flick: ", "Left");
-//                    Robot_Turn(true);
-                    Robot_Turn(turn_time_sec, turn_power, turn_angle);
-
-                }
-            } else {              // Blue alliance
-                if (JewelFlicker.isJewelRed) {
-                    telemetry.addData("Detected, Flick: ", "Left");
-//                    Robot_Turn(true);
-                    Robot_Turn(turn_time_sec, turn_power, turn_angle);
-
-                } else {
-                    telemetry.addData("Detected Flick: ", "Right");
-//                    Robot_Turn(false);
-                    Robot_Turn(turn_time_sec, turn_power, -1 * turn_angle);
-
-                }
-            }
-            //          mecanumDrive.run_Motor_angle_locked(0.0,0.0);   // only spin, no X-Y movement
-        }
-
         JewelFlicker.Initial();
-
+        JewelFlicker.flickJewel(isRedAlliance);
+        telemetry.addData("Red value : ", JewelFlicker.readRed);
+        telemetry.addData("Blue value: ", JewelFlicker.readBlue);
         telemetry.update();
     }
 

@@ -39,7 +39,9 @@ public class TeleopV1_vuforia extends LinearOpMode
 
                 double signofX = Math.signum(vuforia_test.getOrientation());
 
-                telemetry.addData("45-degree X (inch): ", formatDouble((vuforia_test.getY() + signofX * vuforia_test.getX())*cos45degree / 25.4));
+//                telemetry.addData("45-degree X (inch): ", formatDouble((vuforia_test.getY() + signofX * vuforia_test.getX())*cos45degree / 25.4));
+//                telemetry.addData("45-degree Y (inch): ", formatDouble((vuforia_test.getY() - signofX * vuforia_test.getX())*cos45degree / 25.4));
+                telemetry.addData("45-degree X (inch): ", formatDouble(signofX*(vuforia_test.getY() + signofX * vuforia_test.getX())*cos45degree / 25.4));
                 telemetry.addData("45-degree Y (inch): ", formatDouble((vuforia_test.getY() - signofX * vuforia_test.getX())*cos45degree / 25.4));
 
 

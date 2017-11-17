@@ -7,7 +7,7 @@ import Library.JewelServo;
 import Library.REVColorDistance;
 
 
-@TeleOp(name = "JewelFlickerTest", group = "TestCode")
+@TeleOp(name = "Test Flicker Red Alliance", group = "TestCode")
 public class Teleop_JewelTest extends LinearOpMode
 {
     private JewelServo JewelFlicker = null;
@@ -16,16 +16,14 @@ public class Teleop_JewelTest extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         JewelFlicker = new JewelServo(hardwareMap);
-        Colordistance = new REVColorDistance(hardwareMap);
 
         waitForStart();
 
-        //JewelFlicker.CenterFlick();
-
-        JewelFlicker.LowerBeam();
+        JewelFlicker.flickJewel(true);
 
         while(opModeIsActive())
         {
+            /*
             Colordistance.measure();
 
 
@@ -36,9 +34,10 @@ public class Teleop_JewelTest extends LinearOpMode
 
 
             }
+            */
             idle();
         }
-        JewelFlicker.RaiseBeam();
+        //JewelFlicker.RaiseBeam();
     }
 
 }

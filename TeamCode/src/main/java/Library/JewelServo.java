@@ -1,9 +1,6 @@
 package Library;
 
-//import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.lang.Thread;
-
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -11,27 +8,31 @@ import com.qualcomm.robotcore.hardware.ServoControllerEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class JewelServo {
-    public final double BEAM_RAISE     = 0.33;
+    final double BEAM_RAISE     = 0.33;
     final double BEAM_LOWER     = 0.85;
 
-    public boolean isJewelDetected     = false;
-    public boolean isJewelRed          = true;
+    private boolean isJewelDetected     = false;
+    private boolean isJewelRed          = true;
+    public int  readRed, readBlue;
 
-    Servo flickerbeam;
+    private Servo flickerbeam;
     private REVColorDistance Colordistance = null;
+    private Mecanum mecanumDrive = null;
+
     ElapsedTime flicker_elapsetime = new ElapsedTime();
 
     public JewelServo(HardwareMap hardwareMap) {    // constructor to create object
         flickerbeam = hardwareMap.get(Servo.class, "JewelServoBeam");
         Colordistance = new REVColorDistance(hardwareMap);
+        mecanumDrive = new Mecanum(hardwareMap);
         flickerbeam.setPosition(BEAM_RAISE); //Initialzation sticker add to bot
     }
 
     // =============== Beam methods ==================
-    public void RaiseBeam() {
+    private void RaiseBeam() {
         RotateBeam(BEAM_LOWER, BEAM_RAISE);
     }
-    public void LowerBeam(){
+    private void LowerBeam(){
         RotateBeam(BEAM_RAISE, BEAM_LOWER);
     }
 
@@ -43,8 +44,6 @@ public class JewelServo {
             flicker_elapsetime.reset();
             double ns = init_position + nn * step;
             flickerbeam.setPosition(ns);
-
-
 
             if (final_location < init_position) { // lowering the beam
                 while (flicker_elapsetime.milliseconds() < 30 ) {
@@ -59,21 +58,10 @@ public class JewelServo {
         }
     }
 
-    public void detectJewel() {
-        Colordistance.measure();
-        if (Colordistance.getDistance_CM() < 11.0) {
-            if ((Colordistance.getBlue() - Colordistance.getRed()) > 4) {
-                isJewelDetected = true;
-                isJewelRed = false;
-            } else if ((Colordistance.getRed() - Colordistance.getBlue()) > 4) {
-                isJewelDetected = true;
-                isJewelRed = true;
-            }
-        }
-    }
-
     public void Initial() {
         flickerbeam.setPosition(BEAM_RAISE); //Initialzation sticker add to bot
+        mecanumDrive.setCurrentAngle(0.0);
+        mecanumDrive.set_angle_locked(0.0);
     }
 
     // Change the servo angle range
@@ -87,4 +75,57 @@ public class JewelServo {
     }
 
 
-} // End of run_Motors_encoder_CM ====
+
+    // ====================================
+    public void flickJewel(boolean isRedAlliance) {
+
+        double turn_power = 0.2;
+        double turn_time_sec = 2.5;
+        double turn_angle = 15.0;
+
+        LowerBeam();
+
+        detectJewel();
+
+        if(isJewelDetected) {
+            if (isRedAlliance) { // for Red alliance
+                if (isJewelRed) {
+                    Robot_Turn(turn_time_sec, turn_power, -1.0 * turn_angle);
+                } else {
+                    Robot_Turn(turn_time_sec, turn_power, turn_angle);
+                }
+            } else {              // Blue alliance
+                if (isJewelRed) {
+                    Robot_Turn(turn_time_sec, turn_power, turn_angle);
+                } else {
+                    Robot_Turn(turn_time_sec, turn_power, -1.0 * turn_angle);
+                }
+            }
+        }
+
+        Initial();
+    }
+
+    private void detectJewel() {
+        Colordistance.measure();
+        readRed = Colordistance.getRed();
+        readBlue = Colordistance.getBlue();
+
+        if (Colordistance.getDistance_CM() < 11.0) {
+            if ((readBlue - readRed) >= 4) {
+                isJewelDetected = true;
+                isJewelRed = false;
+            } else if ((readRed - readBlue) >= 4) {
+                isJewelDetected = true;
+                isJewelRed = true;
+            }
+        }
+    }
+
+    // ================ Robot Turn ============
+    private void Robot_Turn(double time_sec, double power, double angle) {
+        mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle() + angle); //Initial_orientation + 15.0);
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, time_sec, power);
+    }
+
+}

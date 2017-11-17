@@ -40,6 +40,7 @@ public abstract class BaseNavigation_archive extends LinearOpMode {
 
     protected abstract void navigate();
 
+    /*
     // ====================================================================
     // Jewel Flicker method
     public void flickJewel(boolean isRedAlliance) {
@@ -65,7 +66,7 @@ public abstract class BaseNavigation_archive extends LinearOpMode {
         JewelFlicker.RaiseBeam();
     }
     // ====================================================================
-
+*/
     // to overwrite the current location
     public void setCurrentLocation(double X_loc_cm, double Y_loc_cm, double Angle_degree) {
         IMU_Object.measure();
