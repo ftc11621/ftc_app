@@ -1,6 +1,7 @@
 package Library;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -17,11 +18,14 @@ public class Mecanum
     private static final double     WHEELS_SPACING_CM       = 40.8;     // spacing between wheels for turns
     private static final double     SMOOTHING_COEFFICIENT   = 0.1;      // to smooth out power changes, smaller=smoother
 
-    private static final double     YAW_PID_KP                = 0.002;       // PID KP coefficient
-    private static final double     YAW_PID_KI                = 0.000;      // PID KI coefficient
+    private static final double     YAW_PID_KP                = 0.003;       // PID KP coefficient
+    private static final double     YAW_PID_KI                = 0.00001;      // PID KI coefficient
+    private static final double     YAW_PID_KD                = 0.0001;       // PID KD coefficient
     private double                  Yaw_Ki_sum                = 0.0;        // PID KI integration
     private double                  Yaw_locked_angle;                       // angle to lock the robot orientation
-    private double  max_speed                                 = 0.15;
+    private double  max_speed                                 = 0.1;
+
+    private double  angle_tolerance                           = 3;
 
     private IMU IMU_Object = null;
     private double IMU_yaw_offset = 0;
@@ -41,10 +45,15 @@ public class Mecanum
         motorRR = hardwareMap.dcMotor.get("RRDrive");
         motorRR.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //also works when encoder is not used
 
-        motorLF.setDirection(DcMotor.Direction.REVERSE);
-        motorRF.setDirection(DcMotor.Direction.FORWARD);
-        motorLR.setDirection(DcMotor.Direction.REVERSE);
-        motorRR.setDirection(DcMotor.Direction.FORWARD);
+        //motorLF.setDirection(DcMotor.Direction.REVERSE);
+        //motorRF.setDirection(DcMotor.Direction.FORWARD);
+        //motorLR.setDirection(DcMotor.Direction.REVERSE);
+        //motorRR.setDirection(DcMotor.Direction.FORWARD);
+        // Neverest is the opposite
+        motorLF.setDirection(DcMotor.Direction.FORWARD);
+        motorRF.setDirection(DcMotor.Direction.REVERSE);
+        motorLR.setDirection(DcMotor.Direction.FORWARD);
+        motorRR.setDirection(DcMotor.Direction.REVERSE);
 
         IMU_Object = new IMU(hardwareMap);
     }
@@ -57,10 +66,10 @@ public class Mecanum
         max_speed = max_power;
     }
 
-    public double IMU_getAngle() {
-        IMU_Object.measure();
-        return IMU_Object.yaw();
-    }
+    //public double IMU_getAngle() {
+    //    IMU_Object.measure();
+    //    return IMU_Object.yaw();
+    //}
 
     // --------------------------------------------------------------------
     public double getRobotAngle() {
@@ -84,7 +93,8 @@ public class Mecanum
 
     // ----------------------------------------------------
     public void setCurrentAngle(double setAngle) {  // set the robot orientation to a known angle
-        IMU_yaw_offset = setAngleInRange( setAngle - IMU_getAngle());
+        IMU_Object.measure();
+        IMU_yaw_offset = setAngleInRange( setAngle - IMU_Object.yaw());
     }
 
     // ------------------------------------------------------
@@ -102,7 +112,7 @@ public class Mecanum
     // --------------------------------------------------------
     public void run_Motor_angle_locked(double X_of_robot, double Y_of_robot ) { // move with locked orientation
 
-        //IMU_Object.measure();   // read angle
+        IMU_Object.measure();   // read angle
 
         double angle_deviation = setAngleInRange(Yaw_locked_angle - getRobotAngle());
 
@@ -124,7 +134,7 @@ public class Mecanum
     // Drive the robot relative to the driver X-Y instead of the robot X-Y
     public void run_Motor_angle_locked_relative_to_driver(float X_of_Joystick, float Y_of_Joystick) {
 
-        IMU_Object.measure();
+        //IMU_Object.measure();
 
         // angle difference between the joystick and the robot in radiant
         double mag = Math.sqrt(X_of_Joystick*X_of_Joystick+Y_of_Joystick*Y_of_Joystick);
@@ -138,7 +148,7 @@ public class Mecanum
     // Drive the robot relative to the driver X-Y instead of the robot X-Y
     public void run_Motor_relative_to_driver(float X_of_Joystick, float Y_of_Joystick) {
 
-        IMU_Object.measure();
+        //IMU_Object.measure();
         // angle difference between the joystick and the robot in radiant
         double mag = Math.sqrt(X_of_Joystick*X_of_Joystick+Y_of_Joystick*Y_of_Joystick);
 
@@ -148,11 +158,16 @@ public class Mecanum
 
         double angle_deviation = setAngleInRange(Yaw_locked_angle - getRobotAngle());
 
-        if (Math.abs(angle_deviation) < 10.0) {     // if less than 10 degree
+        if (Math.abs(angle_deviation) < angle_tolerance) {     // if less than 10 degree
+            IMU_Object.measure();
             run_Motors_no_encoder(ref_X, ref_Y, 0.0);
         } else {
             run_Motor_angle_locked(ref_X, ref_Y);
         }
+    }
+
+    public void set_Angle_tolerance (double new_tol_angle) {
+        angle_tolerance = new_tol_angle;
     }
 
     // Run with timer :
@@ -161,10 +176,10 @@ public class Mecanum
         chassis_runtime.reset();
         max_speed = power;
         while(chassis_runtime.seconds() < time_sec) {
-            IMU_Object.measure();   // read angle
+            //IMU_Object.measure();   // read angle
             run_Motor_angle_locked(X_of_robot,Y_of_robot);
         }
-        IMU_Object.measure();   // read angle
+        //IMU_Object.measure();   // read angle
         stop_Motor_with_locked();
     }
 
