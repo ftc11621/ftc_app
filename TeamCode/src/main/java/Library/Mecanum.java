@@ -25,7 +25,7 @@ public class Mecanum
     private double                  Yaw_locked_angle;                       // angle to lock the robot orientation
     private double  max_speed                                 = 0.1;
 
-    private double  angle_tolerance                           = 3;
+    private double  angle_tolerance                           = 10;
 
     private IMU IMU_Object = null;
     private double IMU_yaw_offset = 0;

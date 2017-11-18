@@ -57,8 +57,9 @@ public class DriverControlled extends LinearOpMode
             if (gamepad2.left_bumper) {
                 GlypherObject.LeftIntakeIn();
                 */
-            if (gamepad2.left_trigger > 0.1) {
+            if (gamepad2.left_trigger > 0.5) {
                 GlypherObject.BooterKickOut();
+            }else{
                 GlypherObject.BooterRetract();
             }
             /*
@@ -83,13 +84,13 @@ public class DriverControlled extends LinearOpMode
             if(is_angle_locked) {   // angle locked to left joystick where it points to
                 //mecanumDrive.set_max_power(0.1);
                 if(gamepad1.dpad_down) {
-                    mecanumDrive.set_max_power(0.1);
+                    mecanumDrive.set_max_power(0.05);
                 } else if(gamepad1.dpad_left) {
-                    mecanumDrive.set_max_power(0.2);
+                    mecanumDrive.set_max_power(0.1);
                 } else if(gamepad1.dpad_up) {
-                    mecanumDrive.set_max_power(0.3);
+                    mecanumDrive.set_max_power(0.2);
                 } else if(gamepad1.dpad_right) {
-                    mecanumDrive.set_max_power(0.4);
+                    mecanumDrive.set_max_power(0.3);
                 }
 
 
@@ -107,7 +108,7 @@ public class DriverControlled extends LinearOpMode
                     mecanumDrive.set_angle_locked(angle_lock);
                     mecanumDrive.run_Motor_angle_locked_relative_to_driver(gamepad1.right_stick_x, gamepad1.right_stick_y);
                 } else {
-
+                    telemetry.addData("Robot angle:", mecanumDrive.getRobotAngle());
                     mecanumDrive.run_Motor_relative_to_driver(gamepad1.right_stick_x , gamepad1.right_stick_y );
                 }
             } else {
@@ -134,8 +135,8 @@ public class DriverControlled extends LinearOpMode
 
 
             telemetry.addData("Locked angle  :", mecanumDrive.get_locked_angle());
-            telemetry.addData("IMU angle  :", mecanumDrive.IMU_getAngle());
-            telemetry.addData("Robot angle:", mecanumDrive.getRobotAngle());
+            //telemetry.addData("IMU angle  :", mecanumDrive.IMU_getAngle());
+
             if (is_angle_locked) {
                 telemetry.addData("Angle Lock: ", "Yes");
             } else {
