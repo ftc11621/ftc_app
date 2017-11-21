@@ -109,6 +109,7 @@ public class DriverControlled extends LinearOpMode
                     mecanumDrive.run_Motor_angle_locked_relative_to_driver(gamepad1.right_stick_x, gamepad1.right_stick_y);
                 } else {
                     telemetry.addData("Robot angle:", mecanumDrive.getRobotAngle());
+                    telemetry.addData("Angular velocity  :", mecanumDrive.get_angular_velocity());
                     mecanumDrive.run_Motor_relative_to_driver(gamepad1.right_stick_x , gamepad1.right_stick_y );
                 }
             } else {
@@ -134,14 +135,12 @@ public class DriverControlled extends LinearOpMode
 
 
 
-            telemetry.addData("Locked angle  :", mecanumDrive.get_locked_angle());
-            //telemetry.addData("IMU angle  :", mecanumDrive.IMU_getAngle());
-
-            if (is_angle_locked) {
-                telemetry.addData("Angle Lock: ", "Yes");
-            } else {
-                telemetry.addData("Angle Lock: ", "No");
-            }
+            //telemetry.addData("Locked angle  :", mecanumDrive.get_locked_angle());
+            //if (is_angle_locked) {
+            //    telemetry.addData("Angle Lock: ", "Yes");
+            //} else {
+            //    telemetry.addData("Angle Lock: ", "No");
+            //}
             telemetry.update();
 
             idle();

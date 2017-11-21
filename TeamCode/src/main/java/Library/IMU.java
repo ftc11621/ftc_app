@@ -37,6 +37,7 @@ public class IMU    {
     private Acceleration gravity;
     public double gravity_x, gravity_y, gravity_z;
     private double yaw_value;
+    protected float angular_velocity;
 
     private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -61,6 +62,7 @@ public class IMU    {
 
 
     public void measure () {   // measure angles
+        angular_velocity = imu.getAngularVelocity().zRotationRate;
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         yaw_value = AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle));
     }

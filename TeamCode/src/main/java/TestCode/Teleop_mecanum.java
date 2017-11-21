@@ -1,5 +1,6 @@
 package TestCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -7,6 +8,7 @@ import Library.JewelServo;
 import Library.Mecanum;
 
 @TeleOp(name = "Mecanum Drive test", group = "TestCode")
+@Disabled
 public class Teleop_mecanum extends LinearOpMode
 {
     private Mecanum mecanumDrive = null;
@@ -69,7 +71,7 @@ public class Teleop_mecanum extends LinearOpMode
 
 
             telemetry.addData("Locked angle  :", mecanumDrive.get_locked_angle());
-            telemetry.addData("IMU angle  :", mecanumDrive.IMU_getAngle());
+            //telemetry.addData("IMU angle  :", mecanumDrive.IMU_getAngle());
             telemetry.addData("Robot angle:", mecanumDrive.getRobotAngle());
             if (is_angle_locked) {
                 telemetry.addData("Angle Lock: ", "Yes");
