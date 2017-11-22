@@ -20,7 +20,7 @@ public abstract class BaseNavigation extends LinearOpMode {
     boolean isRedAlliance, isLeftSide;
     ElapsedTime basenavigation_elapsetime = new ElapsedTime();
 
-    final double Initial_orientation = 90.0;   // initial robot orientatian respect to Jewels
+    final double Initial_orientation = 0.0;   // initial robot orientatian respect to Jewels
 
     @Override
     public void runOpMode() {
@@ -50,16 +50,26 @@ public abstract class BaseNavigation extends LinearOpMode {
         isLeftSide = isLeft;
         mecanumDrive.setCurrentAngle(Initial_orientation);
         mecanumDrive.set_angle_locked(Initial_orientation);     // to the right of Jewel
+        mecanumDrive.set_Angle_tolerance(3.0);
     }
 
     public void NavigationTest() {
-        telemetry.addData("angle:", mecanumDrive.get_locked_angle());
-        mecanumDrive.set_angle_locked(10.0); //Initial_orientation + 15.0);
+        mecanumDrive.set_Angle_tolerance(1.0);
+        telemetry.addData("angle 0:", mecanumDrive.getRobotAngle());
+        mecanumDrive.set_angle_locked(90.0); //Initial_orientation + 15.0);
 
         //while (Math.abs( mecanumDrive.getRobotAngle() - 10.0) > 2.0) {
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 1.5, 0.2);
-        //}
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 5.0, 0.4);
         mecanumDrive.stop_Motor_with_locked();
+        telemetry.addData("angle 1:", mecanumDrive.getRobotAngle());
+
+        // pause 3 seconds
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 2.0, 0.0);
+
+        mecanumDrive.set_angle_locked(180.0); //Initial_orientation + 15.0);
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 5.0, 0.4);
+        mecanumDrive.stop_Motor_with_locked();
+        telemetry.addData("angle 2:", mecanumDrive.getRobotAngle());
 
         telemetry.update();
         //mecanumDrive.run_Motor_angle_locked(0.0,0.0);
@@ -67,43 +77,50 @@ public abstract class BaseNavigation extends LinearOpMode {
 
     // ================ Robot Turn ============
     public void Robot_Turn(double time_sec, double power, double angle) {
-        //telemetry.addData("angle:", mecanumDrive.get_locked_angle());
-        //mecanumDrive.set_max_power(0.2);
-        mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle() + angle); //Initial_orientation + 15.0);
 
-        //if (isLeftTurn){
-        //    mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()+15.0); //Initial_orientation + 15.0);
-        //}
-        //else{
-        //    mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()-15.0); //Initial_orientation - 15.0);
-        //}
+        mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle() + angle); //Initial_orientation + 15.0);
         mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, time_sec, power);
-        //mecanumDrive.stop_Motor_with_locked();
-        //mecanumDrive.set_angle_locked(Initial_orientation);
     }
 
     public void Robot_Forward(double time_sec, double power, double angle) {
-        mecanumDrive.set_angle_locked(Initial_orientation);
-        mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle() + angle); //Initial_orientation + 15.0);
+        //mecanumDrive.set_angle_locked(Initial_orientation);
+        mecanumDrive.set_angle_locked(Initial_orientation + angle); //Initial_orientation + 15.0);
         mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 1.0, time_sec, power);
     }
 
-    public void Robot_Reverse(double time_sec, double power, double angle) {
-        mecanumDrive.set_angle_locked(Initial_orientation);
-        mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle() + angle); //Initial_orientation + 15.0);
+    public void Robot_Reverse(double time_sec, double power, double setangle) {
+        //mecanumDrive.set_angle_locked(Initial_orientation);
+        //telemetry.addData("angle", mecanumDrive.IMU_getAngle());
+        telemetry.addData("set angle", setangle);
+        telemetry.addData("locked angle", Initial_orientation);
+        mecanumDrive.set_angle_locked(Initial_orientation + setangle); //Initial_orientation + 15.0);
+        telemetry.addData("new angle", mecanumDrive.get_locked_angle());
+
         mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, -1.0, time_sec, power);
+        //telemetry.addData("new angle", mecanumDrive.IMU_getAngle());
+        telemetry.update();
     }
 
     public void Robot_Glyph_Deposit() {
         // kick glyph out
         GlypherObject.RunGlypherMotor(-1); // bring down glyph
-        //mecanumDrive.set_max_power(0.2);
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 1.5, 0.2); // move back a little
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 1.0, 0.0); // wait for glyph to go down
+
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 0.5, 0.1); // move back a little
         GlypherObject.RunGlypherMotor(0);
 
-        mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle() - 90);
-        mecanumDrive.run_Motor_angle_locked_with_Timer(-1, 0, 2.0, 0.2); // hit glyph from the side
+        Robot_Turn( 2, .2, 45);
 
+        Robot_Turn( 2, .2, 45);
+
+        mecanumDrive.run_Motor_angle_locked_with_Timer(-1, 0, 1.5, 0.1); // hit glyph from the side
+
+        //mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 1.5, 0.1); // hit glyph from the side
+
+    }
+
+    public void Reset_locked_angle() {
+        mecanumDrive.set_angle_locked(Initial_orientation);
     }
 
     // ====================================================================

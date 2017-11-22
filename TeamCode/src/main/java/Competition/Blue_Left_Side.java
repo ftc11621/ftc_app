@@ -14,7 +14,9 @@ public class Blue_Left_Side extends BaseNavigation
 
         robotInitial(false,true);
 
-        flickJewel();
+        NavigationTest();
+
+        //      flickJewel();
  /*
         Robot_Reverse(0.7,0.3,-20); // to crytobox
 

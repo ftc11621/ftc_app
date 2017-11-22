@@ -62,6 +62,7 @@ public class JewelServo {
         flickerbeam.setPosition(BEAM_RAISE); //Initialzation sticker add to bot
         mecanumDrive.setCurrentAngle(0.0);
         mecanumDrive.set_angle_locked(0.0);
+        mecanumDrive.set_Angle_tolerance(5.0);
     }
 
     // Change the servo angle range

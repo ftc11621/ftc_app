@@ -18,14 +18,14 @@ public class Mecanum
     //private static final double     WHEELS_SPACING_CM       = 40.8;     // spacing between wheels for turns
     private static final double     SMOOTHING_COEFFICIENT   = 0.1;      // to smooth out power changes, smaller=smoother
 
-    private static final double     YAW_PID_KP                = 0.003;       // PID KP coefficient
-    private static final double     YAW_PID_KI                = 0.00001;      // PID KI coefficient
-    private static final double     YAW_PID_KD                = 0.0001;       // PID KD coefficient
+    private double     YAW_PID_KP                = 0.01;      // 0.01, 0.007;       // PID KP coefficient
+    private double     YAW_PID_KI                = 0.0005; // 0.0002 PID KI coefficient
+    private double     YAW_PID_KD                = 0.01;       // 0.01, 0.001;       // PID KD coefficient
     private double                  Yaw_Ki_sum                = 0.0;        // PID KI integration
     private double                  Yaw_locked_angle;                       // angle to lock the robot orientation
     private double  max_speed                                 = 0.1;
 
-    private double  angle_tolerance                           = 10;
+    private double  angle_tolerance                           = 5;
 
     private IMU IMU_Object = null;
     private double IMU_yaw_offset = 0;
@@ -129,17 +129,15 @@ public class Mecanum
         double rotation = YAW_PID_KP * angle_deviation + Yaw_Ki_sum;
 
         double damper_rotation = -1.0 * YAW_PID_KD * IMU_Object.angular_velocity; // damping rotation
-        /*
-        if ( (damper_rotation/rotation) < -1.5 ) { // too much damping
+
+        if ( (damper_rotation/rotation) < -1.5 ) { // too much damping, may oscillate
             rotation = 0.0;
-        } else if ( (damper_rotation/rotation) > 0.0) { // speed in direction it's supposed to go
-            rotation = 0.0;
-        } else {
+        } else if ( (damper_rotation/rotation) < 0.0) { // speed in direction it's supposed to go
             rotation += damper_rotation;
         }
-        */
 
-        if (Math.abs(rotation) > 1.0) {
+
+        if (Math.abs(rotation) > 1.0) {   // prevent too high rotational value
             rotation = 1.0 * Math.signum(rotation);
         }
         run_Motors_no_encoder(X_of_robot, Y_of_robot, rotation);

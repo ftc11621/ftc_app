@@ -18,7 +18,7 @@ public class DriverControlled extends LinearOpMode
     private Mecanum mecanumDrive = null;
     private Glypher GlypherObject = null;
 
-    private float rotation;
+    private double rotation;
     private boolean is_angle_locked = false; // if locked to the left joystick
 
     public void runOpMode() throws InterruptedException
@@ -42,12 +42,13 @@ public class DriverControlled extends LinearOpMode
             GlypherObject.RunGlypherMotor(-gamepad2.left_stick_y);
             GlypherObject.Tilt(-gamepad2.right_stick_y);
 
+            /*
             if (gamepad2.y) {
                 GlypherObject.BooterKickOut();
             } else if (gamepad2.a) {
                 GlypherObject.BooterRetract();
             }
-            /*
+
             if (gamepad2.dpad_up) {
                 GlypherObject.BooterSlowKickOut();
                 GlypherObject.BooterRetract();
@@ -81,27 +82,26 @@ public class DriverControlled extends LinearOpMode
                 is_angle_locked = false;
             }
 
+            rotation = 0.0;
+            if (gamepad1.left_trigger > 0.5) {
+                rotation = 0.4;
+                is_angle_locked = false;
+            } else if (gamepad1.right_trigger > 0.5) {
+                rotation = -0.4;
+                is_angle_locked = false;
+            }
+
+            if(gamepad1.dpad_down) {
+                mecanumDrive.set_max_power(0.05);
+            } else if(gamepad1.dpad_left) {
+                mecanumDrive.set_max_power(0.1);
+            } else if(gamepad1.dpad_up) {
+                mecanumDrive.set_max_power(0.2);
+            } else if(gamepad1.dpad_right) {
+                mecanumDrive.set_max_power(0.3);
+            }
+
             if(is_angle_locked) {   // angle locked to left joystick where it points to
-                //mecanumDrive.set_max_power(0.1);
-                if(gamepad1.dpad_down) {
-                    mecanumDrive.set_max_power(0.05);
-                } else if(gamepad1.dpad_left) {
-                    mecanumDrive.set_max_power(0.1);
-                } else if(gamepad1.dpad_up) {
-                    mecanumDrive.set_max_power(0.2);
-                } else if(gamepad1.dpad_right) {
-                    mecanumDrive.set_max_power(0.3);
-                }
-
-
-                if(gamepad1.left_trigger > 0.8) {
-                    mecanumDrive.set_max_power(0.2);
-                    mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()+2);
-                }
-                if(gamepad1.right_trigger > 0.8) {
-                    mecanumDrive.set_max_power(0.2);
-                    mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()-2);
-                }
 
                 if ((Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) > 0.5) { // left stick actually points somewhere
                     float angle_lock = (float) Math.toDegrees(Math.atan2((double) gamepad1.left_stick_x, (double) gamepad1.left_stick_y));
@@ -112,14 +112,8 @@ public class DriverControlled extends LinearOpMode
                     telemetry.addData("Angular velocity  :", mecanumDrive.get_angular_velocity());
                     mecanumDrive.run_Motor_relative_to_driver(gamepad1.right_stick_x , gamepad1.right_stick_y );
                 }
-            } else {
+            } else { // Unlock Section
 
-                rotation = 0.0f;
-                if (gamepad1.dpad_left) {
-                    rotation = 0.4f;
-                } else if (gamepad1.dpad_right) {
-                    rotation = -0.4f;
-                }
                 mecanumDrive.run_Motors_no_encoder(gamepad1.right_stick_x, -gamepad1.right_stick_y, rotation);
 
                 if (gamepad1.x) { // point left joystick to the front of robot, then press X
