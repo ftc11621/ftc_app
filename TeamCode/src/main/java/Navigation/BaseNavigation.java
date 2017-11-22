@@ -20,7 +20,7 @@ public abstract class BaseNavigation extends LinearOpMode {
     boolean isRedAlliance, isLeftSide;
     ElapsedTime basenavigation_elapsetime = new ElapsedTime();
 
-    final double Initial_orientation = 0.0;   // initial robot orientatian respect to Jewels
+    final double Initial_orientation = 90.0;   // initial robot orientatian respect to Jewels
 
     @Override
     public void runOpMode() {
@@ -53,27 +53,49 @@ public abstract class BaseNavigation extends LinearOpMode {
         mecanumDrive.set_Angle_tolerance(3.0);
     }
 
+    // ============================ testing purpose ===================================
     public void NavigationTest() {
-        mecanumDrive.set_Angle_tolerance(1.0);
-        telemetry.addData("angle 0:", mecanumDrive.getRobotAngle());
-        mecanumDrive.set_angle_locked(90.0); //Initial_orientation + 15.0);
+        double timeoutsec = 5.0;
+        double testpower = 0.4;
+        double waittime = 2.0;
 
-        //while (Math.abs( mecanumDrive.getRobotAngle() - 10.0) > 2.0) {
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 5.0, 0.4);
-        mecanumDrive.stop_Motor_with_locked();
+        mecanumDrive.set_Angle_tolerance(5.0);
+
+        telemetry.addData("angle 0:", mecanumDrive.getRobotAngle());
+
+        //mecanumDrive.set_angle_locked(0.0);
+        mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower, 0.0);
+        //mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 5.0, 0.4);
+        //mecanumDrive.stop_Motor_with_locked();
         telemetry.addData("angle 1:", mecanumDrive.getRobotAngle());
 
-        // pause 3 seconds
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 2.0, 0.0);
+        // pause 2 seconds
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, waittime, 0.0);
 
-        mecanumDrive.set_angle_locked(180.0); //Initial_orientation + 15.0);
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 5.0, 0.4);
-        mecanumDrive.stop_Motor_with_locked();
+        //mecanumDrive.set_angle_locked(90.0);
+        mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower, 90.0);
+        //mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 5.0, 0.4);
+        //mecanumDrive.stop_Motor_with_locked();
         telemetry.addData("angle 2:", mecanumDrive.getRobotAngle());
 
+        // pause 2 seconds
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, waittime, 0.0);
+
+        mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower, 180.0);
+
+        // pause 2 seconds
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, waittime, 0.0);
+
+        mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower, -90.0);
+
+        // pause 2 seconds
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, waittime, 0.0);
+
+        mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower,0.0);
+
         telemetry.update();
-        //mecanumDrive.run_Motor_angle_locked(0.0,0.0);
     }
+
 
     // ================ Robot Turn ============
     public void Robot_Turn(double time_sec, double power, double angle) {

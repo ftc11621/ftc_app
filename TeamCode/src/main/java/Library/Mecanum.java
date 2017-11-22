@@ -179,11 +179,12 @@ public class Mecanum
         }
     }
 
+    // =====================================
     public void set_Angle_tolerance (double new_tol_angle) {
         angle_tolerance = new_tol_angle;
     }
 
-    // Run with timer :
+    // Run with timer : ==========================
     public void run_Motor_angle_locked_with_Timer(double X_of_robot, double Y_of_robot, double time_sec, double power) {
 
         chassis_runtime.reset();
@@ -196,6 +197,20 @@ public class Mecanum
         stop_Motor_with_locked();
     }
 
+    // Spin only to a locked angle with timer :
+    public void spin_Motor_angle_locked_with_Timer(double time_sec, double power, double locked_angle) {
+
+        set_angle_locked(locked_angle); //Initial_orientation + 15.0);
+
+        chassis_runtime.reset();
+        max_speed = power;
+        while(chassis_runtime.seconds() < time_sec && Math.abs(setAngleInRange(Yaw_locked_angle - getRobotAngle())) > angle_tolerance) {
+            //IMU_Object.measure();   // read angle
+            run_Motor_angle_locked(0.0, 0.0);
+        }
+        //IMU_Object.measure();   // read angle
+        stop_Motor_with_locked();
+    }
 
     public void stop_Motor_with_locked() {
         set_max_power(0.0);
