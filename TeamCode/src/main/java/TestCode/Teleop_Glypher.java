@@ -1,5 +1,6 @@
 package TestCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -9,6 +10,7 @@ import Library.REVColorDistance;
 
 
 @TeleOp(name = "Glypher Test", group = "TestCode")
+@Disabled
 public class Teleop_Glypher extends LinearOpMode
 {
     private Glypher GlypherObject = null;

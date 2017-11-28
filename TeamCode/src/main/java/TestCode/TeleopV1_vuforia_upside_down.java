@@ -7,15 +7,15 @@ import java.util.Locale;
 
 import Library.VuforiaNavigation;
 
-@TeleOp(name = "teleop Vuforia test", group = "TestCode")
-public class TeleopV1_vuforia extends LinearOpMode
+@TeleOp(name = "Vuforia test Up Side Down", group = "TestCode")
+public class TeleopV1_vuforia_upside_down extends LinearOpMode
 {
     private VuforiaNavigation vuforia_test = null;
     private double cos45degree             = 0.707; // cos(45) or sin(45)
 
     public void runOpMode() throws InterruptedException
     {
-        vuforia_test = new VuforiaNavigation(true, false);  // true=extended Tracking of a target picture
+        vuforia_test = new VuforiaNavigation(true, true);  // true=extended Tracking of a target picture
 
         waitForStart();
 

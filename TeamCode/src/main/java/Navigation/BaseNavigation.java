@@ -9,6 +9,7 @@ import Library.Glypher;
 import Library.JewelServo;
 import Library.Mecanum;
 import Library.REVColorDistance;
+import Library.VuforiaNavigation;
 
 public abstract class BaseNavigation extends LinearOpMode {
 
@@ -16,6 +17,7 @@ public abstract class BaseNavigation extends LinearOpMode {
     private REVColorDistance Colordistance = null;
     private Mecanum mecanumDrive = null;
     private Glypher GlypherObject = null;
+    private VuforiaNavigation vuforiaObject = null;
 
     boolean isRedAlliance, isLeftSide;
     ElapsedTime basenavigation_elapsetime = new ElapsedTime();
@@ -29,9 +31,12 @@ public abstract class BaseNavigation extends LinearOpMode {
         Colordistance = new REVColorDistance(hardwareMap);
         mecanumDrive = new Mecanum(hardwareMap);
         GlypherObject = new Glypher(hardwareMap);
+        vuforiaObject = new VuforiaNavigation(false , true);  // true=extended Tracking of a target picture
+
 
         waitForStart();
 
+        vuforiaObject.activate();
         mecanumDrive.Start();
 
         navigate();
@@ -51,6 +56,48 @@ public abstract class BaseNavigation extends LinearOpMode {
         mecanumDrive.setCurrentAngle(Initial_orientation);
         mecanumDrive.set_angle_locked(Initial_orientation);     // to the right of Jewel
         mecanumDrive.set_Angle_tolerance(3.0);
+    }
+
+    // =========================== Move to X-Y location =====================
+
+    public void robotMove_XY_inch(double Xloc, double Yloc) {
+
+        double maxpower = 0.2;
+
+        basenavigation_elapsetime.reset();
+
+        double distanceX, distanceY, total_distance;
+
+        while (basenavigation_elapsetime.seconds() < 5.0 && opModeIsActive()) {
+            if(vuforiaObject.isTarget_visible()) {
+                telemetry.addData("Vuforia", "Visible");
+
+                if (vuforiaObject.updateRobotLocation()) {
+                    telemetry.addData("Location Update:", "Yes");
+                } else {
+                    telemetry.addData("Location Update:", "No");
+                }
+
+                distanceX = Xloc - vuforiaObject.getXcoordinate_mm()/25.4;
+                distanceY = vuforiaObject.getYcoordinate_mm()/25.4 - Yloc;
+                total_distance = Math.hypot(distanceX,distanceY);
+
+                mecanumDrive.set_max_power(Math.min(total_distance/5.0, maxpower));
+
+                mecanumDrive.run_Motor_angle_locked(distanceX / total_distance,distanceY / total_distance);
+                telemetry.addData("X distance: ", distanceX);
+                telemetry.addData("Y distance: ", distanceY);
+            } else {
+                telemetry.addData("Vuforia", "NOT Visible");
+                mecanumDrive.stop_Motor_with_locked();
+                // do non vuforia autonomous
+            }
+
+            idle();
+
+            telemetry.update();
+        }
+        //mecanumDrive.run_Motor_angle_locked_with_Timer();
     }
 
     // ============================ testing purpose ===================================
