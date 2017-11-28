@@ -188,6 +188,7 @@ public class Mecanum
     public void run_Motor_angle_locked_with_Timer(double X_of_robot, double Y_of_robot, double time_sec, double power) {
 
         chassis_runtime.reset();
+        Yaw_Ki_sum = 0.0;       // reset the PID KI sum
         max_speed = power;
         while(chassis_runtime.seconds() < time_sec) {
             //IMU_Object.measure();   // read angle
@@ -195,23 +196,27 @@ public class Mecanum
         }
         //IMU_Object.measure();   // read angle
         stop_Motor_with_locked();
+        Yaw_Ki_sum = 0.0;       // reset the PID KI sum
     }
 
+    // =========================================
     // Spin only to a locked angle with timer :
     public void spin_Motor_angle_locked_with_Timer(double time_sec, double power, double locked_angle) {
 
         set_angle_locked(locked_angle); //Initial_orientation + 15.0);
 
         chassis_runtime.reset();
+        Yaw_Ki_sum = 0.0;       // reset the PID KI sum
         max_speed = power;
         while(chassis_runtime.seconds() < time_sec && Math.abs(setAngleInRange(Yaw_locked_angle - getRobotAngle())) > angle_tolerance) {
             //IMU_Object.measure();   // read angle
             run_Motor_angle_locked(0.0, 0.0);
         }
-        //IMU_Object.measure();   // read angle
         stop_Motor_with_locked();
+        Yaw_Ki_sum = 0.0;       // reset the PID KI sum
     }
 
+    // =============================================
     public void stop_Motor_with_locked() {
         set_max_power(0.0);
         run_Motor_angle_locked(0.0,0.0);
