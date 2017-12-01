@@ -20,6 +20,7 @@ public abstract class BaseNavigation extends LinearOpMode {
     private VuforiaNavigation vuforiaObject = null;
 
     boolean isRedAlliance, isLeftSide;
+    int     flickDirection = 0;
     ElapsedTime basenavigation_elapsetime = new ElapsedTime();
 
     final double Initial_orientation = 90.0;   // initial robot orientatian respect to Jewels
@@ -31,12 +32,11 @@ public abstract class BaseNavigation extends LinearOpMode {
         Colordistance = new REVColorDistance(hardwareMap);
         mecanumDrive = new Mecanum(hardwareMap);
         GlypherObject = new Glypher(hardwareMap);
-        vuforiaObject = new VuforiaNavigation(false , true);  // true=extended Tracking of a target picture
+        vuforiaObject = new VuforiaNavigation(true , false);  // true=extended Tracking of a target picture
 
 
         waitForStart();
 
-        vuforiaObject.activate();
         mecanumDrive.Start();
 
         navigate();
@@ -49,6 +49,8 @@ public abstract class BaseNavigation extends LinearOpMode {
 
     protected abstract void navigate();
 
+
+
     // =========================== Initial Robot placement ==================
     public void robotInitial(boolean isRed, boolean isLeft) {
         isRedAlliance = isRed;
@@ -58,47 +60,10 @@ public abstract class BaseNavigation extends LinearOpMode {
         mecanumDrive.set_Angle_tolerance(3.0);
     }
 
-    // =========================== Move to X-Y location =====================
-
-    public void robotMove_XY_inch(double Xloc, double Yloc) {
-
-        double maxpower = 0.2;
-
-        basenavigation_elapsetime.reset();
-
-        double distanceX, distanceY, total_distance;
-
-        while (basenavigation_elapsetime.seconds() < 5.0 && opModeIsActive()) {
-            if(vuforiaObject.isTarget_visible()) {
-                telemetry.addData("Vuforia", "Visible");
-
-                if (vuforiaObject.updateRobotLocation()) {
-                    telemetry.addData("Location Update:", "Yes");
-                } else {
-                    telemetry.addData("Location Update:", "No");
-                }
-
-                distanceX = Xloc - vuforiaObject.getXcoordinate_mm()/25.4;
-                distanceY = vuforiaObject.getYcoordinate_mm()/25.4 - Yloc;
-                total_distance = Math.hypot(distanceX,distanceY);
-
-                mecanumDrive.set_max_power(Math.min(total_distance/5.0, maxpower));
-
-                mecanumDrive.run_Motor_angle_locked(distanceX / total_distance,distanceY / total_distance);
-                telemetry.addData("X distance: ", distanceX);
-                telemetry.addData("Y distance: ", distanceY);
-            } else {
-                telemetry.addData("Vuforia", "NOT Visible");
-                mecanumDrive.stop_Motor_with_locked();
-                // do non vuforia autonomous
-            }
-
-            idle();
-
-            telemetry.update();
-        }
-        //mecanumDrive.run_Motor_angle_locked_with_Timer();
+    public void vuforia_activate() {
+        vuforiaObject.activate();
     }
+
 
     // ============================ testing purpose ===================================
     public void NavigationTest() {
@@ -144,12 +109,6 @@ public abstract class BaseNavigation extends LinearOpMode {
     }
 
 
-    // ================ Robot Turn ============
-    public void Robot_Turn(double time_sec, double power, double angle) {
-
-        mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle() + angle); //Initial_orientation + 15.0);
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, time_sec, power);
-    }
 
     public void Robot_Forward(double time_sec, double power, double angle) {
         //mecanumDrive.set_angle_locked(Initial_orientation);
@@ -178,9 +137,9 @@ public abstract class BaseNavigation extends LinearOpMode {
         mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 0.5, 0.1); // move back a little
         GlypherObject.RunGlypherMotor(0);
 
-        Robot_Turn( 2, .2, 45);
+        //Robot_Turn( 2, .2, 45);
 
-        Robot_Turn( 2, .2, 45);
+        //Robot_Turn( 2, .2, 45);
 
         mecanumDrive.run_Motor_angle_locked_with_Timer(-1, 0, 1.5, 0.1); // hit glyph from the side
 
@@ -192,15 +151,195 @@ public abstract class BaseNavigation extends LinearOpMode {
         mecanumDrive.set_angle_locked(Initial_orientation);
     }
 
+
+
     // ====================================================================
     // Jewel Flicker method
-    public void flickJewel() {
+    protected void flickJewel() {
+
+        double turn_power = 0.2;
+        double timeoutsec = 2.5;
+        double turn_angle = 15.0;
+
         JewelFlicker.Initial();
-        JewelFlicker.flickJewel(isRedAlliance);
+
+        flickDirection = JewelFlicker.flickJewel(isRedAlliance); // 0=color not detected, 1=left,-1=right
         telemetry.addData("Red value : ", JewelFlicker.readRed);
         telemetry.addData("Blue value: ", JewelFlicker.readBlue);
         telemetry.update();
+
+        if ( Math.abs(flickDirection) > 0) {
+            // Robot_Turn(timeoutsec, turn_power, flickDirection * turn_angle);
+            mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, turn_power, flickDirection * turn_angle + Initial_orientation);
+        }
+
     }
 
-    // ====================================================================
+    // ===========================Get of the Balancing Stone =========================================
+    protected void get_off_Balancing_Stone() {
+
+        double powerset = 0.1;
+        double timeoutset = 1.5;
+
+        if (isRedAlliance) {  // move forward
+            mecanumDrive.run_Motor_angle_locked_with_Timer(flickDirection * Math.sin(Math.toRadians(15.0)), 1.0, timeoutset, powerset);
+
+        } else {                // go backward
+            mecanumDrive.run_Motor_angle_locked_with_Timer(-1.0*flickDirection * Math.sin(Math.toRadians(15.0)), -1.0, timeoutset, powerset);
+        }
+
+    }
+
+
+    // =========================== Move to X-Y location =====================
+
+    protected void vuforia_robotMove_XY_inch(double Xloc, double Yloc) {
+
+        double maxpower = 0.1;
+
+        basenavigation_elapsetime.reset();
+
+        double distanceX, distanceY, total_distance;
+        double cryto_offset_x = 0.0;
+        double cryto_offset_y = 0.0;
+
+        while (basenavigation_elapsetime.seconds() < 5.0 && opModeIsActive()) {
+            if (vuforiaObject.isTarget_visible()) {
+                // telemetry.addData("Vuforia", "Visible");
+
+                if (vuforiaObject.updateRobotLocation()) {
+                    telemetry.addData("Location Update:", "Yes");
+                } else {
+                    telemetry.addData("Location Update:", "No");
+                }
+
+                if (isRedAlliance) {
+                    if (isLeftSide) {
+                        cryto_offset_x = vuforiaObject.crytobox_offset_inch;
+                    } else {
+                        cryto_offset_y = -vuforiaObject.crytobox_offset_inch;
+                    }
+                } else {
+                    if (isLeftSide) {
+                        cryto_offset_y = vuforiaObject.crytobox_offset_inch;
+                    } else {
+                        cryto_offset_x = vuforiaObject.crytobox_offset_inch;
+                    }
+                }
+
+                Xloc += cryto_offset_x;
+                Yloc += cryto_offset_y;
+
+                distanceX = Xloc - vuforiaObject.getXcoordinate_mm() / 25.4;
+                distanceY = vuforiaObject.getYcoordinate_mm() / 25.4 - Yloc;
+                total_distance = Math.hypot(distanceX, distanceY);
+
+                mecanumDrive.set_max_power(Math.min(total_distance / 5.0, maxpower));
+
+                mecanumDrive.run_Motor_angle_locked(distanceX / total_distance, distanceY / total_distance);
+                telemetry.addData("X distance to correct cryto column: ", distanceX);
+                telemetry.addData("Y distance to correct cryto column: ", distanceY);
+                telemetry.addData("Crytobox column offset: ", vuforiaObject.crytobox_offset_inch);
+            } else {
+                telemetry.addData("Vuforia", "NOT Visible");
+                mecanumDrive.stop_Motor_with_locked();
+                // do non vuforia autonomous
+            }
+
+            telemetry.update();
+
+            idle();
+        }
+    }
+
+        // =========================== Move to X-Y location =====================
+
+    protected void vuforia_Move_XY_inch_point_picture(double Xloc, double Yloc, double timeout) {
+
+        double maxpower = 0.1;
+        double PID_kp = 0.02;
+        double PID_ki = 0.00001;
+
+        basenavigation_elapsetime.reset();
+
+        double distanceX, distanceY, total_distance;
+        double cryto_offset_x = 0.0;
+        double cryto_offset_y = 0.0;
+        double ki_sum_power = 0.0;
+
+        while (basenavigation_elapsetime.seconds() < timeout && opModeIsActive()) {
+            if(vuforiaObject.isTarget_visible()) {
+
+                // point toward the picture
+                mecanumDrive.set_angle_locked(mecanumDrive.get_locked_angle()+vuforiaObject.getAngleTowardPicture());
+
+                if (vuforiaObject.updateRobotLocation()) {
+                    telemetry.addData("Location Update:", "Yes");
+                } else {
+                    telemetry.addData("Location Update:", "No");
+                }
+
+                if (isRedAlliance) {
+                    if(isLeftSide) {
+                        cryto_offset_x = vuforiaObject.crytobox_offset_inch;
+                    } else {
+                        cryto_offset_y = -vuforiaObject.crytobox_offset_inch;
+                    }
+                } else {
+                    if(isLeftSide) {
+                        cryto_offset_y = vuforiaObject.crytobox_offset_inch;
+                    } else {
+                        cryto_offset_x = vuforiaObject.crytobox_offset_inch;
+                    }
+                }
+
+                Xloc += cryto_offset_x;
+                Yloc += cryto_offset_y;
+
+                distanceX = Xloc - vuforiaObject.getXcoordinate_mm()/25.4;
+                distanceY = vuforiaObject.getYcoordinate_mm()/25.4 - Yloc;
+                total_distance = Math.hypot(distanceX,distanceY);
+
+                ki_sum_power += total_distance * PID_ki;
+                double total_power = total_distance * PID_kp + ki_sum_power;
+
+                mecanumDrive.set_max_power(Math.min(total_power, maxpower));
+
+                // mecanumDrive.run_Motor_angle_locked(distanceX / total_distance,distanceY / total_distance);
+
+                mecanumDrive.run_Motor_angle_locked_relative_to_driver(distanceX / total_distance,distanceY / total_distance);
+
+                telemetry.addData("X distance to correct cryto column: ", distanceX);
+                telemetry.addData("Y distance to correct cryto column: ", distanceY);
+                telemetry.addData("Crytobox column offset: ", vuforiaObject.crytobox_offset_inch);
+            } else {
+                telemetry.addData("Vuforia", "NOT Visible");
+                mecanumDrive.stop_Motor_with_locked();
+                // do non vuforia autonomous
+            }
+
+            telemetry.update();
+
+            idle();
+        }
+    }
+
+    protected boolean vuforia_find_picture () {
+        basenavigation_elapsetime.reset();
+
+        while (opModeIsActive() && !vuforiaObject.isTarget_visible()) {
+            mecanumDrive.spin_Motor_angle_locked_with_Timer(1.0, 0.05, mecanumDrive.get_locked_angle() + 20.0);
+            idle();
+        }
+
+        if (vuforiaObject.isTarget_visible()) {
+            telemetry.addData("Picture:" , "Found");
+        } else {
+            telemetry.addData("Picture:", "NOT found");
+        }
+        telemetry.update();
+
+        return vuforiaObject.isTarget_visible();
+    }
+
 }

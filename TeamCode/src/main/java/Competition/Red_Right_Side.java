@@ -12,16 +12,21 @@ public class Red_Right_Side extends BaseNavigation
 
     protected void navigate() {
 
+        double X_target_inch = -39.0 + 7.0;
+        double Y_target_inch = 36.0;
+        // robot is parallel to the picture
+        double phone_X_offset_inch = -12.0;
+        double phone_Y_offset_inch = -9.0;
+
         robotInitial(true,false);
 
-        flickJewel();
-/*
-        Robot_Forward(0.7,0.3,20); // to crytobox
+        //flickJewel();
 
-        Robot_Turn(1.0, 0.2, 0); // turn toward crytobox
+        get_off_Balancing_Stone();
 
-        Robot_Glyph_Deposit();  // to deposit glyph
-        */
+        vuforia_activate();         // to start vuforia
+
+        vuforia_find_picture();
     }
 
 }

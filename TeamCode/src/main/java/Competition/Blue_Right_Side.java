@@ -14,22 +14,25 @@ public class Blue_Right_Side extends BaseNavigation
 
         double X_target_inch = 45.0;
         double Y_target_inch =  7.0;
-        double phone_X_offset_inch = -8.0;
-        double phone_Y_offset_inch = 2.0;
+        double phone_X_offset_inch = -9.0;
+        double phone_Y_offset_inch = 6.0;
 
         robotInitial(false,false);
 
         //flickJewel();
 
-        robotMove_XY_inch(X_target_inch+phone_X_offset_inch, Y_target_inch+phone_Y_offset_inch);
+        //  get_off_Balancing_Stone();
 
-        /*
-        Robot_Reverse(0.7,0.3,0); // to crytobox
+        // move to a location to start vuforia capturing
 
-        Robot_Turn(1.0, 0.2, -90); // turn toward crytobox
+        vuforia_activate();         // to start vuforia
 
-        Robot_Glyph_Deposit();  // to deposit glyph
-        */
+        vuforia_robotMove_XY_inch(X_target_inch+phone_X_offset_inch, Y_target_inch+phone_Y_offset_inch);
+
+        vuforia_find_picture();
+
+        //vuforia_Move_XY_inch_point_picture(X_target_inch+phone_X_offset_inch, Y_target_inch+phone_Y_offset_inch, 5.0);
+
     }
 
 }

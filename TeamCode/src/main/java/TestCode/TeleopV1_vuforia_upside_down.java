@@ -54,7 +54,7 @@ public class TeleopV1_vuforia_upside_down extends LinearOpMode
                         formatDouble( vuforia_test.getOrientation()));
                 //telemetry.addData("Angle to Relic Template: ",
                 //        formatDouble( vuforia_test.getRobotNeedToTurnAngle(0, 0)));
-                telemetry.addData("Crytobox column: ", vuforia_test.getCrytoboxColumn()); // 0,1,2 for L,C,R
+                telemetry.addData("Crytobox column offset: ", vuforia_test.crytobox_offset_inch); // 0,1,2 for L,C,R
 
 
             } else {

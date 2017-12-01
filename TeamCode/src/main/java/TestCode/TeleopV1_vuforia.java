@@ -35,7 +35,6 @@ public class TeleopV1_vuforia extends LinearOpMode
 
                 telemetry.addData("X (inch): ", formatDouble(vuforia_test.getX() / 25.4));
                 telemetry.addData("Y (inch): ", formatDouble(vuforia_test.getY() / 25.4));
-                //telemetry.addData("Y2(inch): ", formatDouble(vuforia_test.getY_vuforia() / 25.4));
 
                 double signofX = Math.signum(vuforia_test.getOrientation());
                 double anglerad = Math.toRadians(vuforia_test.getOrientation());
@@ -50,11 +49,9 @@ public class TeleopV1_vuforia extends LinearOpMode
 
                 //telemetry.addData("Distance to Relic Template (inch): ",
                 //        formatDouble(vuforia_test.getDestinationDistance_mm(0, 0) / 25.4));
-                telemetry.addData("Robot orientation (degree): ",
-                        formatDouble( vuforia_test.getOrientation()));
-                //telemetry.addData("Angle to Relic Template: ",
-                //        formatDouble( vuforia_test.getRobotNeedToTurnAngle(0, 0)));
-                telemetry.addData("Crytobox column: ", vuforia_test.getCrytoboxColumn()); // 0,1,2 for L,C,R
+                telemetry.addData("Robot orientation (degree): ", formatDouble( vuforia_test.getOrientation()));
+                telemetry.addData("Robot from picture(degree): ", formatDouble( vuforia_test.getAngleTowardPicture()));
+                telemetry.addData("Crytobox column offset: ", vuforia_test.crytobox_offset_inch); // 0,1,2 for L,C,R
 
 
             } else {

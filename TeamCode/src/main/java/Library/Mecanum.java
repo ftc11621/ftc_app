@@ -145,7 +145,7 @@ public class Mecanum
 
     // -----------------------------------------------------------------
     // Drive the robot relative to the driver X-Y instead of the robot X-Y
-    public void run_Motor_angle_locked_relative_to_driver(float X_of_Joystick, float Y_of_Joystick) {
+    public void run_Motor_angle_locked_relative_to_driver(double X_of_Joystick, double Y_of_Joystick) {
 
         //IMU_Object.measure();
 
@@ -159,7 +159,7 @@ public class Mecanum
     }
 
     // Drive the robot relative to the driver X-Y instead of the robot X-Y
-    public void run_Motor_relative_to_driver(float X_of_Joystick, float Y_of_Joystick) {
+    public void run_Motor_relative_to_driver(double X_of_Joystick, double Y_of_Joystick) {
 
         //IMU_Object.measure();
         // angle difference between the joystick and the robot in radiant
