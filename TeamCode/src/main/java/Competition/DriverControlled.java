@@ -40,42 +40,22 @@ public class DriverControlled extends LinearOpMode
         {
             // Glypher section ------------------------------------
             GlypherObject.RunGlypherMotor(-gamepad2.left_stick_y);
-            GlypherObject.Tilt(-gamepad2.right_stick_y);
+            //GlypherObject.Tilt(-gamepad2.right_stick_y);
+            GlypherObject.setElevatorPower(-gamepad2.right_stick_y);
 
-            /*
             if (gamepad2.y) {
-                GlypherObject.BooterKickOut();
+                GlypherObject.setElevatorPosition(5000);
             } else if (gamepad2.a) {
-                GlypherObject.BooterRetract();
+                GlypherObject.setElevatorPosition(-5000);
             }
 
-            if (gamepad2.dpad_up) {
-                GlypherObject.BooterSlowKickOut();
-                GlypherObject.BooterRetract();
-            } else if (gamepad2.dpad_down) {
-                GlypherObject.BooterSlowRetract();
-            }
-            if (gamepad2.left_bumper) {
-                GlypherObject.LeftIntakeIn();
-                */
+
             if (gamepad2.left_trigger > 0.5) {
                 GlypherObject.BooterKickOut();
             }else{
                 GlypherObject.BooterRetract();
             }
-            /*
-            }  else{
-                GlypherObject.StopIntakeLeft();
-            }
 
-            if (gamepad2.right_bumper) {
-                GlypherObject.RightIntakeIn();
-            } else if (gamepad2.right_trigger > 0.1) {
-                GlypherObject.RightIntakeOut();
-            }  else{
-                GlypherObject.StopIntakeRight();
-            }
-*/
 
             // Driving section -----------------------------------------
             if (gamepad1.b) {  // unlock robot orientation from left joystick. Do this before gamepad1.x below

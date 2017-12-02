@@ -164,6 +164,7 @@ public abstract class BaseNavigation extends LinearOpMode {
         JewelFlicker.Initial();
 
         flickDirection = JewelFlicker.flickJewel(isRedAlliance); // 0=color not detected, 1=left,-1=right
+        telemetry.addData("Direction :", flickDirection);
         telemetry.addData("Red value : ", JewelFlicker.readRed);
         telemetry.addData("Blue value: ", JewelFlicker.readBlue);
         telemetry.update();
@@ -172,22 +173,26 @@ public abstract class BaseNavigation extends LinearOpMode {
             // Robot_Turn(timeoutsec, turn_power, flickDirection * turn_angle);
             mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, turn_power, flickDirection * turn_angle + Initial_orientation);
         }
+        JewelFlicker.Initial();
 
     }
 
     // ===========================Get of the Balancing Stone =========================================
     protected void get_off_Balancing_Stone() {
 
-        double powerset = 0.1;
+        double powerset = 0.2;
         double timeoutset = 1.5;
 
+        telemetry.addData("Jewel direction: ", flickDirection );
+
         if (isRedAlliance) {  // move forward
-            mecanumDrive.run_Motor_angle_locked_with_Timer(flickDirection * Math.sin(Math.toRadians(15.0)), 1.0, timeoutset, powerset);
+            mecanumDrive.run_Motor_angle_locked_with_Timer(flickDirection * Math.sin(Math.toRadians(25.0)), Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
 
         } else {                // go backward
-            mecanumDrive.run_Motor_angle_locked_with_Timer(-1.0*flickDirection * Math.sin(Math.toRadians(15.0)), -1.0, timeoutset, powerset);
+            mecanumDrive.run_Motor_angle_locked_with_Timer(-1.0*flickDirection * Math.sin(Math.toRadians(25.0)), -Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
         }
 
+        telemetry.update();
     }
 
 

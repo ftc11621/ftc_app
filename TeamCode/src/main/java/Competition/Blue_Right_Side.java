@@ -19,17 +19,17 @@ public class Blue_Right_Side extends BaseNavigation
 
         robotInitial(false,false);
 
-        //flickJewel();
+        flickJewel();
 
-        //  get_off_Balancing_Stone();
+        get_off_Balancing_Stone();
 
         // move to a location to start vuforia capturing
 
-        vuforia_activate();         // to start vuforia
+        //vuforia_activate();         // to start vuforia
 
-        vuforia_robotMove_XY_inch(X_target_inch+phone_X_offset_inch, Y_target_inch+phone_Y_offset_inch);
+        //vuforia_robotMove_XY_inch(X_target_inch+phone_X_offset_inch, Y_target_inch+phone_Y_offset_inch);
 
-        vuforia_find_picture();
+        //vuforia_find_picture();
 
         //vuforia_Move_XY_inch_point_picture(X_target_inch+phone_X_offset_inch, Y_target_inch+phone_Y_offset_inch, 5.0);
 

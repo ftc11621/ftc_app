@@ -17,6 +17,7 @@ public class Glypher
     private Servo RightIntake;
     private DcMotor motorGlypher;
     private DcMotor TiltGlypher;
+    private DcMotor Elevator;
     private ElapsedTime glypher_runtime = new ElapsedTime();
     private double lastBooterPosition = 0.0;
 
@@ -24,13 +25,15 @@ public class Glypher
 
         motorGlypher = hardwareMap.dcMotor.get("GlypherDrive");
         TiltGlypher = hardwareMap.dcMotor.get("GlypherTilter");
+        Elevator = hardwareMap.dcMotor.get("GlypherElevator");
         Booter = hardwareMap.get(Servo.class, "ServoBooter");
         LeftIntake = hardwareMap.get(Servo.class, "ServoLeftIntake");
         RightIntake = hardwareMap.get(Servo.class, "ServoRightIntake");
 
         motorGlypher.setDirection(DcMotor.Direction.FORWARD);
-        //TiltGlypher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         TiltGlypher.setDirection(DcMotor.Direction.FORWARD);
+        Elevator.setDirection(DcMotor.Direction.FORWARD);
         //TiltGlypher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         StopIntakeLeft();
         StopIntakeRight();
@@ -105,4 +108,19 @@ public class Glypher
         Tilt(0.0);
     }
 
+    //-------Elevator-------
+    public void setElevatorPower (double Elevatorpower) {
+        double maxelevatorpower = 0.2;
+        Elevator.setPower(Elevatorpower * maxelevatorpower);
+    }
+    public void setElevatorPosition(int newpos) {
+        Elevator.setTargetPosition(Elevator.getCurrentPosition()+newpos);
+        Elevator.setPower(0.2);
+        glypher_runtime.reset();
+        while (Elevator.isBusy() && glypher_runtime.seconds() < 5.0) {
+            //Elevator.setPower(0.2);
+        }
+        Elevator.setPower(0.0);
+        //Elevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
 }
