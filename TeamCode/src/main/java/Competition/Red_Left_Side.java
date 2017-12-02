@@ -20,9 +20,14 @@ public class Red_Left_Side extends BaseNavigation
 
         robotInitial(true,true);
 
+
         flickJewel();
 
-        //  get_off_Balancing_Stone();
+        get_off_Balancing_Stone();
+
+        //vuforia_activate();         // to start vuforia
+
+        //vuforia_find_picture();
 
     }
 

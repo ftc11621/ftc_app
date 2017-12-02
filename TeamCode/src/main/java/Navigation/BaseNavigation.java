@@ -177,6 +177,8 @@ public abstract class BaseNavigation extends LinearOpMode {
 
     }
 
+
+
     // ===========================Get of the Balancing Stone =========================================
     protected void get_off_Balancing_Stone() {
 
@@ -186,14 +188,15 @@ public abstract class BaseNavigation extends LinearOpMode {
         telemetry.addData("Jewel direction: ", flickDirection );
 
         if (isRedAlliance) {  // move forward
-            mecanumDrive.run_Motor_angle_locked_with_Timer(flickDirection * Math.sin(Math.toRadians(25.0)), Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
+            mecanumDrive.run_Motor_angle_locked_with_Timer(flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
 
         } else {                // go backward
-            mecanumDrive.run_Motor_angle_locked_with_Timer(-1.0*flickDirection * Math.sin(Math.toRadians(25.0)), -Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
+            mecanumDrive.run_Motor_angle_locked_with_Timer(-1.0*flickDirection * Math.sin(Math.toRadians(15.0)), -Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
         }
 
         telemetry.update();
     }
+
 
 
     // =========================== Move to X-Y location =====================

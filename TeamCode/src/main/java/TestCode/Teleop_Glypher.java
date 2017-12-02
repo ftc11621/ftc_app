@@ -42,8 +42,8 @@ public class Teleop_Glypher extends LinearOpMode
                 GlypherObject.BooterSlowRetract();
             }
 
-            telemetry.addData("Tilt Encoder: ", GlypherObject.Tilt_getCurrentEncoder());
-            telemetry.update();
+            //telemetry.addData("Tilt Encoder: ", GlypherObject.Tilt_getCurrentEncoder());
+            //telemetry.update();
             idle();
         }
 

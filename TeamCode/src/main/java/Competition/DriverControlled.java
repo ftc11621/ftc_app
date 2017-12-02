@@ -45,8 +45,10 @@ public class DriverControlled extends LinearOpMode
 
             if (gamepad2.y) {
                 GlypherObject.setElevatorPosition(5000);
+                telemetry.addData("Elevator position: ", GlypherObject.getElevatorPosition());
             } else if (gamepad2.a) {
                 GlypherObject.setElevatorPosition(-5000);
+                telemetry.addData("Elevator position: ", GlypherObject.getElevatorPosition());
             }
 
 

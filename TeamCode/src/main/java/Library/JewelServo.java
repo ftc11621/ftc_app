@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class JewelServo {
     final double BEAM_RAISE     = 0.33;
-    final double BEAM_LOWER     = 0.79;
+    final double BEAM_LOWER     = 0.80;
 
     private boolean isJewelDetected     = false;
     private boolean isJewelRed          = true;
@@ -53,7 +53,7 @@ public class JewelServo {
             //if (final_location > init_position) { // lowering the beam
                 while (flicker_elapsetime.milliseconds() < 30 ) { // to slow down
                 }
-                if (nn > 80) {   // only when near the jewel
+                if (nn > 90) {   // only when near the jewel
                     detectJewel();
                 }
             //} else {

@@ -20,7 +20,7 @@ public class Red_Right_Side extends BaseNavigation
 
         robotInitial(true,false);
 
-        //flickJewel();
+        flickJewel();
 
         get_off_Balancing_Stone();
 
