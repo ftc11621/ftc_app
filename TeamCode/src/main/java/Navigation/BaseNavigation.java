@@ -3,7 +3,7 @@ package Navigation;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import javax.microedition.khronos.opengles.GL;
+//import javax.microedition.khronos.opengles.GL;
 
 import Library.Glypher;
 import Library.JewelServo;
@@ -184,16 +184,27 @@ public abstract class BaseNavigation extends LinearOpMode {
 
         double powerset = 0.2;
         double timeoutset = 1.5;
+        double x_offset = -0.1;
 
         telemetry.addData("Jewel direction: ", flickDirection );
 
         if (isRedAlliance) {  // move forward
-            mecanumDrive.run_Motor_angle_locked_with_Timer(flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
+            if (isLeftSide) {
+                mecanumDrive.run_Motor_angle_locked_with_Timer(-x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
+            }else {
+                double crytooffset = -0.15;
+                mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset -x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
+            }
 
         } else {                // go backward
-            mecanumDrive.run_Motor_angle_locked_with_Timer(-1.0*flickDirection * Math.sin(Math.toRadians(15.0)), -Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
-        }
+            if (isLeftSide) {   // a little to the left
+                double crytooffset = -0.15;
+                mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset + x_offset - flickDirection * Math.sin(Math.toRadians(15.0)), -Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
+            } else {
+                mecanumDrive.run_Motor_angle_locked_with_Timer(x_offset - flickDirection * Math.sin(Math.toRadians(15.0)), -Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
 
+            }
+        }
         telemetry.update();
     }
 
