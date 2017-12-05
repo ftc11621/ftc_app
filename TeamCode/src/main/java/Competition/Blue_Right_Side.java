@@ -23,15 +23,16 @@ public class Blue_Right_Side extends BaseNavigation
 
         get_off_Balancing_Stone();
 
-        // move to a location to start vuforia capturing
 
-        vuforia_activate();         // to start vuforia
+        // ========= Vuforia if it works
+        Spin_locked_angle(45.0);     // get close to pointing to a picture
+        if (vuforia_find_picture()) {       // if the picture is found
+            vuforia_Move_XY_inch_point_picture(X_target_inch+phone_X_offset_inch, Y_target_inch+phone_Y_offset_inch, 5.0);
+        }
 
-        //vuforia_robotMove_XY_inch(X_target_inch+phone_X_offset_inch, Y_target_inch+phone_Y_offset_inch);
+        Spin_locked_angle(0.0);        // facing crytobox
 
-        vuforia_find_picture();
-
-        //vuforia_Move_XY_inch_point_picture(X_target_inch+phone_X_offset_inch, Y_target_inch+phone_Y_offset_inch, 5.0);
+        Glyph_Deposit();
 
     }
 

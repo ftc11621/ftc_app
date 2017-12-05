@@ -15,8 +15,10 @@ public class Red_Right_Side extends BaseNavigation
         double X_target_inch = -39.0 + 7.0;
         double Y_target_inch = 36.0;
         // robot is parallel to the picture
-        double phone_X_offset_inch = -12.0;
-        double phone_Y_offset_inch = -9.0;
+        //double phone_X_offset_inch = -12.0;
+        //double phone_Y_offset_inch = -9.0;
+        double phone_X_offset_inch = -9.0;
+        double phone_Y_offset_inch = 6.0;
 
         robotInitial(true,false);
 
@@ -24,9 +26,16 @@ public class Red_Right_Side extends BaseNavigation
 
         get_off_Balancing_Stone();
 
-        vuforia_activate();         // to start vuforia
 
-        vuforia_find_picture();
+        // ========= Vuforia if it works
+        Spin_locked_angle(-30);     // get close to pointing to a picture
+        if (vuforia_find_picture()) {       // if the picture is found
+            vuforia_Move_XY_inch_point_picture(X_target_inch+phone_X_offset_inch, Y_target_inch+phone_Y_offset_inch, 5.0);
+        }
+
+        Spin_locked_angle(0.0);        // facing crytobox
+
+        Glyph_Deposit();
     }
 
 }

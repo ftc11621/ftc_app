@@ -60,7 +60,7 @@ public abstract class BaseNavigation extends LinearOpMode {
         mecanumDrive.set_Angle_tolerance(3.0);
     }
 
-    public void vuforia_activate() {
+    private void vuforia_activate() {
         vuforiaObject.activate();
     }
 
@@ -108,44 +108,6 @@ public abstract class BaseNavigation extends LinearOpMode {
         telemetry.update();
     }
 
-
-
-    public void Robot_Forward(double time_sec, double power, double angle) {
-        //mecanumDrive.set_angle_locked(Initial_orientation);
-        mecanumDrive.set_angle_locked(Initial_orientation + angle); //Initial_orientation + 15.0);
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 1.0, time_sec, power);
-    }
-
-    public void Robot_Reverse(double time_sec, double power, double setangle) {
-        //mecanumDrive.set_angle_locked(Initial_orientation);
-        //telemetry.addData("angle", mecanumDrive.IMU_getAngle());
-        telemetry.addData("set angle", setangle);
-        telemetry.addData("locked angle", Initial_orientation);
-        mecanumDrive.set_angle_locked(Initial_orientation + setangle); //Initial_orientation + 15.0);
-        telemetry.addData("new angle", mecanumDrive.get_locked_angle());
-
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, -1.0, time_sec, power);
-        //telemetry.addData("new angle", mecanumDrive.IMU_getAngle());
-        telemetry.update();
-    }
-
-    public void Robot_Glyph_Deposit() {
-        // kick glyph out
-        GlypherObject.RunGlypherMotor(-1); // bring down glyph
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 1.0, 0.0); // wait for glyph to go down
-
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 0.5, 0.1); // move back a little
-        GlypherObject.RunGlypherMotor(0);
-
-        //Robot_Turn( 2, .2, 45);
-
-        //Robot_Turn( 2, .2, 45);
-
-        mecanumDrive.run_Motor_angle_locked_with_Timer(-1, 0, 1.5, 0.1); // hit glyph from the side
-
-        //mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 1.5, 0.1); // hit glyph from the side
-
-    }
 
     public void Reset_locked_angle() {
         mecanumDrive.set_angle_locked(Initial_orientation);
@@ -209,6 +171,43 @@ public abstract class BaseNavigation extends LinearOpMode {
     }
 
 
+    // ================= Robot spin =========================
+    protected void Spin_locked_angle(double angle_lock) {
+        double timeoutsec = 5.0;
+        double testpower  = 0.4;
+
+        mecanumDrive.set_Angle_tolerance(5.0);
+        mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower, angle_lock);
+    }
+
+
+    // ================ spin and find the picture =========================
+    protected boolean vuforia_find_picture () {
+
+        double timeoutsec = 5.0;
+        double testpower  = 0.4;
+
+        vuforia_activate();
+
+        mecanumDrive.set_Angle_tolerance(5.0);
+        basenavigation_elapsetime.reset();
+
+        int spin_count = 0;
+        while (spin_count < 10 && opModeIsActive() && !vuforiaObject.isTarget_visible() && basenavigation_elapsetime.seconds() < timeoutsec) {
+            mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower, mecanumDrive.get_locked_angle() + 10.0);
+            spin_count += 1;
+            idle();
+        }
+
+        if (vuforiaObject.isTarget_visible()) {
+            telemetry.addData("Picture:" , "Found");
+        } else {
+            telemetry.addData("Picture:", "NOT found");
+        }
+        telemetry.update();
+
+        return vuforiaObject.isTarget_visible();
+    }
 
     // =========================== Move to X-Y location =====================
 
@@ -343,22 +342,24 @@ public abstract class BaseNavigation extends LinearOpMode {
         }
     }
 
-    protected boolean vuforia_find_picture () {
-        basenavigation_elapsetime.reset();
 
-        while (opModeIsActive() && !vuforiaObject.isTarget_visible()) {
-            mecanumDrive.spin_Motor_angle_locked_with_Timer(1.0, 0.05, mecanumDrive.get_locked_angle() + 20.0);
-            idle();
-        }
+    // ============================ Deposit glyph
 
-        if (vuforiaObject.isTarget_visible()) {
-            telemetry.addData("Picture:" , "Found");
-        } else {
-            telemetry.addData("Picture:", "NOT found");
-        }
-        telemetry.update();
+    public void Glyph_Deposit() {
+        // kick glyph out
+        GlypherObject.RunGlypherMotor(-1); // bring down glyph
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 1.5, 0.05); // move forward
 
-        return vuforiaObject.isTarget_visible();
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 0.5, 0.05); // move back a little
+        GlypherObject.RunGlypherMotor(0);
+
+        // hit again if necessary
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 1.5, 0.05); // move forward
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 0.5, 0.05); // move back a little
+
+        mecanumDrive.stop_Motor_with_locked();
+
     }
+
 
 }

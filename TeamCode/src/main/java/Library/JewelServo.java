@@ -50,16 +50,19 @@ public class JewelServo {
             double ns = init_position + nn * step;
             flickerbeam.setPosition(ns);
 
-            //if (final_location > init_position) { // lowering the beam
-                while (flicker_elapsetime.milliseconds() < 30 ) { // to slow down
+
+            if (nn < 80) { // go down faster
+                while (flicker_elapsetime.milliseconds() < 10) { // to slow down
                 }
-                if (nn > 90) {   // only when near the jewel
-                    detectJewel();
+            } else {
+                while (flicker_elapsetime.milliseconds() < 30) { // to slow down
                 }
-            //} else {
-            //    while (flicker_elapsetime.milliseconds() < 5 ) {
-            //    }
-            //}
+            }
+
+            if (nn > 90) {   // only when near the jewel
+                detectJewel();
+            }
+
         }
     }
 
@@ -102,6 +105,8 @@ public class JewelServo {
         return 0;
     }
 
+    // ==================================================
+
     private void detectJewel() {
         Colordistance.measure();
         readRed = Colordistance.getRed();
@@ -111,7 +116,7 @@ public class JewelServo {
             if ((readBlue - readRed) >= 4) {
                 isJewelDetected = true;
                 isJewelRed = false;
-            } else if ((readRed - readBlue) >= 4) {
+            } else if ((readRed - readBlue) > 4) {
                 isJewelDetected = true;
                 isJewelRed = true;
             }
