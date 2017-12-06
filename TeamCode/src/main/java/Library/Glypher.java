@@ -8,8 +8,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 public class Glypher {
-    final int TILT_DOWN_ENCODER = 0;    // encoder location when the glyper tilt is down
-    final int TILT_UP_ENCODER = 5000; // encoder location when the glypher is up
+    final int DOWN_ENCODER = 0;    // encoder location when the glyper tilt is down
+    final int MID_ENCODER  = 2500;
+    final int UP_ENCODER   = 5000; // encoder location when the glypher is up
+
 
     private Servo Booter;
     private Servo LeftIntake;
@@ -19,20 +21,24 @@ public class Glypher {
     private DcMotor Elevator;
     private ElapsedTime glypher_runtime = new ElapsedTime();
     private double lastBooterPosition = 0.0;
+    private DcMotor grabber;
 
     public Glypher(HardwareMap hardwareMap) {    // constructor to create object
 
         motorGlypher = hardwareMap.dcMotor.get("GlypherDrive");
         TiltGlypher = hardwareMap.dcMotor.get("GlypherTilter");
         Elevator = hardwareMap.dcMotor.get("GlypherElevator");
+        grabber = hardwareMap.dcMotor.get("GlypherGrabber");
         Booter = hardwareMap.get(Servo.class, "ServoBooter");
         LeftIntake = hardwareMap.get(Servo.class, "ServoLeftIntake");
         RightIntake = hardwareMap.get(Servo.class, "ServoRightIntake");
+
 
         motorGlypher.setDirection(DcMotor.Direction.FORWARD);
         Elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         TiltGlypher.setDirection(DcMotor.Direction.FORWARD);
         Elevator.setDirection(DcMotor.Direction.FORWARD);
+        grabber.setDirection(DcMotor.Direction.FORWARD);
         //TiltGlypher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         StopIntakeLeft();
         StopIntakeRight();
@@ -63,9 +69,8 @@ public class Glypher {
         setBooterPosition();
     }
 
-    public void LeftIntakeIn() {
-        LeftIntake.setPosition(1.0);
-    }
+
+    public void LeftIntakeIn() { LeftIntake.setPosition(1.0); }
 
     public void RightIntakeIn() {
         RightIntake.setPosition(0.0);
@@ -85,6 +90,10 @@ public class Glypher {
 
     public void RightIntakeOut() {
         RightIntake.setPosition(1.0);
+    }
+
+    public void GrabberSetPower(double GrabberPower) {
+        grabber.setPower(GrabberPower);
     }
 
     private void setBooterPosition() {

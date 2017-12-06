@@ -303,7 +303,7 @@ public class VuforiaNavigation  {
 
     // angle > 0 need to turn to left
     public double getAngleTowardPicture() {
-        return Math.toDegrees( Math.toDegrees( Math.atan2(getX(), getY())));
+        return Math.toDegrees( Math.atan2(getX(), getY()));
     }
 
     public float getOrientation() {  // 1st, 2nd, and 3rd angle
