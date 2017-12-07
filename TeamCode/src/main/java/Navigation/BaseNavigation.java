@@ -172,8 +172,8 @@ public abstract class BaseNavigation extends LinearOpMode {
 
 
     // ================= Robot spin =========================
-    protected void Spin_locked_angle(double angle_lock) {
-        double timeoutsec = 5.0;
+    protected void Spin_locked_angle(double angle_lock, double timeoutsec) {
+        //double timeoutsec = 5.0;
         double testpower  = 0.4;
 
         mecanumDrive.set_Angle_tolerance(5.0);
@@ -193,9 +193,10 @@ public abstract class BaseNavigation extends LinearOpMode {
         basenavigation_elapsetime.reset();
 
         int spin_count = 0;
-        while (spin_count < 10 && opModeIsActive() && !vuforiaObject.isTarget_visible() && basenavigation_elapsetime.seconds() < timeoutsec) {
-            mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower, mecanumDrive.get_locked_angle() + 10.0);
+        while (spin_count < 90 && opModeIsActive() && !vuforiaObject.isTarget_visible() && basenavigation_elapsetime.seconds() < timeoutsec) {
+            mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower, mecanumDrive.get_locked_angle() - 1.0);
             spin_count += 1;
+            //sleep(100);
             idle();
         }
 
@@ -343,10 +344,11 @@ public abstract class BaseNavigation extends LinearOpMode {
     }
 
 
-    // ============================ Deposit glyph
+    // ============================ Deposit glyph ===================================
 
     public void Glyph_Deposit() {
         // kick glyph out
+        //GlypherObject.BooterKickOut();   // another option instead of using the wheels
         GlypherObject.RunGlypherMotor(-1); // bring down glyph
         mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 1.5, 0.05); // move forward
 
