@@ -38,7 +38,7 @@ public class IMU    {
     private Acceleration gravity;
     public double gravity_x, gravity_y, gravity_z;
     private double yaw_value;
-    protected float angular_velocity;
+    public float angular_velocity;
     private ElapsedTime elapsed_time = new ElapsedTime();
     private double last_measured_time = -100.0;
 

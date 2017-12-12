@@ -1,5 +1,6 @@
 package TestCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -8,6 +9,7 @@ import java.util.Locale;
 import Library.VuforiaNavigation;
 
 @TeleOp(name = "Vuforia test Up Side Down", group = "TestCode")
+@Disabled
 public class TeleopV1_vuforia_upside_down extends LinearOpMode
 {
     private VuforiaNavigation vuforia_test = null;

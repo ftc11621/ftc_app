@@ -227,6 +227,22 @@ public class Mecanum
         motorRR.setPower(0.0);
     }
 
+    // ================== get encoder values ==========
+    public int get_Encoder_value(int nmotor) {
+        switch (nmotor) {
+            case 0:
+                return motorLF.getCurrentPosition();
+            case 1:
+                return motorRF.getCurrentPosition();
+            case 2:
+                return motorLR.getCurrentPosition();
+            case 3:
+                return motorRR.getCurrentPosition();
+            default:
+                return 0;
+        }
+    }
+
     // --------------- Set angle within -180 to 180 ---------------------------
     private double setAngleInRange(double angle) {
         while (angle >  180) angle -= 360;

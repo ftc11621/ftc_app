@@ -50,6 +50,15 @@ public class Teleop_IMU extends LinearOpMode
                         return String.format(Locale.getDefault(), "%.1f", IMU_Object.yaw());
                     }
                 });
+
+        telemetry.addLine()
+                .addData("Angular speed Yaw: ", new Func<String>() {
+                    @Override
+                    public String value() {
+                        return String.format(Locale.getDefault(), "%.1f", IMU_Object.angular_velocity);
+                    }
+                });
+
         telemetry.addLine()
                 .addData("Roll: ", new Func<String>() {
                     @Override
@@ -64,6 +73,9 @@ public class Teleop_IMU extends LinearOpMode
                         return String.format(Locale.getDefault(), "%.1f", IMU_Object.pitch());
                     }
                 });
+
+
+        /*
         telemetry.addLine()
                 .addData("Pitch: ", new Func<String>() {
                     @Override
@@ -85,6 +97,6 @@ public class Teleop_IMU extends LinearOpMode
                         return String.format(Locale.getDefault(), "%.1f", IMU_Object.gravity_z);
                     }
                 });
-
+*/
     }
 }
