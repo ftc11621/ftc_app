@@ -19,16 +19,16 @@ public class Mecanum
     private static final double     SMOOTHING_COEFFICIENT   = 0.1;      // to smooth out power changes, smaller=smoother
 
     private double     YAW_PID_KP                = 0.01;      // 0.01, 0.007;       // PID KP coefficient
-    private double     YAW_PID_KI                = 0.0005; // 0.0002 PID KI coefficient
-    private double     YAW_PID_KD                = 0.01;       // 0.01, 0.001;       // PID KD coefficient
+    private double     YAW_PID_KI                = 0.000;     // 0.0002 PID KI coefficient
+    private double     YAW_PID_KD                = 0.01;      // 0.01, 0.001;       // PID KD coefficient
     private double                  Yaw_Ki_sum                = 0.0;        // PID KI integration
     private double                  Yaw_locked_angle;                       // angle to lock the robot orientation
     private double  max_speed                                 = 0.1;
-
     private double  angle_tolerance                           = 5;
 
     private IMU IMU_Object = null;
     private double IMU_yaw_offset = 0;
+
     private ElapsedTime chassis_runtime = new ElapsedTime();
 
     private double lastleftFpower, lastrightFpower,lastleftRpower, lastrightRpower;
@@ -84,11 +84,11 @@ public class Mecanum
         double LR = Y_of_robot - X_of_robot - rotation;
         double RR = Y_of_robot + X_of_robot + rotation;
         // normalized just in case magnitude greater than 1.0
-        double normalized = Math.max(1.0,Math.max( Math.max(Math.abs(LF), Math.abs(LR)) , Math.max( Math.abs(RF), Math.abs(RR)) )) / max_speed;
-        motorLF.setPower(LF / normalized);
-        motorRF.setPower(RF / normalized);
-        motorLR.setPower(LR / normalized);
-        motorRR.setPower(RR / normalized);
+        double normalized = Math.max(1.0,Math.max( Math.max(Math.abs(LF), Math.abs(LR)) , Math.max( Math.abs(RF), Math.abs(RR)) ));
+        motorLF.setPower(max_speed * LF / normalized);
+        motorRF.setPower(max_speed * RF / normalized);
+        motorLR.setPower(max_speed * LR / normalized);
+        motorRR.setPower(max_speed * RR / normalized);
     }
 
     // ----------------------------------------------------
@@ -116,29 +116,31 @@ public class Mecanum
     // --------------------------------------------------------
     public void run_Motor_angle_locked(double X_of_robot, double Y_of_robot ) { // move with locked orientation
 
-        IMU_Object.measure();   // read angle
+        double rotation = 0.0;
 
-        double angle_deviation = setAngleInRange(Yaw_locked_angle - getRobotAngle());
+        if (IMU_Object.measure() ) {   // read angle if it's not too fast
 
-        Yaw_Ki_sum += angle_deviation * YAW_PID_KI;
-        if (Yaw_Ki_sum > 0.2) {
-            Yaw_Ki_sum = 0.2f;
-        } else if (Yaw_Ki_sum < -0.2) {
-            Yaw_Ki_sum = -0.2f;
-        }
-        double rotation = YAW_PID_KP * angle_deviation + Yaw_Ki_sum;
+            double angle_deviation = setAngleInRange(Yaw_locked_angle - getRobotAngle());
 
-        double damper_rotation = -1.0 * YAW_PID_KD * IMU_Object.angular_velocity; // damping rotation
+            Yaw_Ki_sum += angle_deviation * YAW_PID_KI;
+            if (Yaw_Ki_sum > 0.2) {
+                Yaw_Ki_sum = 0.2f;
+            } else if (Yaw_Ki_sum < -0.2) {
+                Yaw_Ki_sum = -0.2f;
+            }
+            rotation = YAW_PID_KP * angle_deviation + Yaw_Ki_sum;
 
-        if ( (damper_rotation/rotation) < -1.5 ) { // too much damping, may oscillate
-            rotation = 0.0;
-        } else if ( (damper_rotation/rotation) < 0.0) { // speed in direction it's supposed to go
-            rotation += damper_rotation;
-        }
+            double damper_rotation = -1.0 * YAW_PID_KD * IMU_Object.angular_velocity; // damping rotation
 
+            if ((damper_rotation / rotation) < -1.5) { // too much damping, may oscillate
+                rotation = 0.0;
+            } else if ((damper_rotation / rotation) < 0.0) { // speed in direction it's supposed to go
+                rotation += damper_rotation;
+            }
 
-        if (Math.abs(rotation) > 1.0) {   // prevent too high rotational value
-            rotation = 1.0 * Math.signum(rotation);
+            if (Math.abs(rotation) > 1.0) {   // prevent too high rotational value
+                rotation = 1.0 * Math.signum(rotation);
+            }
         }
         run_Motors_no_encoder(X_of_robot, Y_of_robot, rotation);
     }
@@ -219,7 +221,10 @@ public class Mecanum
     // =============================================
     public void stop_Motor_with_locked() {
         set_max_power(0.0);
-        run_Motor_angle_locked(0.0,0.0);
+        motorLF.setPower(0.0);
+        motorRF.setPower(0.0);
+        motorLR.setPower(0.0);
+        motorRR.setPower(0.0);
     }
 
     // --------------- Set angle within -180 to 180 ---------------------------
