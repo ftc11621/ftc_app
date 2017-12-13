@@ -194,6 +194,10 @@ public class VuforiaNavigation  {
         this.targets.activate();
     }
 
+    public void deactivate() {
+        this.targets.deactivate();
+    }
+
     public boolean isTarget_visible() {
 
         return ((VuforiaTrackableDefaultListener) relicTemplate.getListener()).isVisible();

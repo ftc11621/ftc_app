@@ -41,8 +41,9 @@ public class DriverControlled extends LinearOpMode
             // Glypher section ------------------------------------
             GlypherObject.RunGlypherMotor(-gamepad2.left_stick_y);
             GlypherObject.Tilt(-gamepad2.right_stick_y);
-            //GlypherObject.setElevatorPower(-gamepad2.right_stick_y);
-
+            GlypherObject.setElevatorPower(-gamepad2.right_stick_y);
+            telemetry.addData("Elevator position: ", GlypherObject.getElevatorPosition());
+            /*
             if (gamepad2.y) {
                 GlypherObject.setElevatorPosition(5000);
                 telemetry.addData("Elevator position: ", GlypherObject.getElevatorPosition());
@@ -54,7 +55,7 @@ public class DriverControlled extends LinearOpMode
                 telemetry.addData("Elevator position: ", GlypherObject.getElevatorPosition());
             }
 
-            /*
+
             if(gamepad2.right_trigger > 0.5) {
                 GlypherObject.GrabberSetPower(-0.5);
             } else if (gamepad2.left_trigger > 0.5) {
@@ -63,7 +64,7 @@ public class DriverControlled extends LinearOpMode
             */
 
 
-            if (gamepad2.left_trigger > 0.5) {
+            if (gamepad2.right_trigger > 0.5) {
                 GlypherObject.BooterKickOut();
             }else{
                 GlypherObject.BooterRetract();

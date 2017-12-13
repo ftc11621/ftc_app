@@ -152,18 +152,18 @@ public abstract class BaseNavigation extends LinearOpMode {
 
         if (isRedAlliance) {  // move forward
             if (isLeftSide) {
-                mecanumDrive.run_Motor_angle_locked_with_Timer(-x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
+                mecanumDrive.run_Motor_angle_locked_with_Timer(-x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), 1.0, 0.2);
             }else {
                 double crytooffset = -0.15;
-                mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset -x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
+                mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset +2.0*x_offset + flickDirection * Math.sin(Math.toRadians(25.0)), Math.cos(Math.toRadians(25.0)), timeoutset, powerset);
             }
 
-        } else {                // go backward
+        } else {                // go backward blue alliance
             if (isLeftSide) {   // a little to the left
                 double crytooffset = -0.15;
-                mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset + x_offset - flickDirection * Math.sin(Math.toRadians(15.0)), -Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
+                mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset + x_offset - flickDirection * Math.sin(Math.toRadians(25.0)), -Math.cos(Math.toRadians(25.0)), timeoutset, powerset);
             } else {
-                mecanumDrive.run_Motor_angle_locked_with_Timer(x_offset - flickDirection * Math.sin(Math.toRadians(15.0)), -Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
+                mecanumDrive.run_Motor_angle_locked_with_Timer(x_offset - flickDirection * Math.sin(Math.toRadians(15.0)), -Math.cos(Math.toRadians(15.0)), 1.0, powerset);
 
             }
         }
@@ -174,7 +174,7 @@ public abstract class BaseNavigation extends LinearOpMode {
     // ================= Robot spin =========================
     protected void Spin_locked_angle(double angle_lock, double timeoutsec) {
         //double timeoutsec = 5.0;
-        double testpower  = 0.4;
+        double testpower  = .025;
 
         mecanumDrive.set_Angle_tolerance(5.0);
         mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower, angle_lock);
@@ -271,7 +271,7 @@ public abstract class BaseNavigation extends LinearOpMode {
         }
     }
 
-        // =========================== Move to X-Y location =====================
+    // =========================== Move to X-Y location =====================
 
     protected void vuforia_Move_XY_inch_point_picture(double Xloc, double Yloc, double timeout) {
 

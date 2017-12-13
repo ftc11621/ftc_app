@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class JewelServo {
     final double BEAM_RAISE     = 0.33;
-    final double BEAM_LOWER     = 0.80;
+    final double BEAM_LOWER     = 0.92;
 
     private boolean isJewelDetected     = false;
     private boolean isJewelRed          = true;
