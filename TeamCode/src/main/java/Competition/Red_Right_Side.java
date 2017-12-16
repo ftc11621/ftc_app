@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import Navigation.BaseNavigation;
 
-@Autonomous(name = "Red Alliance Right Side", group = "Competition")
+@Autonomous(name = "Ultra Sonic Red Alliance Right Side", group = "Competition")
 //@Disabled
 public class Red_Right_Side extends BaseNavigation
 {
@@ -12,11 +12,9 @@ public class Red_Right_Side extends BaseNavigation
 
     protected void navigate() {
 
+
         double X_target_inch = -39.0 + 7.0;
         double Y_target_inch = 36.0;
-        // robot is parallel to the picture
-        //double phone_X_offset_inch = -12.0;
-        //double phone_Y_offset_inch = -9.0;
         double phone_X_offset_inch = -9.0;
         double phone_Y_offset_inch = 6.0;
 
@@ -25,6 +23,9 @@ public class Red_Right_Side extends BaseNavigation
         flickJewel();
 
         get_off_Balancing_Stone();
+
+        // Move forward to a distance in inch
+        // Move_by_Distance_inch(10.0, 100.0, 100.0, 10.0);
 
 
         // ========= Vuforia if it works
@@ -36,6 +37,7 @@ public class Red_Right_Side extends BaseNavigation
         Spin_locked_angle(90.0, 10.0);        // facing crytobox
 
         Glyph_Deposit();
+
     }
 
 }

@@ -3,27 +3,28 @@ package Navigation;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-//import javax.microedition.khronos.opengles.GL;
-
 import Library.Glypher;
 import Library.JewelServo;
 import Library.Mecanum;
 import Library.REVColorDistance;
+import Library.RangeSensor;
 import Library.VuforiaNavigation;
 
 public abstract class BaseNavigation extends LinearOpMode {
+
+    final double Initial_orientation = 90.0;   // initial robot orientatian respect to Jewels
 
     private JewelServo JewelFlicker = null;
     private REVColorDistance Colordistance = null;
     private Mecanum mecanumDrive = null;
     private Glypher GlypherObject = null;
     private VuforiaNavigation vuforiaObject = null;
+    private RangeSensor Range_sensors = null;
 
     boolean isRedAlliance, isLeftSide;
     int     flickDirection = 0;
     ElapsedTime basenavigation_elapsetime = new ElapsedTime();
-
-    final double Initial_orientation = 90.0;   // initial robot orientatian respect to Jewels
+    double  cryto_offset_inc = 0.0;
 
     @Override
     public void runOpMode() {
@@ -33,7 +34,7 @@ public abstract class BaseNavigation extends LinearOpMode {
         mecanumDrive = new Mecanum(hardwareMap);
         GlypherObject = new Glypher(hardwareMap);
         vuforiaObject = new VuforiaNavigation(true , false);  // true=extended Tracking of a target picture
-
+        Range_sensors = new RangeSensor(hardwareMap);
 
         waitForStart();
 
@@ -58,61 +59,9 @@ public abstract class BaseNavigation extends LinearOpMode {
         mecanumDrive.setCurrentAngle(Initial_orientation);
         mecanumDrive.set_angle_locked(Initial_orientation);     // to the right of Jewel
         mecanumDrive.set_Angle_tolerance(3.0);
-    }
 
-    private void vuforia_activate() {
         vuforiaObject.activate();
     }
-
-
-    // ============================ testing purpose ===================================
-    public void NavigationTest() {
-        double timeoutsec = 5.0;
-        double testpower = 0.4;
-        double waittime = 2.0;
-
-        mecanumDrive.set_Angle_tolerance(5.0);
-
-        telemetry.addData("angle 0:", mecanumDrive.getRobotAngle());
-
-        //mecanumDrive.set_angle_locked(0.0);
-        mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower, 0.0);
-        //mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 5.0, 0.4);
-        //mecanumDrive.stop_Motor_with_locked();
-        telemetry.addData("angle 1:", mecanumDrive.getRobotAngle());
-
-        // pause 2 seconds
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, waittime, 0.0);
-
-        //mecanumDrive.set_angle_locked(90.0);
-        mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower, 90.0);
-        //mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, 5.0, 0.4);
-        //mecanumDrive.stop_Motor_with_locked();
-        telemetry.addData("angle 2:", mecanumDrive.getRobotAngle());
-
-        // pause 2 seconds
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, waittime, 0.0);
-
-        mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower, 180.0);
-
-        // pause 2 seconds
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, waittime, 0.0);
-
-        mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower, -90.0);
-
-        // pause 2 seconds
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0.0, 0.0, waittime, 0.0);
-
-        mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower,0.0);
-
-        telemetry.update();
-    }
-
-
-    public void Reset_locked_angle() {
-        mecanumDrive.set_angle_locked(Initial_orientation);
-    }
-
 
 
     // ====================================================================
@@ -125,16 +74,20 @@ public abstract class BaseNavigation extends LinearOpMode {
 
         JewelFlicker.Initial();
 
+        vuforiaObject.updateRobotLocation();        // scan the picture
+
         flickDirection = JewelFlicker.flickJewel(isRedAlliance); // 0=color not detected, 1=left,-1=right
-        telemetry.addData("Direction :", flickDirection);
-        telemetry.addData("Red value : ", JewelFlicker.readRed);
-        telemetry.addData("Blue value: ", JewelFlicker.readBlue);
-        telemetry.update();
+        //telemetry.addData("Direction :", flickDirection);
+        //telemetry.addData("Red value : ", JewelFlicker.readRed);
+        //telemetry.addData("Blue value: ", JewelFlicker.readBlue);
+        //telemetry.update();
+
+        cryto_offset_inc = vuforiaObject.crytobox_offset_inch;      // get cryto offset
 
         if ( Math.abs(flickDirection) > 0) {
-            // Robot_Turn(timeoutsec, turn_power, flickDirection * turn_angle);
             mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, turn_power, flickDirection * turn_angle + Initial_orientation);
         }
+
         JewelFlicker.Initial();
 
     }
@@ -168,13 +121,14 @@ public abstract class BaseNavigation extends LinearOpMode {
             }
         }
         telemetry.update();
+
+        vuforiaObject.deactivate();
     }
 
 
     // ================= Robot spin =========================
     protected void Spin_locked_angle(double angle_lock, double timeoutsec) {
-        //double timeoutsec = 5.0;
-        double testpower  = .025;
+        double testpower  = .05;
 
         mecanumDrive.set_Angle_tolerance(5.0);
         mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower, angle_lock);
@@ -186,8 +140,6 @@ public abstract class BaseNavigation extends LinearOpMode {
 
         double timeoutsec = 5.0;
         double testpower  = 0.4;
-
-        vuforia_activate();
 
         mecanumDrive.set_Angle_tolerance(5.0);
         basenavigation_elapsetime.reset();
@@ -208,67 +160,6 @@ public abstract class BaseNavigation extends LinearOpMode {
         telemetry.update();
 
         return vuforiaObject.isTarget_visible();
-    }
-
-    // =========================== Move to X-Y location =====================
-
-    protected void vuforia_robotMove_XY_inch(double Xloc, double Yloc) {
-
-        double maxpower = 0.1;
-
-        basenavigation_elapsetime.reset();
-
-        double distanceX, distanceY, total_distance;
-        double cryto_offset_x = 0.0;
-        double cryto_offset_y = 0.0;
-
-        while (basenavigation_elapsetime.seconds() < 5.0 && opModeIsActive()) {
-            if (vuforiaObject.isTarget_visible()) {
-                // telemetry.addData("Vuforia", "Visible");
-
-                if (vuforiaObject.updateRobotLocation()) {
-                    telemetry.addData("Location Update:", "Yes");
-                } else {
-                    telemetry.addData("Location Update:", "No");
-                }
-
-                if (isRedAlliance) {
-                    if (isLeftSide) {
-                        cryto_offset_x = vuforiaObject.crytobox_offset_inch;
-                    } else {
-                        cryto_offset_y = -vuforiaObject.crytobox_offset_inch;
-                    }
-                } else {
-                    if (isLeftSide) {
-                        cryto_offset_y = vuforiaObject.crytobox_offset_inch;
-                    } else {
-                        cryto_offset_x = vuforiaObject.crytobox_offset_inch;
-                    }
-                }
-
-                Xloc += cryto_offset_x;
-                Yloc += cryto_offset_y;
-
-                distanceX = Xloc - vuforiaObject.getXcoordinate_mm() / 25.4;
-                distanceY = vuforiaObject.getYcoordinate_mm() / 25.4 - Yloc;
-                total_distance = Math.hypot(distanceX, distanceY);
-
-                mecanumDrive.set_max_power(Math.min(total_distance / 5.0, maxpower));
-
-                mecanumDrive.run_Motor_angle_locked(distanceX / total_distance, distanceY / total_distance);
-                telemetry.addData("X distance to correct cryto column: ", distanceX);
-                telemetry.addData("Y distance to correct cryto column: ", distanceY);
-                telemetry.addData("Crytobox column offset: ", vuforiaObject.crytobox_offset_inch);
-            } else {
-                telemetry.addData("Vuforia", "NOT Visible");
-                mecanumDrive.stop_Motor_with_locked();
-                // do non vuforia autonomous
-            }
-
-            telemetry.update();
-
-            idle();
-        }
     }
 
     // =========================== Move to X-Y location =====================
@@ -363,5 +254,46 @@ public abstract class BaseNavigation extends LinearOpMode {
 
     }
 
+    // =========================== Move to X-Y location using Ultra Sonic sensors =====================
+
+    protected void Move_by_Distance_inch(double frontDistance_target, double leftDistance, double rightDistance, double timeout) {
+
+        double maxpower = 0.1;
+        double distance_tolerance = 1.0;
+        double PID_kp = 0.02;
+        double PID_ki = 0.00001;
+        double PID_kd = 0.0;
+
+        double totalpower;
+        double new_distance = Range_sensors.getDistance_frontLeft_inch(200);
+        double old_distance = new_distance;
+
+        basenavigation_elapsetime.reset();
+        double Yerror = 1000.0;
+
+        while (basenavigation_elapsetime.seconds() < timeout && opModeIsActive() && Math.abs(Yerror) > distance_tolerance ) {
+
+            new_distance = Range_sensors.getDistance_frontLeft_inch(200);
+
+            Yerror = new_distance - frontDistance_target;
+
+            totalpower = maxpower * ( Yerror * PID_kp + (new_distance - old_distance) * PID_kd );
+
+            if (totalpower > maxpower) {
+                totalpower = maxpower;
+            } else if (totalpower < -maxpower) {
+                totalpower = -maxpower;
+            }
+
+            mecanumDrive.run_Motor_angle_locked(0.0, totalpower);
+
+            telemetry.addData("Distance Error to the front target:", Yerror);
+
+            telemetry.update();
+            old_distance = new_distance;
+            idle();
+        }
+        mecanumDrive.stop_Motor_with_locked();
+    }
 
 }

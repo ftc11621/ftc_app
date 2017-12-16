@@ -40,8 +40,8 @@ public class Glypher {
         Elevator.setDirection(DcMotor.Direction.FORWARD);
         grabber.setDirection(DcMotor.Direction.FORWARD);
         //TiltGlypher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        StopIntakeLeft();
-        StopIntakeRight();
+        //StopIntakeLeft();
+        //StopIntakeRight();
     }
 
 
@@ -59,6 +59,7 @@ public class Glypher {
         setBooterPosition();
     }
 
+    /*
     public void BooterSlowKickOut() {
         lastBooterPosition += 0.001;
         setBooterPosition();
@@ -69,32 +70,20 @@ public class Glypher {
         setBooterPosition();
     }
 
-
     public void LeftIntakeIn() { LeftIntake.setPosition(1.0); }
-
-    public void RightIntakeIn() {
-        RightIntake.setPosition(0.0);
-    }
-
-    public void StopIntakeLeft() {
-        LeftIntake.setPosition(0.5);
-    }
-
-    public void StopIntakeRight() {
-        RightIntake.setPosition(0.5);
-    }
-
-    public void LeftIntakeOut() {
-        LeftIntake.setPosition(0.0);
-    }
-
+    public void RightIntakeIn() { RightIntake.setPosition(0.0); }
+    public void StopIntakeLeft() { LeftIntake.setPosition(0.5); }
+    public void StopIntakeRight() { RightIntake.setPosition(0.5); }
+    public void LeftIntakeOut() {  LeftIntake.setPosition(0.0); }
     public void RightIntakeOut() {
         RightIntake.setPosition(1.0);
     }
+    */
 
     public void GrabberSetPower(double GrabberPower) {
         grabber.setPower(GrabberPower);
     }
+
 
     private void setBooterPosition() {
         if (lastBooterPosition > 0.5) {

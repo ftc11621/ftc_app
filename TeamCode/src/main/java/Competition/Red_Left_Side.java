@@ -15,8 +15,6 @@ public class Red_Left_Side extends BaseNavigation
 
         double X_target_inch = -27.0;
         double Y_target_inch =  7.0;
-        //double phone_X_offset_inch = 12.0;
-        //double phone_Y_offset_inch = -9.0;
         double phone_X_offset_inch = -9.0;
         double phone_Y_offset_inch = 6.0;
 

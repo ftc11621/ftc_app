@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
+import static android.os.SystemClock.sleep;
 
 
 public class Mecanum
@@ -213,6 +214,7 @@ public class Mecanum
         while(chassis_runtime.seconds() < time_sec && Math.abs(setAngleInRange(Yaw_locked_angle - getRobotAngle())) > angle_tolerance) {
             //IMU_Object.measure();   // read angle
             run_Motor_angle_locked(0.0, 0.0);
+            sleep(10);
         }
         stop_Motor_with_locked();
         Yaw_Ki_sum = 0.0;       // reset the PID KI sum
