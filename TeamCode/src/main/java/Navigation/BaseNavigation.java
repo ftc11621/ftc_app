@@ -240,11 +240,11 @@ public abstract class BaseNavigation extends LinearOpMode {
     public void Glyph_Deposit() {
         // kick glyph out
         //GlypherObject.BooterKickOut();   // another option instead of using the wheels
-        GlypherObject.RunGlypherMotor(-1); // bring down glyph
+        //GlypherObject.RunGlypherMotor(-1); // bring down glyph
         mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 1.5, 0.05); // move forward
 
         mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 0.5, 0.05); // move back a little
-        GlypherObject.RunGlypherMotor(0);
+        //GlypherObject.RunGlypherMotor(0);
 
         // hit again if necessary
         mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 1.5, 0.05); // move forward
