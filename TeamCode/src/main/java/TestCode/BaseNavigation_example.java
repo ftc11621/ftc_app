@@ -13,18 +13,18 @@ public class BaseNavigation_example extends BaseNavigation
 
     protected void navigate() {
 
-        double X_target_inch = -39.0 + 7.0;
-        double Y_target_inch = 36.0;
-        double phone_X_offset_inch = -9.0;
-        double phone_Y_offset_inch = 6.0;
+        // example Red left side
+        double X_distance = 60.0 - 9.0;  // to the left wall minus sensor offset
+        double Y_distance = 10.0;        // to the wall facing crytobox
+
 
         //robotInitial(true,false);
-        robotInitial(true,true);       //
+        robotInitial(true, true);       //
 
         //flickJewel();                 // for Red alliance
         //offBalancingStone();     //  Red alliance on the left side
 
-        Move_by_Distance_inch(10.0, 100.0, 100.0, 10.0);
+        Move_to_Distance_inch(Y_distance, 0.0, X_distance, 10.0);
 
     }
 

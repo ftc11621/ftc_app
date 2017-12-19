@@ -12,7 +12,7 @@ import Library.VuforiaNavigation;
 
 public abstract class BaseNavigation extends LinearOpMode {
 
-    final double Initial_orientation = 90.0;   // initial robot orientatian respect to Jewels
+    final double Initial_orientation = -90.0;   // initial robot orientatian respect to Jewels
 
     private JewelServo JewelFlicker = null;
     private REVColorDistance Colordistance = null;
@@ -99,25 +99,28 @@ public abstract class BaseNavigation extends LinearOpMode {
 
         double powerset = 0.2;
         double timeoutset = 1.5;
-        double x_offset = -0.1;
+        double x_offset = 0.1;
 
         telemetry.addData("Jewel direction: ", flickDirection );
 
         if (isRedAlliance) {  // move forward
             if (isLeftSide) {
-                mecanumDrive.run_Motor_angle_locked_with_Timer(-x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), 1.0, 0.2);
+                //mecanumDrive.run_Motor_angle_locked_with_Timer(-x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), 1.0, 0.2);
+                mecanumDrive.run_Motor_angle_locked_with_Timer(+ x_offset - flickDirection * Math.sin(Math.toRadians(15.0)), -Math.cos(Math.toRadians(15.0)), 1.0, powerset);
             }else {
-                double crytooffset = -0.15;
-                mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset +2.0*x_offset + flickDirection * Math.sin(Math.toRadians(25.0)), Math.cos(Math.toRadians(25.0)), timeoutset, powerset);
+                double crytooffset = 0.0; // extra offset
+                //mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset +2.0*x_offset + flickDirection * Math.sin(Math.toRadians(25.0)), Math.cos(Math.toRadians(25.0)), timeoutset, powerset);
+                mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset + x_offset - flickDirection * Math.sin(Math.toRadians(25.0)), -Math.cos(Math.toRadians(25.0)), timeoutset, powerset);
             }
 
         } else {                // go backward blue alliance
             if (isLeftSide) {   // a little to the left
-                double crytooffset = -0.15;
-                mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset + x_offset - flickDirection * Math.sin(Math.toRadians(25.0)), -Math.cos(Math.toRadians(25.0)), timeoutset, powerset);
+                double crytooffset = 0.0;  // extra offset
+                //mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset + x_offset - flickDirection * Math.sin(Math.toRadians(25.0)), -Math.cos(Math.toRadians(25.0)), timeoutset, powerset);
+                mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset + x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
             } else {
-                mecanumDrive.run_Motor_angle_locked_with_Timer(x_offset - flickDirection * Math.sin(Math.toRadians(15.0)), -Math.cos(Math.toRadians(15.0)), 1.0, powerset);
-
+                //mecanumDrive.run_Motor_angle_locked_with_Timer(x_offset - flickDirection * Math.sin(Math.toRadians(15.0)), -Math.cos(Math.toRadians(15.0)), 1.0, powerset);
+                mecanumDrive.run_Motor_angle_locked_with_Timer(- x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), 1.0, 0.2);
             }
         }
         telemetry.update();
@@ -256,40 +259,46 @@ public abstract class BaseNavigation extends LinearOpMode {
 
     // =========================== Move to X-Y location using Ultra Sonic sensors =====================
 
-    protected void Move_by_Distance_inch(double frontDistance_target, double leftDistance, double rightDistance, double timeout) {
+    protected void Move_to_Distance_inch(double frontDistance_target, double leftDistance, double rightDistance, double timeout) {
 
+        // Tweaking parameters
         double maxpower = 0.1;
         double distance_tolerance = 1.0;
         double PID_kp = 0.02;
         double PID_ki = 0.00001;
         double PID_kd = 0.0;
 
-        double totalpower;
-        double new_distance = Range_sensors.getDistance_frontLeft_inch(200);
-        double old_distance = new_distance;
-
         basenavigation_elapsetime.reset();
+        double Xnew_distance;
+        double old_distance=20.0;
+        double new_distance=20.0;
+        double Xerror = 1000.0;
         double Yerror = 1000.0;
 
-        while (basenavigation_elapsetime.seconds() < timeout && opModeIsActive() && Math.abs(Yerror) > distance_tolerance ) {
+        while (basenavigation_elapsetime.seconds() < timeout && opModeIsActive() && Math.abs(new_distance) > distance_tolerance ) {
 
-            new_distance = Range_sensors.getDistance_frontLeft_inch(200);
-
-            Yerror = new_distance - frontDistance_target;
-
-            totalpower = maxpower * ( Yerror * PID_kp + (new_distance - old_distance) * PID_kd );
-
-            if (totalpower > maxpower) {
-                totalpower = maxpower;
-            } else if (totalpower < -maxpower) {
-                totalpower = -maxpower;
+            if (leftDistance > 0.0) {
+                Xnew_distance = Range_sensors.getDistance_Left_inch(200);
+                Xerror = leftDistance - Xnew_distance;
+            } else {
+                Xnew_distance = Range_sensors.getDistance_Right_inch(200);
+                Xerror = Xnew_distance - rightDistance;
             }
 
-            mecanumDrive.run_Motor_angle_locked(0.0, totalpower);
+            double Ynew_distance = Range_sensors.getDistance_frontLeft_inch(200);
+            Yerror = Ynew_distance - frontDistance_target;
 
-            telemetry.addData("Distance Error to the front target:", Yerror);
+            new_distance = Math.hypot(Xerror, Yerror);
 
+            double totalpower = maxpower * Math.abs( new_distance * PID_kp + (new_distance - old_distance) * PID_kd );
+
+            mecanumDrive.set_max_power(Math.min(maxpower, totalpower));
+
+            mecanumDrive.run_Motor_angle_locked(Xerror / new_distance, Yerror / new_distance);
+
+            telemetry.addData("Distance to the target location: ", new_distance);
             telemetry.update();
+
             old_distance = new_distance;
             idle();
         }
