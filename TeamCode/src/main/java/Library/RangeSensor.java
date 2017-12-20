@@ -17,15 +17,15 @@ public class RangeSensor {
 
     public RangeSensor(HardwareMap hardwareMap) {    // constructor to create object
         RANGE_1       = hardwareMap.i2cDevice.get("rangeSensor_frontLeft");
-        RANGE_1_Reader= new I2cDeviceSynchImpl(RANGE_1, I2cAddr.create8bit(0x30), false);
-        RANGE_1_Reader.engage();
-
         RANGE_2       = hardwareMap.i2cDevice.get("rangeSensor_Left");
-        RANGE_2_Reader= new I2cDeviceSynchImpl(RANGE_2, I2cAddr.create8bit(0x26), false);
-        RANGE_2_Reader.engage();
-
         RANGE_3       = hardwareMap.i2cDevice.get("rangeSensor_Right");
+
+        RANGE_1_Reader= new I2cDeviceSynchImpl(RANGE_1, I2cAddr.create8bit(0x30), false);
+        RANGE_2_Reader= new I2cDeviceSynchImpl(RANGE_2, I2cAddr.create8bit(0x26), false);
         RANGE_3_Reader= new I2cDeviceSynchImpl(RANGE_3, I2cAddr.create8bit(0x32), false);
+
+        RANGE_1_Reader.engage();
+        RANGE_2_Reader.engage();
         RANGE_3_Reader.engage();
     }
 
