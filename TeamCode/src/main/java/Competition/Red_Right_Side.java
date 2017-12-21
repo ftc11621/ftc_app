@@ -12,6 +12,9 @@ public class Red_Right_Side extends BaseNavigation
 
     protected void navigate() {
 
+        // Ultrasonic Range sensor
+        double X_distance = 36.0 - 8.5;  // to the left wall minus sensor offset
+        double Y_distance = 10.0;        // to the wall facing crytobox
 
         double X_target_inch = -39.0 + 7.0;
         double Y_target_inch = 36.0;

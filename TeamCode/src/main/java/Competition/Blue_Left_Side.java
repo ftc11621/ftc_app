@@ -12,7 +12,11 @@ public class Blue_Left_Side extends BaseNavigation
 
     protected void navigate() {
 
-        double X_target_inch = 57.0 - 7.0;
+        // Ultrasonic Range sensor
+        double X_distance = 36.0 - 8.5;  // to the left wall minus sensor offset
+        double Y_distance = 10.0;        // to the wall facing crytobox
+
+        double X_target_inch = 57.0 - 8.5;
         double Y_target_inch = 36.0;
         double phone_X_offset_inch = -9.0;
         double phone_Y_offset_inch = 6.0;

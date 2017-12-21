@@ -12,7 +12,7 @@ import java.util.Locale;
 import Library.REVColorDistance;
 
 @TeleOp(name = "Test: REVColorDistance", group = "TestCode")
-@Disabled                            // Comment this out to add to the opmode list
+//@Disabled                            // Comment this out to add to the opmode list
 public class SensorREVColorDistance extends LinearOpMode {
 
     REVColorDistance Rev_color_distance = null;

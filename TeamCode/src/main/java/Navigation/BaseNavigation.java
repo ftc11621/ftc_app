@@ -104,6 +104,7 @@ public abstract class BaseNavigation extends LinearOpMode {
         telemetry.addData("Jewel direction: ", flickDirection );
 
         if (isRedAlliance) {  // move forward
+            Range_sensors.Engage_Right();
             if (isLeftSide) {
                 //mecanumDrive.run_Motor_angle_locked_with_Timer(-x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), 1.0, 0.2);
                 mecanumDrive.run_Motor_angle_locked_with_Timer(+ x_offset - flickDirection * Math.sin(Math.toRadians(15.0)), -Math.cos(Math.toRadians(15.0)), 1.0, powerset);
@@ -114,6 +115,7 @@ public abstract class BaseNavigation extends LinearOpMode {
             }
 
         } else {                // go backward blue alliance
+            Range_sensors.Engage_Left();
             if (isLeftSide) {   // a little to the left
                 double crytooffset = 0.0;  // extra offset
                 //mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset + x_offset - flickDirection * Math.sin(Math.toRadians(25.0)), -Math.cos(Math.toRadians(25.0)), timeoutset, powerset);
@@ -278,14 +280,14 @@ public abstract class BaseNavigation extends LinearOpMode {
         while (basenavigation_elapsetime.seconds() < timeout && opModeIsActive() && Math.abs(new_distance) > distance_tolerance ) {
 
             if (leftDistance > 0.0) {
-                Xnew_distance = Range_sensors.getDistance_Left_inch(200);
+                Xnew_distance = Range_sensors.getDistance_Left_inch(10, 200);
                 Xerror = leftDistance - Xnew_distance;
             } else {
-                Xnew_distance = Range_sensors.getDistance_Right_inch(200);
+                Xnew_distance = Range_sensors.getDistance_Right_inch(10, 200);
                 Xerror = Xnew_distance - rightDistance;
             }
 
-            double Ynew_distance = Range_sensors.getDistance_frontLeft_inch(200);
+            double Ynew_distance = Range_sensors.getDistance_frontLeft_inch(10, 200);
             Yerror = Ynew_distance - frontDistance_target;
 
             new_distance = Math.hypot(Xerror, Yerror);

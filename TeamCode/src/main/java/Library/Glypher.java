@@ -8,17 +8,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 public class Glypher {
-    final int DOWN_ENCODER = 0;    // encoder location when the glyper tilt is down
-    final int MID_ENCODER  = 2500;
-    final int UP_ENCODER   = 5000; // encoder location when the glypher is up
+    final double glyphstopper_open = 0.4;
+    final double glyphstopper_close = 0.5;
 
 
-    //private Servo Booter;
-    //private Servo LeftIntake;
-    //private Servo RightIntake;
-    private DcMotor motorGlypher;
-    private DcMotor TiltGlypher;
     private DcMotor Elevator;
+    private Servo GlyphStopper;
     private ElapsedTime glypher_runtime = new ElapsedTime();
     private double lastBooterPosition = 0.0;
     private DcMotor grabber;
@@ -28,6 +23,7 @@ public class Glypher {
 
         Elevator = hardwareMap.dcMotor.get("GlypherElevator");
         grabber = hardwareMap.dcMotor.get("GlypherGrabber");
+        GlyphStopper = hardwareMap.get(Servo.class, "GlyphStopper");
 
         Elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -42,6 +38,13 @@ public class Glypher {
         grabber.setPower(GrabberPower);
     }
 
+    public void glyphstopper_open() {
+        GlyphStopper.setPosition(glyphstopper_open);
+    }
+
+    public void glyphstopper_close() {
+        GlyphStopper.setPosition(glyphstopper_close);
+    }
 
     //-------Elevator-------
 

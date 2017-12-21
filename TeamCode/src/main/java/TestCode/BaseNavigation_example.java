@@ -14,8 +14,8 @@ public class BaseNavigation_example extends BaseNavigation
     protected void navigate() {
 
         // example Red left side
-        double X_distance = 60.0 - 9.0;  // to the left wall minus sensor offset
-        double Y_distance = 10.0;        // to the wall facing crytobox
+        double X_distance = 60.0 - 8.5;  // to the left wall minus sensor offset
+        double Y_distance = 20.0;        // to the wall facing crytobox
 
 
         //robotInitial(true,false);
