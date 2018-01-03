@@ -39,23 +39,26 @@ public class DriverControlled extends LinearOpMode
         while(opModeIsActive())
         {
             // Glypher section ------------------------------------
-            GlypherObject.setElevatorPower(-gamepad2.right_stick_y);
-            GlypherObject.GrabberSetPower(gamepad2.right_stick_x);
-
-            if (gamepad2.y) {
-                GlypherObject.setElevatorPosition(500);
-                telemetry.addData("Elevator position: ", GlypherObject.getElevatorPosition());
-            } else if (gamepad2.x) {
-                GlypherObject.setElevatorPosition(350);
-                telemetry.addData("Elevator position: ", GlypherObject.getElevatorPosition());
-            } else if (gamepad2.b) {
-                GlypherObject.setElevatorPosition(100);
-                telemetry.addData("Elevator position: ", GlypherObject.getElevatorPosition());
-            } else if (gamepad2.a) {
-                GlypherObject.setElevatorPosition(0);
-                telemetry.addData("Elevator position: ", GlypherObject.getElevatorPosition());
+            if(gamepad2.left_bumper) {
+                GlypherObject.glyphstopper_close();
+            } else if (gamepad2.right_bumper) {
+                GlypherObject.glyphstopper_open();
             }
 
+            //GlypherObject.setElevatorPower(-gamepad2.right_stick_y);
+            GlypherObject.setElevatorUpDown(0.2, (int) (-gamepad2.right_stick_y*20));
+            GlypherObject.GrabberSetPower(gamepad2.right_stick_x);
+
+            telemetry.addData("Elevator position: ", GlypherObject.getElevatorPosition());
+            if (gamepad2.y) {
+                GlypherObject.setElevatorPosition(480);
+            } else if (gamepad2.x) {
+                GlypherObject.setElevatorPosition(350);
+            } else if (gamepad2.b) {
+                GlypherObject.setElevatorPosition(70);
+            } else if (gamepad2.a) {
+                GlypherObject.setElevatorPosition(0);
+            }
 
 
             // Driving section -----------------------------------------

@@ -280,11 +280,11 @@ public abstract class BaseNavigation extends LinearOpMode {
         while (basenavigation_elapsetime.seconds() < timeout && opModeIsActive() && Math.abs(new_distance) > distance_tolerance ) {
 
             if (leftDistance > 0.0) {
-                Xnew_distance = Range_sensors.getDistance_Left_inch(10, 200);
-                Xerror = leftDistance - Xnew_distance;
+                //Xnew_distance = Range_sensors.getDistance_Left_inch(10, 200);
+                //Xerror = leftDistance - Xnew_distance;
             } else {
-                Xnew_distance = Range_sensors.getDistance_Right_inch(10, 200);
-                Xerror = Xnew_distance - rightDistance;
+                //Xnew_distance = Range_sensors.getDistance_Right_inch(10, 200);
+                //Xerror = Xnew_distance - rightDistance;
             }
 
             double Ynew_distance = Range_sensors.getDistance_frontLeft_inch(10, 200);

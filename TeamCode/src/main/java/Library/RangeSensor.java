@@ -20,7 +20,7 @@ public class RangeSensor {
         //RANGE_2       = hardwareMap.i2cDevice.get("rangeSensor_Left");
         //RANGE_3       = hardwareMap.i2cDevice.get("rangeSensor_Right");
 
-        RANGE_1_Reader= new I2cDeviceSynchImpl(RANGE_1, I2cAddr.create8bit(0x30), false);
+        RANGE_1_Reader= new I2cDeviceSynchImpl(RANGE_1, I2cAddr.create8bit(0x28), false);
         //RANGE_2_Reader= new I2cDeviceSynchImpl(RANGE_2, I2cAddr.create8bit(0x26), false);
         //RANGE_3_Reader= new I2cDeviceSynchImpl(RANGE_3, I2cAddr.create8bit(0x32), false);
 
@@ -36,17 +36,17 @@ public class RangeSensor {
         //RANGE_3_Reader.engage();
     }
 
-
     public  void Engage_all() {
         RANGE_1_Reader.engage();
         //RANGE_2_Reader.engage();
         //RANGE_3_Reader.engage();
     }
 
+
     public double getDistance_frontLeft_inch(int min_distance_cm, int max_distance_cm) {
         return getSensorDistance_inch(min_distance_cm, max_distance_cm, RANGE_1_Reader);
     }
-
+/*
     public double getDistance_Left_inch(int min_distance_cm, int max_distance_cm) {
         return getSensorDistance_inch(min_distance_cm, max_distance_cm, RANGE_2_Reader);
     }
@@ -54,7 +54,7 @@ public class RangeSensor {
     public double getDistance_Right_inch(int min_distance_cm, int max_distance_cm) {
         return getSensorDistance_inch(min_distance_cm, max_distance_cm, RANGE_3_Reader);
     }
-
+*/
 
     private double getSensorDistance_inch(int min_distance, int max_distance, I2cDeviceSynchImpl reader) {
         byte[] range_Cache;

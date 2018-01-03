@@ -22,15 +22,15 @@ public class MRrangeSensor {
         //Right = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeSensor_Right");
     }
 
-
     public boolean isFrontAvailable(double min_distance_inch, double max_distance_inch) {
-        double meas_dist = Front.getDistance(DistanceUnit.INCH);
+        //double meas_dist = Front.getDistance(DistanceUnit.INCH);
+        Distance_front = Front.cmUltrasonic();//
 
-        if (meas_dist > min_distance_inch && meas_dist < max_distance_inch) {
-            Distance_front = meas_dist;
+        //if (meas_dist > min_distance_inch && meas_dist < max_distance_inch) {
+        //    Distance_front = meas_dist;
             return true;
-        }
-        return false;
+        //}
+        //return false;
     }
 
     /*

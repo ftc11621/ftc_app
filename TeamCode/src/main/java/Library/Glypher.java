@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 public class Glypher {
-    final double glyphstopper_open = 0.4;
-    final double glyphstopper_close = 0.5;
+    final double glyphstopper_open = 0.46;
+    final double glyphstopper_close = 0.69;
 
 
     private DcMotor Elevator;
@@ -51,7 +51,7 @@ public class Glypher {
     public void setElevatorPower (double Elevatorpower) {
         double ElevatorPower_max = 0.1;
         if (Elevatorpower > 0) {  // harder to lift than lowering
-            Elevatorpower *= 3.0;
+            Elevatorpower *= 2.0;
         }
         Elevator.setPower(Elevatorpower * ElevatorPower_max);
     }
@@ -70,10 +70,21 @@ public class Glypher {
             }
             //wait(1);
         }
-        Elevator.setPower(0.0);
-        Elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //Elevator.setPower(0.0);
+        //Elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //Elevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
+
+    public void setElevatorUpDown(double Elevatorpower, int increment_step) {
+        Elevator.setTargetPosition(Elevator.getCurrentPosition()+ increment_step);
+        Elevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if (increment_step > 0) {
+            Elevator.setPower(Elevatorpower * 3.0);
+        } else {
+            Elevator.setPower(Elevatorpower);
+        }
+    }
+
     public int getElevatorPosition() {
         return Elevator.getCurrentPosition();
     }
