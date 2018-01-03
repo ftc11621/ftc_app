@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import Navigation.BaseNavigation;
 
 @Autonomous(name = "Best Navigation Test", group = "TestCode")
-//@Disabled
+@Disabled
 public class BaseNavigation_example extends BaseNavigation
 {
     @Override

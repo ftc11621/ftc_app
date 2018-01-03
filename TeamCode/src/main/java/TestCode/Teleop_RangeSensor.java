@@ -1,5 +1,6 @@
 package TestCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -9,6 +10,7 @@ import Library.RangeSensor;
 
 
 @TeleOp(name = "Range Sensor test", group = "TestCode")
+@Disabled
 public class Teleop_RangeSensor extends LinearOpMode
 {
     //private RangeSensor rangesensor = null;

@@ -10,7 +10,7 @@ import Library.REVColorDistance;
 
 
 @TeleOp(name = "Glypher Test", group = "TestCode")
-//@Disabled
+@Disabled
 public class Teleop_Glypher extends LinearOpMode
 {
     private Glypher GlypherObject = null;
