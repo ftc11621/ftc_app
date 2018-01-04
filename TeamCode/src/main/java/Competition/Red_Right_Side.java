@@ -37,6 +37,9 @@ public class Red_Right_Side extends BaseNavigation
         //vuforia_Move_XY_inch_point_picture(X_target_inch+phone_X_offset_inch, Y_target_inch+phone_Y_offset_inch, 5.0);
         //}
 
+        Spin_locked_angle(-45.0, 10.0);      // facing crytobox 4-steps
+        Spin_locked_angle(0.0, 10.0);        // facing crytobox
+        Spin_locked_angle(45.0, 10.0);       // facing crytobox
         Spin_locked_angle(90.0, 10.0);        // facing crytobox
 
         Glyph_Deposit();

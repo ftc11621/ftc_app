@@ -27,6 +27,7 @@ public class Blue_Right_Side extends BaseNavigation
 
         get_off_Balancing_Stone();
 
+        Spin_locked_angle(-45.0, 10.0);        // facing crytobox 2-steps
         Spin_locked_angle(0.0, 10.0);        // facing crytobox
 
         Glyph_Deposit();

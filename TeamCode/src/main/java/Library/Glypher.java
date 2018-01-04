@@ -49,11 +49,10 @@ public class Glypher {
     //-------Elevator-------
 
     public void setElevatorPower (double Elevatorpower) {
-        double ElevatorPower_max = 0.1;
         if (Elevatorpower > 0) {  // harder to lift than lowering
             Elevatorpower *= 2.0;
         }
-        Elevator.setPower(Elevatorpower * ElevatorPower_max);
+        Elevator.setPower(Elevatorpower);
     }
 
     public void setElevatorPosition(int newpos) {
@@ -63,8 +62,8 @@ public class Glypher {
         int init_pos = Elevator.getCurrentPosition();
         glypher_runtime.reset();
         while (Elevator.isBusy() && glypher_runtime.seconds() < 5.0) {
-            if ( ( Elevator_init_position+newpos) > init_pos) {
-                Elevator.setPower(0.3);
+            if ( ( Elevator_init_position+newpos) > Elevator.getCurrentPosition()) {
+                Elevator.setPower(0.2);
             } else {
                 Elevator.setPower(0.1);
             }
@@ -72,14 +71,14 @@ public class Glypher {
         }
         //Elevator.setPower(0.0);
         //Elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //Elevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void setElevatorUpDown(double Elevatorpower, int increment_step) {
-        Elevator.setTargetPosition(Elevator.getCurrentPosition()+ increment_step);
+        int target_position = Elevator.getCurrentPosition()+ increment_step;
+        Elevator.setTargetPosition(target_position);
         Elevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        if (increment_step > 0) {
-            Elevator.setPower(Elevatorpower * 3.0);
+        if (Elevator.getCurrentPosition() < target_position) {
+            Elevator.setPower(Elevatorpower * 2.0);
         } else {
             Elevator.setPower(Elevatorpower);
         }

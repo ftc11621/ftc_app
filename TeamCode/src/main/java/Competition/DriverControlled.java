@@ -35,7 +35,6 @@ public class DriverControlled extends LinearOpMode
         waitForStart();
 
 
-
         while(opModeIsActive())
         {
             // Glypher section ------------------------------------
@@ -45,7 +44,7 @@ public class DriverControlled extends LinearOpMode
                 GlypherObject.glyphstopper_open();
             }
 
-            //GlypherObject.setElevatorPower(-gamepad2.right_stick_y);
+            //GlypherObject.setElevatorPower(-gamepad2.right_stick_y * 0.1);
             GlypherObject.setElevatorUpDown(0.2, (int) (-gamepad2.right_stick_y*20));
             GlypherObject.GrabberSetPower(gamepad2.right_stick_x);
 
