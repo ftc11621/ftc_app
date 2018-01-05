@@ -5,9 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
-
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
 import static android.os.SystemClock.sleep;
 
 public class MRrangeSensor {
@@ -23,14 +21,22 @@ public class MRrangeSensor {
     }
 
     public boolean isFrontAvailable(double min_distance_inch, double max_distance_inch) {
-        //double meas_dist = Front.getDistance(DistanceUnit.INCH);
-        Distance_front = Front.cmUltrasonic();//
+        double meas_dist = - 10;
 
-        //if (meas_dist > min_distance_inch && meas_dist < max_distance_inch) {
-        //    Distance_front = meas_dist;
+        int count = 0;
+        while( (meas_dist < max_distance_inch) && (meas_dist > min_distance_inch) && count < 11) {
+            meas_dist = Front.getDistance(DistanceUnit.INCH);
+            count++;
+            sleep(10);
+        }
+
+        //double meas_dist = getSensorDistance_inch(Front, min_distance_inch, max_distance_inch);
+
+        if (meas_dist > min_distance_inch && meas_dist < max_distance_inch) {
+            Distance_front = meas_dist;
             return true;
-        //}
-        //return false;
+        }
+        return false;
     }
 
     /*
@@ -52,4 +58,14 @@ public class MRrangeSensor {
         return false;
     }
     */
+    private double getSensorDistance_inch(ModernRoboticsI2cRangeSensor rsensor, double min_distance_inch, double max_distance_inch) {
+        int count = 0;
+        double meas_dist = -10;
+        while( (meas_dist < max_distance_inch) && (meas_dist > min_distance_inch) && count < 11) {
+            meas_dist = Front.getDistance(DistanceUnit.INCH);
+            count++;
+            sleep(10);
+        }
+        return meas_dist;
+    }
 }

@@ -10,7 +10,7 @@ import Library.RangeSensor;
 
 
 @TeleOp(name = "Range Sensor test", group = "TestCode")
-@Disabled
+//@Disabled
 public class Teleop_RangeSensor extends LinearOpMode
 {
     //private RangeSensor rangesensor = null;

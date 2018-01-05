@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import Library.Glypher;
 import Library.JewelServo;
+import Library.MRrangeSensor;
 import Library.Mecanum;
 import Library.REVColorDistance;
 import Library.RangeSensor;
@@ -34,7 +35,7 @@ public abstract class BaseNavigation extends LinearOpMode {
         mecanumDrive = new Mecanum(hardwareMap);
         GlypherObject = new Glypher(hardwareMap);
         vuforiaObject = new VuforiaNavigation(true , false);  // true=extended Tracking of a target picture
-        Range_sensors = new RangeSensor(hardwareMap);
+        Range_sensors = new MRrangeSensor(hardwareMap);
 
         waitForStart();
 
@@ -104,7 +105,7 @@ public abstract class BaseNavigation extends LinearOpMode {
         telemetry.addData("Jewel direction: ", flickDirection );
 
         if (isRedAlliance) {  // move forward
-            Range_sensors.Engage_Right();
+            //Range_sensors.Engage_Right();
             if (isLeftSide) {
                 //mecanumDrive.run_Motor_angle_locked_with_Timer(-x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), 1.0, 0.2);
                 mecanumDrive.run_Motor_angle_locked_with_Timer(+ x_offset - flickDirection * Math.sin(Math.toRadians(15.0)), -Math.cos(Math.toRadians(15.0)), 1.0, powerset);
@@ -115,7 +116,7 @@ public abstract class BaseNavigation extends LinearOpMode {
             }
 
         } else {                // go backward blue alliance
-            Range_sensors.Engage_Left();
+            //Range_sensors.Engage_Left();
             if (isLeftSide) {   // a little to the left
                 double crytooffset = 0.0;  // extra offset
                 //mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset + x_offset - flickDirection * Math.sin(Math.toRadians(25.0)), -Math.cos(Math.toRadians(25.0)), timeoutset, powerset);

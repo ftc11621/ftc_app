@@ -3,6 +3,7 @@ package Library;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDevice;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import static android.os.SystemClock.sleep;
 
@@ -13,6 +14,7 @@ public class RangeSensor {
     private static final int RANGE_READ_LENGTH = 2; //Number of byte to read
     private I2cDevice RANGE_1, RANGE_2, RANGE_3;
     private I2cDeviceSynchImpl RANGE_1_Reader, RANGE_2_Reader, RANGE_3_Reader;
+    //private I2cDeviceSynch RANGE_1_Reader, RANGE_2_Reader, RANGE_3_Reader;
 
 
     public RangeSensor(HardwareMap hardwareMap) {    // constructor to create object

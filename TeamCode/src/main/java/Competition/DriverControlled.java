@@ -37,16 +37,21 @@ public class DriverControlled extends LinearOpMode
 
         while(opModeIsActive())
         {
-            // Glypher section ------------------------------------
+            // Glypher Stopper ------------------------------------
             if(gamepad2.left_bumper) {
                 GlypherObject.glyphstopper_close();
             } else if (gamepad2.right_bumper) {
                 GlypherObject.glyphstopper_open();
             }
 
-            //GlypherObject.setElevatorPower(-gamepad2.right_stick_y * 0.1);
-            GlypherObject.setElevatorUpDown(0.2, (int) (-gamepad2.right_stick_y*20));
+
+            // Grabber:
             GlypherObject.GrabberSetPower(gamepad2.right_stick_x);
+
+
+            // Elevator:
+            //GlypherObject.setElevatorPower(-gamepad2.right_stick_y * 0.1); // by power
+            GlypherObject.setElevatorUpDown(0.2, (int) (-gamepad2.right_stick_y*20)); // by encoder
 
             telemetry.addData("Elevator position: ", GlypherObject.getElevatorPosition());
             if (gamepad2.y) {
@@ -65,6 +70,8 @@ public class DriverControlled extends LinearOpMode
                 is_angle_locked = false;
             }
 
+            // To do minor spin left or right
+            // It automatically turns off the angle locking.
             rotation = 0.0;
             if (gamepad1.left_trigger > 0.5) {
                 rotation = 0.4;
@@ -74,6 +81,7 @@ public class DriverControlled extends LinearOpMode
                 is_angle_locked = false;
             }
 
+            // to set speed
             if(gamepad1.dpad_down) {
                 mecanumDrive.set_max_power(0.05);
             } else if(gamepad1.dpad_left) {
