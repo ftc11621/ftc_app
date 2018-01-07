@@ -12,16 +12,26 @@ public class Blue_Right_Side extends BaseNavigation
 
     protected void navigate() {
 
+        // Ultrasonic Range sensor
+        double X_distance = 60.0 - 8.5;  // or 24.0-8.5;  if to Balance board to the left wall minus sensor offset
+        double Y_distance = 10.0;        // to the wall facing crytobox
+
+        double X_target_inch = 45.0;
+        double Y_target_inch =  7.0;
+        double phone_X_offset_inch = -9.0;
+        double phone_Y_offset_inch = 6.0;
+
         robotInitial(false,false);
 
         flickJewel();
-/*
-        Robot_Reverse(0.7,0.3,0); // to crytobox
 
-        Robot_Turn(1.0, 0.2, -90); // turn toward crytobox
+        get_off_Balancing_Stone();
 
-        Robot_Glyph_Deposit();  // to deposit glyph
-        */
+        Spin_locked_angle(-45.0, 10.0);        // facing crytobox 2-steps
+        Spin_locked_angle(0.0, 10.0);        // facing crytobox
+
+        Glyph_Deposit();
+
     }
 
 }

@@ -89,10 +89,12 @@ public class VuforiaNavigation  {
     Orientation rot=null;
     // private String      vumark;         // L M or R side
     private RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.UNKNOWN;
+    public double X_coordinate_mm, Y_coordinate_mm;
+    private boolean isUpsideDown = false;
+    public double crytobox_offset_inch = 0.0;
 
 
-
-    public VuforiaNavigation(boolean enableExtendedTracking) {        // constructor
+    public VuforiaNavigation(boolean enableExtendedTracking, boolean is_UpsideDown) {        // constructor
         //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
         parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
         parameters.vuforiaLicenseKey = "AdksQ3j/////AAAAGVB9GUsSEE0BlMaVB7HcRZRM4Sv74bxusFbCpn3gwnUkr3GuOtSWhrTCHnTU/93+Im+JlrYI6///bytu1igZT48xQ6182nSTpVzJ2ZP+Q/sNzSg3qvIOMnjEptutngqB+e3mQ1+YTiDa9aZod1e8X7UvGsAJ3cfV+X/S3E4M/81d1IRSMPRPEaLpKFdMqN3AcbDpBHoqp82fAp7XWVN3qd/BRe0CAAoNsr26scPBAxvm9cizRG1WeRSFms3XkwFN6eGpH7VpNAdPPXep9RQ3lLZMTFQGOfiV/vRQXq/Tlaj/b7dkA12zBSW81MfBiXRxp06NGieFe7KvXNuu2aDyyXoaPFsI44FEGp1z/SVSEVR4"; // Insert your own key here
@@ -103,6 +105,9 @@ public class VuforiaNavigation  {
         targets = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         relicTemplate = targets.get(0);
         relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary since only one target
+
+        is_UpsideDown = is_UpsideDown;
+
         //wheels = targets.get(0);
         //wheels.setName("wheels");
 
@@ -189,7 +194,12 @@ public class VuforiaNavigation  {
         this.targets.activate();
     }
 
+    public void deactivate() {
+        this.targets.deactivate();
+    }
+
     public boolean isTarget_visible() {
+
         return ((VuforiaTrackableDefaultListener) relicTemplate.getListener()).isVisible();
         /*
         return ((VuforiaTrackableDefaultListener) wheels.getListener()).isVisible() ||
@@ -209,6 +219,19 @@ public class VuforiaNavigation  {
             if (pose != null) {     // target location found
                 trans = pose.getTranslation();
                 rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+
+                double orient = getOrientation();
+                double signofX = Math.signum(orient);
+                double anglerad = Math.toRadians(orient);
+                double xloc = getX();
+                if (isUpsideDown) {
+                    xloc *= 1.0;
+                }
+                X_coordinate_mm = signofX*(getY()*Math.sin(anglerad) + signofX * xloc*Math.cos(anglerad));
+                Y_coordinate_mm = getY()*Math.cos(anglerad) - signofX * xloc*Math.sin(anglerad);
+
+                getCrytoboxColumn_inch();
+
                 return true;
             }
         }
@@ -239,19 +262,17 @@ public class VuforiaNavigation  {
         return  destination_from_y_axis_angle + getOrientation();
     }
 
-    public int getCrytoboxColumn() {
-        if (vuMark == RelicRecoveryVuMark.CENTER) {
-            return 1;
+    private void getCrytoboxColumn_inch() {
+        if (vuMark == RelicRecoveryVuMark.LEFT) {
+            crytobox_offset_inch = -7.63;
         } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-            return 2;
-        } else {
-            return 0;       // pick the left one by default
+            crytobox_offset_inch = 7.63;
         }
+        //return crytobox_offset_inch;
     }
 
-    //public void setExtendedTracking(boolean truefalse) {
-    //    parameters.useExtendedTracking = truefalse;   // whether to use extended tracking
-    //}
+
+    // ==================== Phone location ======================
 
     public double getX() { // robot x location
         //float[] coordinates = lastRobotLocation.getTranslation().getData();
@@ -259,7 +280,7 @@ public class VuforiaNavigation  {
         return trans.get(0);
     }
 
-    public double getY_vuforia() { // vuforia y location
+    private double getY_vuforia() { // vuforia y location
         //float[] coordinates = lastRobotLocation.getTranslation().getData();
         //return coordinates[1];
         return trans.get(1);
@@ -268,6 +289,25 @@ public class VuforiaNavigation  {
         //float[] coordinates = lastRobotLocation.getTranslation().getData();
         //return coordinates[1];
         return -trans.get(2);
+    }
+
+    public double getXcoordinate_mm() { // location respect to picture regardless of orientation
+        double orient = getOrientation();
+        double signofX = Math.signum(orient);
+        double anglerad = Math.toRadians(orient);
+        return signofX*(getY()*Math.sin(anglerad) + signofX * getX()*Math.cos(anglerad));
+    }
+
+    public double getYcoordinate_mm() { // location respect to picture regardless of orientation
+        double orient = getOrientation();
+        double signofX = Math.signum(orient);
+        double anglerad = Math.toRadians(orient);
+        return getY()*Math.cos(anglerad) - signofX * getX()*Math.sin(anglerad);
+    }
+
+    // angle > 0 need to turn to left
+    public double getAngleTowardPicture() {
+        return Math.toDegrees( Math.atan2(getX(), getY()));
     }
 
     public float getOrientation() {  // 1st, 2nd, and 3rd angle

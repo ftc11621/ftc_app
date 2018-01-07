@@ -1,5 +1,6 @@
 package TestCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -8,6 +9,7 @@ import Library.REVColorDistance;
 
 
 @TeleOp(name = "Test Flicker Red Alliance", group = "TestCode")
+@Disabled
 public class Teleop_JewelTest extends LinearOpMode
 {
     private JewelServo JewelFlicker = null;

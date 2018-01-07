@@ -7,102 +7,84 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-public class Glypher
-{
-    final int TILT_DOWN_ENCODER  =                  0;    // encoder location when the glyper tilt is down
-    final int TILT_UP_ENCODER =                     5000; // encoder location when the glypher is up
+public class Glypher {
+    final double glyphstopper_open = 0.46;
+    final double glyphstopper_close = 0.69;
 
-    private Servo Booter;
-    private Servo LeftIntake;
-    private Servo RightIntake;
-    private DcMotor motorGlypher;
-    private DcMotor TiltGlypher;
+
+    private DcMotor Elevator;
+    private Servo GlyphStopper;
     private ElapsedTime glypher_runtime = new ElapsedTime();
     private double lastBooterPosition = 0.0;
+    private DcMotor grabber;
+    private int     Elevator_init_position;
 
-    public Glypher(HardwareMap hardwareMap){    // constructor to create object
+    public Glypher(HardwareMap hardwareMap) {    // constructor to create object
 
-        motorGlypher = hardwareMap.dcMotor.get("GlypherDrive");
-        TiltGlypher = hardwareMap.dcMotor.get("GlypherTilter");
-        Booter = hardwareMap.get(Servo.class, "ServoBooter");
-        LeftIntake = hardwareMap.get(Servo.class, "ServoLeftIntake");
-        RightIntake = hardwareMap.get(Servo.class, "ServoRightIntake");
+        Elevator = hardwareMap.dcMotor.get("GlypherElevator");
+        grabber = hardwareMap.dcMotor.get("GlypherGrabber");
+        GlyphStopper = hardwareMap.get(Servo.class, "GlyphStopper");
 
-        motorGlypher.setDirection(DcMotor.Direction.FORWARD);
-        //TiltGlypher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        TiltGlypher.setDirection(DcMotor.Direction.FORWARD);
-        //TiltGlypher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        StopIntakeLeft();
-        StopIntakeRight();
-    }
+        Elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        Elevator.setDirection(DcMotor.Direction.FORWARD);
+        grabber.setDirection(DcMotor.Direction.REVERSE);
 
-    public void RunGlypherMotor(double power) {
-        motorGlypher.setPower(power);
-    }
-    public void BooterKickOut() {
-        lastBooterPosition = 0.5;
-        setBooterPosition();
-    }
-    public void BooterRetract() {
-        lastBooterPosition = 0.0;
-        setBooterPosition();
+        Elevator_init_position = Elevator.getCurrentPosition();
     }
 
-    public void BooterSlowKickOut() {
-        lastBooterPosition += 0.001;
-        setBooterPosition();
-    }
-    public void BooterSlowRetract() {
-        lastBooterPosition -= 0.001;
-        setBooterPosition();
-    }
-    public void LeftIntakeIn() {
-        LeftIntake.setPosition(1.0);
-    }
-    public void RightIntakeIn() {
-        RightIntake.setPosition(0.0);
-    }
-    public void StopIntakeLeft() {
-        LeftIntake.setPosition(0.5);
-    }
-    public void StopIntakeRight() {
-        RightIntake.setPosition(0.5);
-    }
-    public void LeftIntakeOut() {
-        LeftIntake.setPosition(0.0);
+
+    public void GrabberSetPower(double GrabberPower) {
+        grabber.setPower(GrabberPower);
     }
 
-    public void RightIntakeOut() {
-        RightIntake.setPosition(1.0);
+    public void glyphstopper_open() {
+        GlyphStopper.setPosition(glyphstopper_open);
     }
 
-    private void setBooterPosition () {
-        if (lastBooterPosition > 0.5) { lastBooterPosition = 0.5; }
-        if (lastBooterPosition < 0.0) { lastBooterPosition = 0.0; }
-        Booter.setPosition(lastBooterPosition);
+    public void glyphstopper_close() {
+        GlyphStopper.setPosition(glyphstopper_close);
     }
 
-    // =============== Tilt ===========================
-    public void Tilt(double power) {
-        TiltGlypher.setPower(power);
-    }
-    public int Tilt_getCurrentEncoder() {
-        return TiltGlypher.getCurrentPosition();
-    }
-    public void Tilt_goDown() {
-        Tilt_goToEncoder(TILT_DOWN_ENCODER);
-    }
-    public void Tilt_goUp() {
-        Tilt_goToEncoder(TILT_UP_ENCODER);
-    }
-    private void Tilt_goToEncoder(int encoderLocation) {
-        glypher_runtime.reset();
-        TiltGlypher.setTargetPosition(TILT_DOWN_ENCODER);
-        while (TiltGlypher.isBusy() && glypher_runtime.seconds() < 30) { // 60 seconds timeout
-            Tilt(0.4);
+    //-------Elevator-------
+
+    public void setElevatorPower (double Elevatorpower) {
+        if (Elevatorpower > 0) {  // harder to lift than lowering
+            Elevatorpower *= 2.0;
         }
-        Tilt(0.0);
+        Elevator.setPower(Elevatorpower);
     }
 
+    public void setElevatorPosition(int newpos) {
+        Elevator.setTargetPosition(Elevator_init_position+newpos);
+        Elevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        int init_pos = Elevator.getCurrentPosition();
+        glypher_runtime.reset();
+        while (Elevator.isBusy() && glypher_runtime.seconds() < 5.0) {
+            if ( ( Elevator_init_position+newpos) > Elevator.getCurrentPosition()) {
+                Elevator.setPower(0.2);
+            } else {
+                Elevator.setPower(0.1);
+            }
+            //wait(1);
+        }
+        //Elevator.setPower(0.0);
+        //Elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void setElevatorUpDown(double Elevatorpower, int increment_step) {
+        int target_position = Elevator.getCurrentPosition()+ increment_step;
+        Elevator.setTargetPosition(target_position);
+        Elevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if (Elevator.getCurrentPosition() < target_position) {
+            Elevator.setPower(Elevatorpower * 2.0);
+        } else {
+            Elevator.setPower(Elevatorpower);
+        }
+    }
+
+    public int getElevatorPosition() {
+        return Elevator.getCurrentPosition();
+    }
 }

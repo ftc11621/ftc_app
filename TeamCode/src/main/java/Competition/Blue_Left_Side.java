@@ -12,18 +12,33 @@ public class Blue_Left_Side extends BaseNavigation
 
     protected void navigate() {
 
-        robotInitial(false,true);
+        // Ultrasonic Range sensor
+        double X_distance = 36.0 - 8.5;  // to the left wall minus sensor offset
+        double Y_distance = 10.0;        // to the wall facing crytobox
 
-        NavigationTest();
+        double X_target_inch = 57.0 - 8.5;
+        double Y_target_inch = 36.0;
+        double phone_X_offset_inch = -9.0;
+        double phone_Y_offset_inch = 6.0;
 
-        //      flickJewel();
- /*
-        Robot_Reverse(0.7,0.3,-20); // to crytobox
+        robotInitial(false, true);
 
-        Robot_Turn(1.0, 0.2, -180); // turn toward crytobox
 
-        Robot_Glyph_Deposit();  // to deposit glyph
-        */
+        flickJewel();
+
+        get_off_Balancing_Stone();
+
+
+        // ========= Vuforia if it works
+        //Spin_locked_angle(45.0, 10.0);     // get close to pointing to a picture
+        //if (vuforia_find_picture()) {       // if the picture is found
+        //vuforia_Move_XY_inch_point_picture(X_target_inch+phone_X_offset_inch, Y_target_inch+phone_Y_offset_inch, 5.0);
+        //}
+
+        Spin_locked_angle(-90.0, 10.0);        // facing crytobox
+
+        Glyph_Deposit();
+
     }
 
 }

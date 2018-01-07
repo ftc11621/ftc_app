@@ -35,53 +35,43 @@ public class DriverControlled extends LinearOpMode
         waitForStart();
 
 
-
         while(opModeIsActive())
         {
-            // Glypher section ------------------------------------
-            GlypherObject.RunGlypherMotor(-gamepad2.left_stick_y);
-            GlypherObject.Tilt(-gamepad2.right_stick_y);
+            // Glypher Stopper ------------------------------------
+            if(gamepad2.left_bumper) {
+                GlypherObject.glyphstopper_close();
+            } else if (gamepad2.right_bumper) {
+                GlypherObject.glyphstopper_open();
+            }
 
-            /*
+
+            // Grabber:
+            GlypherObject.GrabberSetPower(gamepad2.right_stick_x);
+
+
+            // Elevator:
+            //GlypherObject.setElevatorPower(-gamepad2.right_stick_y * 0.1); // by power
+            GlypherObject.setElevatorUpDown(0.2, (int) (-gamepad2.right_stick_y*20)); // by encoder
+
+            telemetry.addData("Elevator position: ", GlypherObject.getElevatorPosition());
             if (gamepad2.y) {
-                GlypherObject.BooterKickOut();
+                GlypherObject.setElevatorPosition(480);
+            } else if (gamepad2.x) {
+                GlypherObject.setElevatorPosition(350);
+            } else if (gamepad2.b) {
+                GlypherObject.setElevatorPosition(70);
             } else if (gamepad2.a) {
-                GlypherObject.BooterRetract();
+                GlypherObject.setElevatorPosition(0);
             }
 
-            if (gamepad2.dpad_up) {
-                GlypherObject.BooterSlowKickOut();
-                GlypherObject.BooterRetract();
-            } else if (gamepad2.dpad_down) {
-                GlypherObject.BooterSlowRetract();
-            }
-            if (gamepad2.left_bumper) {
-                GlypherObject.LeftIntakeIn();
-                */
-            if (gamepad2.left_trigger > 0.5) {
-                GlypherObject.BooterKickOut();
-            }else{
-                GlypherObject.BooterRetract();
-            }
-            /*
-            }  else{
-                GlypherObject.StopIntakeLeft();
-            }
-
-            if (gamepad2.right_bumper) {
-                GlypherObject.RightIntakeIn();
-            } else if (gamepad2.right_trigger > 0.1) {
-                GlypherObject.RightIntakeOut();
-            }  else{
-                GlypherObject.StopIntakeRight();
-            }
-*/
 
             // Driving section -----------------------------------------
             if (gamepad1.b) {  // unlock robot orientation from left joystick. Do this before gamepad1.x below
                 is_angle_locked = false;
             }
 
+            // To do minor spin left or right
+            // It automatically turns off the angle locking.
             rotation = 0.0;
             if (gamepad1.left_trigger > 0.5) {
                 rotation = 0.4;
@@ -91,6 +81,7 @@ public class DriverControlled extends LinearOpMode
                 is_angle_locked = false;
             }
 
+            // to set speed
             if(gamepad1.dpad_down) {
                 mecanumDrive.set_max_power(0.05);
             } else if(gamepad1.dpad_left) {

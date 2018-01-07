@@ -7,6 +7,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 //import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 //import com.qualcomm.robotcore.util.Hardware;
 import  com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 //import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
@@ -37,7 +38,9 @@ public class IMU    {
     private Acceleration gravity;
     public double gravity_x, gravity_y, gravity_z;
     private double yaw_value;
-    protected float angular_velocity;
+    public float angular_velocity;
+    private ElapsedTime elapsed_time = new ElapsedTime();
+    private double last_measured_time = -100.0;
 
     private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -58,13 +61,20 @@ public class IMU    {
     public void start ()  {  // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 10);
         measure();           // get initial angles as the reference
+        elapsed_time.reset();
     }
 
 
-    public void measure () {   // measure angles
-        angular_velocity = imu.getAngularVelocity().zRotationRate;
-        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        yaw_value = AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle));
+    public boolean measure () {   // measure angles
+        if ((elapsed_time.milliseconds() - last_measured_time) > 10.0) {
+            angular_velocity = imu.getAngularVelocity().zRotationRate;
+            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            yaw_value = AngleUnit.DEGREES.normalize(angles.angleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle));
+            last_measured_time = elapsed_time.milliseconds();
+            return true;
+        } else {
+            return false;
+        }
     }
     public void getGravity() {
         gravity  = imu.getGravity();
