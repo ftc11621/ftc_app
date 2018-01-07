@@ -20,7 +20,7 @@ public abstract class BaseNavigation extends LinearOpMode {
     private Mecanum mecanumDrive = null;
     private Glypher GlypherObject = null;
     private VuforiaNavigation vuforiaObject = null;
-    private RangeSensor Range_sensors = null;
+    private MRrangeSensor Range_sensors = null;
 
     boolean isRedAlliance, isLeftSide;
     int     flickDirection = 0;
@@ -288,21 +288,23 @@ public abstract class BaseNavigation extends LinearOpMode {
                 //Xerror = Xnew_distance - rightDistance;
             }
 
-            double Ynew_distance = Range_sensors.getDistance_frontLeft_inch(10, 200);
-            Yerror = Ynew_distance - frontDistance_target;
+            if (Range_sensors.isFrontAvailable(10,200)) {
+                double Ynew_distance = Range_sensors.Distance_front;
+                Yerror = Ynew_distance - frontDistance_target;
 
-            new_distance = Math.hypot(Xerror, Yerror);
+                new_distance = Math.hypot(Xerror, Yerror);
 
-            double totalpower = maxpower * Math.abs( new_distance * PID_kp + (new_distance - old_distance) * PID_kd );
+                double totalpower = maxpower * Math.abs(new_distance * PID_kp + (new_distance - old_distance) * PID_kd);
 
-            mecanumDrive.set_max_power(Math.min(maxpower, totalpower));
+                mecanumDrive.set_max_power(Math.min(maxpower, totalpower));
 
-            mecanumDrive.run_Motor_angle_locked(Xerror / new_distance, Yerror / new_distance);
+                mecanumDrive.run_Motor_angle_locked(Xerror / new_distance, Yerror / new_distance);
 
-            telemetry.addData("Distance to the target location: ", new_distance);
-            telemetry.update();
+                telemetry.addData("Distance to the target location: ", new_distance);
+                telemetry.update();
 
-            old_distance = new_distance;
+                old_distance = new_distance;
+            }
             idle();
         }
         mecanumDrive.stop_Motor_with_locked();
