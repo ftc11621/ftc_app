@@ -245,9 +245,14 @@ public abstract class BaseNavigation extends LinearOpMode {
 
     public void Glyph_Deposit() {
         // kick glyph out
-        //GlypherObject.BooterKickOut();   // another option instead of using the wheels
-        //GlypherObject.RunGlypherMotor(-1); // bring down glyph
+
         mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 1.5, 0.05); // move forward
+
+        basenavigation_elapsetime.reset();
+        while (basenavigation_elapsetime.seconds() < 1.0) {
+            GlypherObject.GrabberSetPower(1.0);
+        }
+        GlypherObject.GrabberSetPower(0.0);
 
         mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 0.5, 0.05); // move back a little
         //GlypherObject.RunGlypherMotor(0);
@@ -275,20 +280,24 @@ public abstract class BaseNavigation extends LinearOpMode {
         double Xnew_distance;
         double old_distance=20.0;
         double new_distance=20.0;
-        double Xerror = 1000.0;
-        double Yerror = 1000.0;
+        double Xerror = 0.0;
+        double Yerror = 0.0;
 
         while (basenavigation_elapsetime.seconds() < timeout && opModeIsActive() && Math.abs(new_distance) > distance_tolerance ) {
 
             if (leftDistance > 0.0) {
-                //Xnew_distance = Range_sensors.getDistance_Left_inch(10, 200);
-                //Xerror = leftDistance - Xnew_distance;
+                if (Range_sensors.isLeftAvailable(leftDistance-20, leftDistance+20)) {
+                    Xnew_distance = Range_sensors.Distance_left;
+                    Xerror = leftDistance - Xnew_distance;
+                }
             } else {
-                //Xnew_distance = Range_sensors.getDistance_Right_inch(10, 200);
-                //Xerror = Xnew_distance - rightDistance;
+                if (Range_sensors.isRightAvailable(rightDistance-20, rightDistance+20)) {
+                    Xnew_distance = Range_sensors.Distance_right;
+                    Xerror = Xnew_distance - rightDistance;
+                }
             }
 
-            if (Range_sensors.isFrontAvailable(10,200)) {
+            if (Range_sensors.isFrontAvailable(1,48)) {
                 double Ynew_distance = Range_sensors.Distance_front;
                 Yerror = Ynew_distance - frontDistance_target;
 

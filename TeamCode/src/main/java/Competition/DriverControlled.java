@@ -52,6 +52,16 @@ public class DriverControlled extends LinearOpMode
             //GlypherObject.setElevatorPower(-gamepad2.right_stick_y * 0.1); // by power
             GlypherObject.setElevatorUpDown(max_elevator_power, (int) (-gamepad2.right_stick_y*25)); // by encoder
 
+            if (gamepad2.dpad_down) {
+                max_elevator_power = 0.05;
+            } else if (gamepad2.dpad_left) {
+                max_elevator_power = 0.1;
+            } else if (gamepad2.dpad_up) {
+                max_elevator_power = 0.15;
+            } else if (gamepad2.dpad_right) {
+                max_elevator_power = 0.2;
+            }
+
             //telemetry.addData("Elevator position: ", GlypherObject.getElevatorPosition());
             if (gamepad2.y) {
                 GlypherObject.setElevatorPosition(480);
@@ -63,15 +73,7 @@ public class DriverControlled extends LinearOpMode
                 GlypherObject.setElevatorPosition(0);
             }
 
-            if (gamepad2.dpad_down) {
-                max_elevator_power = 0.05;
-            } else if (gamepad2.dpad_left) {
-                max_elevator_power = 0.1;
-            } else if (gamepad2.dpad_up) {
-                max_elevator_power = 0.15;
-            } else if (gamepad2.dpad_right) {
-                max_elevator_power = 0.2;
-            }
+
 
 
             // Driving section -----------------------------------------
@@ -125,16 +127,7 @@ public class DriverControlled extends LinearOpMode
                     }
                 }
             }
-
-
-
-
-            //telemetry.addData("Locked angle  :", mecanumDrive.get_locked_angle());
-            //if (is_angle_locked) {
-            //    telemetry.addData("Angle Lock: ", "Yes");
-            //} else {
-            //    telemetry.addData("Angle Lock: ", "No");
-            //}
+            
             telemetry.update();
 
             idle();
