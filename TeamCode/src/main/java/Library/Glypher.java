@@ -1,5 +1,6 @@
 package Library;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -16,27 +17,32 @@ public class Glypher {
     private Servo GlyphStopper;
     private ElapsedTime glypher_runtime = new ElapsedTime();
     private double lastBooterPosition = 0.0;
-    private DcMotor grabber;
+    //private DcMotor grabber;
+    private CRServo grabberservo;
     private int     Elevator_init_position;
 
     public Glypher(HardwareMap hardwareMap) {    // constructor to create object
 
         Elevator = hardwareMap.dcMotor.get("GlypherElevator");
-        grabber = hardwareMap.dcMotor.get("GlypherGrabber");
+        //grabber = hardwareMap.dcMotor.get("GlypherGrabber");
+        grabberservo = hardwareMap.crservo.get("GlypherServo");
         GlyphStopper = hardwareMap.get(Servo.class, "GlyphStopper");
 
         Elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         Elevator.setDirection(DcMotor.Direction.FORWARD);
-        grabber.setDirection(DcMotor.Direction.REVERSE);
+        grabberservo.setDirection(DcMotor.Direction.FORWARD);
 
         Elevator_init_position = Elevator.getCurrentPosition();
     }
 
-
+    //public void GrabberSetPower(double GrabberPower) {
+    //    grabber.setPower(GrabberPower);
+    //}
     public void GrabberSetPower(double GrabberPower) {
-        grabber.setPower(GrabberPower);
+        grabberservo.setPower(GrabberPower);
     }
+
 
     public void glyphstopper_open() {
         GlyphStopper.setPosition(glyphstopper_open);
