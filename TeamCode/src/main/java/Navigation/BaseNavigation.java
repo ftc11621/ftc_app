@@ -119,8 +119,9 @@ public abstract class BaseNavigation extends LinearOpMode {
             //Range_sensors.Engage_Left();
             if (isLeftSide) {   // a little to the left
                 double crytooffset = 0.0;  // extra offset
+                x_offset = 0.3;
                 //mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset + x_offset - flickDirection * Math.sin(Math.toRadians(25.0)), -Math.cos(Math.toRadians(25.0)), timeoutset, powerset);
-                mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset + x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
+                mecanumDrive.run_Motor_angle_locked_with_Timer(x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
             } else {
                 //mecanumDrive.run_Motor_angle_locked_with_Timer(x_offset - flickDirection * Math.sin(Math.toRadians(15.0)), -Math.cos(Math.toRadians(15.0)), 1.0, powerset);
                 mecanumDrive.run_Motor_angle_locked_with_Timer(- x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), 1.0, 0.2);
@@ -139,6 +140,7 @@ public abstract class BaseNavigation extends LinearOpMode {
         mecanumDrive.set_Angle_tolerance(5.0);
         mecanumDrive.spin_Motor_angle_locked_with_Timer(timeoutsec, testpower, angle_lock);
     }
+
 
 
     // ================ spin and find the picture =========================
@@ -246,11 +248,11 @@ public abstract class BaseNavigation extends LinearOpMode {
     public void Glyph_Deposit() {
         // kick glyph out
 
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 1.5, 0.05); // move forward
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 2, 0.05); // move forward
 
         basenavigation_elapsetime.reset();
-        while (basenavigation_elapsetime.seconds() < 1.0) {
-            GlypherObject.GrabberSetPower(1.0);
+        while (basenavigation_elapsetime.seconds() < 0.5) {
+            GlypherObject.GrabberSetPower(-0.5);
         }
         GlypherObject.GrabberSetPower(0.0);
 
@@ -259,7 +261,7 @@ public abstract class BaseNavigation extends LinearOpMode {
 
         // hit again if necessary
         mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 1.5, 0.05); // move forward
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 0.5, 0.05); // move back a little
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 0.5, 0.1); // move back a little
 
         mecanumDrive.stop_Motor_with_locked();
 
@@ -288,15 +290,18 @@ public abstract class BaseNavigation extends LinearOpMode {
             if (leftDistance > 0.0) {
                 if (Range_sensors.isLeftAvailable(leftDistance-20, leftDistance+20)) {
                     Xnew_distance = Range_sensors.Distance_left;
-                    Xerror = leftDistance - Xnew_distance;
+                    Xerror = leftDistance - Xnew_distance + cryto_offset_inc;
                 }
             } else {
                 if (Range_sensors.isRightAvailable(rightDistance-20, rightDistance+20)) {
                     Xnew_distance = Range_sensors.Distance_right;
-                    Xerror = Xnew_distance - rightDistance;
+                    Xerror = Xnew_distance - rightDistance + cryto_offset_inc;
                 }
             }
+            mecanumDrive.set_max_power(0.1);
 
+            mecanumDrive.run_Motor_angle_locked(Xerror * 0.1 ,0);
+/*
             if (Range_sensors.isFrontAvailable(1,48)) {
                 double Ynew_distance = Range_sensors.Distance_front;
                 Yerror = Ynew_distance - frontDistance_target;
@@ -314,6 +319,7 @@ public abstract class BaseNavigation extends LinearOpMode {
 
                 old_distance = new_distance;
             }
+            */
             idle();
         }
         mecanumDrive.stop_Motor_with_locked();
