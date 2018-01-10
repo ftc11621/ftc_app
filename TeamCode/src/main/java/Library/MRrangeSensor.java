@@ -15,11 +15,12 @@ public class MRrangeSensor {
 
     public MRrangeSensor(HardwareMap hardwareMap) {    // constructor to create object
 
-        Front = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeSensor_frontLeft");
+        //Front = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeSensor_frontLeft");
         Left  = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeSensor_Left");
         Right = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeSensor_Right");
     }
 
+    /*
     public boolean isFrontAvailable(double min_distance_inch, double max_distance_inch) {
         double meas_dist = Front.getDistance(DistanceUnit.INCH);
         //double meas_dist = getSensorDistance_inch(Front, min_distance_inch, max_distance_inch);
@@ -38,7 +39,7 @@ public class MRrangeSensor {
         }
         return false;
     }
-
+*/
 
     public boolean isLeftAvailable(double min_distance_inch, double max_distance_inch) {
 
