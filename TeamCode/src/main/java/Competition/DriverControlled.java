@@ -20,7 +20,7 @@ public class DriverControlled extends LinearOpMode
 
     private double rotation;
     private boolean is_angle_locked = false; // if locked to the left joystick
-    private double max_elevator_power = 0.2;
+    private double max_elevator_power = 0.4;
 
     public void runOpMode() throws InterruptedException
     {
@@ -46,20 +46,20 @@ public class DriverControlled extends LinearOpMode
             }
 
             // Grabber:
-            GlypherObject.GrabberSetPower(gamepad2.left_stick_x);
+            GlypherObject.GrabberSetPower(gamepad2.left_stick_x * 0.5);
 
             // Elevator:
             //GlypherObject.setElevatorPower(-gamepad2.right_stick_y * 0.1); // by power
-            GlypherObject.setElevatorUpDown(max_elevator_power, (int) (-gamepad2.right_stick_y*25)); // by encoder
+            GlypherObject.setElevatorUpDown(max_elevator_power, (int) (-gamepad2.right_stick_y*max_elevator_power*100.0)); // by encoder
 
             if (gamepad2.dpad_down) {
-                max_elevator_power = 0.05;
-            } else if (gamepad2.dpad_left) {
                 max_elevator_power = 0.1;
-            } else if (gamepad2.dpad_up) {
-                max_elevator_power = 0.15;
-            } else if (gamepad2.dpad_right) {
+            } else if (gamepad2.dpad_left) {
                 max_elevator_power = 0.2;
+            } else if (gamepad2.dpad_up) {
+                max_elevator_power = 0.3;
+            } else if (gamepad2.dpad_right) {
+                max_elevator_power = 0.4;
             }
 
             //telemetry.addData("Elevator position: ", GlypherObject.getElevatorPosition());
