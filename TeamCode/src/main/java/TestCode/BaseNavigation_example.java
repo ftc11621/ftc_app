@@ -25,7 +25,7 @@ public class BaseNavigation_example extends BaseNavigation
         //flickJewel();                 // for Red alliance
         //offBalancingStone();     //  Red alliance on the left side
 
-        Move_to_Distance_inch(Y_distance, 0.0, X_distance, 10.0);
+        Move_to_Distance_inch(0.0, X_distance, 10.0);
 
     }
 

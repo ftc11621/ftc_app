@@ -8,7 +8,6 @@ import Library.JewelServo;
 import Library.MRrangeSensor;
 import Library.Mecanum;
 import Library.REVColorDistance;
-import Library.RangeSensor;
 import Library.VuforiaNavigation;
 
 public abstract class BaseNavigation extends LinearOpMode {
@@ -96,36 +95,14 @@ public abstract class BaseNavigation extends LinearOpMode {
 
 
     // ===========================Get of the Balancing Stone =========================================
-    protected void get_off_Balancing_Stone() {
-
-        double powerset = 0.2;
-        double timeoutset = 1.5;
-        double x_offset = 0.1;
+    protected void get_off_Balancing_Stone(double powerset, double time_to_go, double right_offset) {
 
         telemetry.addData("Jewel direction: ", flickDirection );
 
-        if (isRedAlliance) {  // move forward
-            //Range_sensors.Engage_Right();
-            if (isLeftSide) {
-                //mecanumDrive.run_Motor_angle_locked_with_Timer(-x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), 1.0, 0.2);
-                mecanumDrive.run_Motor_angle_locked_with_Timer(+ x_offset - flickDirection * Math.sin(Math.toRadians(15.0)), -Math.cos(Math.toRadians(15.0)), 1.0, powerset);
-            }else {
-                double crytooffset = 0.0; // extra offset
-                //mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset +2.0*x_offset + flickDirection * Math.sin(Math.toRadians(25.0)), Math.cos(Math.toRadians(25.0)), timeoutset, powerset);
-                mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset + x_offset - flickDirection * Math.sin(Math.toRadians(25.0)), -Math.cos(Math.toRadians(25.0)), timeoutset, powerset);
-            }
-
-        } else {                // go backward blue alliance
-            //Range_sensors.Engage_Left();
-            if (isLeftSide) {   // a little to the left
-                double crytooffset = 0.0;  // extra offset
-                x_offset = 0.3;
-                //mecanumDrive.run_Motor_angle_locked_with_Timer(crytooffset + x_offset - flickDirection * Math.sin(Math.toRadians(25.0)), -Math.cos(Math.toRadians(25.0)), timeoutset, powerset);
-                mecanumDrive.run_Motor_angle_locked_with_Timer(x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), timeoutset, powerset);
-            } else {
-                //mecanumDrive.run_Motor_angle_locked_with_Timer(x_offset - flickDirection * Math.sin(Math.toRadians(15.0)), -Math.cos(Math.toRadians(15.0)), 1.0, powerset);
-                mecanumDrive.run_Motor_angle_locked_with_Timer(- x_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), 1.0, 0.2);
-            }
+        if (isRedAlliance) {  // move backward
+            mecanumDrive.run_Motor_angle_locked_with_Timer( right_offset - flickDirection * Math.sin(Math.toRadians(15.0)), -Math.cos(Math.toRadians(15.0)), time_to_go, powerset);
+        } else {                // go forward
+            mecanumDrive.run_Motor_angle_locked_with_Timer(right_offset + flickDirection * Math.sin(Math.toRadians(15.0)), Math.cos(Math.toRadians(15.0)), time_to_go, powerset);
         }
         telemetry.update();
 
@@ -252,12 +229,13 @@ public abstract class BaseNavigation extends LinearOpMode {
 
         basenavigation_elapsetime.reset();
         while (basenavigation_elapsetime.seconds() < 0.5) {
-            GlypherObject.GrabberSetPower(-0.5);
+            GlypherObject.GrabberSetPower(0.5); // open the grabber
+            idle();
         }
         GlypherObject.GrabberSetPower(0.0);
 
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 0.5, 0.05); // move back a little
-        //GlypherObject.RunGlypherMotor(0);
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0.1, -1, 0.5, 0.1); // move back a little
+
 
         // hit again if necessary
         mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 1.5, 0.05); // move forward
@@ -269,7 +247,7 @@ public abstract class BaseNavigation extends LinearOpMode {
 
     // =========================== Move to X-Y location using Ultra Sonic sensors =====================
 
-    protected void Move_to_Distance_inch(double frontDistance_target, double leftDistance, double rightDistance, double timeout) {
+    protected void Move_to_Distance_inch(double leftDistance, double rightDistance, double timeout) {
 
         // Tweaking parameters
         double maxpower = 0.1;
@@ -301,25 +279,7 @@ public abstract class BaseNavigation extends LinearOpMode {
             mecanumDrive.set_max_power(0.1);
 
             mecanumDrive.run_Motor_angle_locked(Xerror * 0.1 ,0);
-/*
-            if (Range_sensors.isFrontAvailable(1,48)) {
-                double Ynew_distance = Range_sensors.Distance_front;
-                Yerror = Ynew_distance - frontDistance_target;
 
-                new_distance = Math.hypot(Xerror, Yerror);
-
-                double totalpower = maxpower * Math.abs(new_distance * PID_kp + (new_distance - old_distance) * PID_kd);
-
-                mecanumDrive.set_max_power(Math.min(maxpower, totalpower));
-
-                mecanumDrive.run_Motor_angle_locked(Xerror / new_distance, Yerror / new_distance);
-
-                telemetry.addData("Distance to the target location: ", new_distance);
-                telemetry.update();
-
-                old_distance = new_distance;
-            }
-            */
             idle();
         }
         mecanumDrive.stop_Motor_with_locked();
