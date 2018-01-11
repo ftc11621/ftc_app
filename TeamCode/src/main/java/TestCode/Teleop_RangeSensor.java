@@ -27,8 +27,8 @@ public class Teleop_RangeSensor extends LinearOpMode
 
         while(opModeIsActive()) {
             //if (rangesensorREV.isFrontAvailable(0.0,20.0)) {
-                rangesensorREV.isFrontAvailable(0.0,200.0);
-                telemetry.addData("Front Distance (inch): ", rangesensorREV.Distance_front);
+                rangesensorREV.isLeftAvailable(0.0,200.0);
+                telemetry.addData("Left Distance (inch): ", rangesensorREV.Distance_left);
             //}
 
             /*
