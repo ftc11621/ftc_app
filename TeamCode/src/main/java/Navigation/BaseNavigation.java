@@ -225,11 +225,11 @@ public abstract class BaseNavigation extends LinearOpMode {
     public void Glyph_Deposit() {
         // kick glyph out
 
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 2, 0.05); // move forward
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 2, 0.1); // move forward
 
         basenavigation_elapsetime.reset();
         while (basenavigation_elapsetime.seconds() < 0.5) {
-            GlypherObject.GrabberSetPower(0.5); // open the grabber
+            GlypherObject.setGrabberLeftRight(0.5, 40); // open the grabber
             idle();
         }
         GlypherObject.GrabberSetPower(0.0);
@@ -238,8 +238,8 @@ public abstract class BaseNavigation extends LinearOpMode {
 
 
         // hit again if necessary
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 1.5, 0.05); // move forward
-        mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 0.5, 0.1); // move back a little
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0, 1, 1.5, 0.1); // move forward
+        mecanumDrive.run_Motor_angle_locked_with_Timer(0, -1, 1.5, 0.1); // move back a little
 
         mecanumDrive.stop_Motor_with_locked();
 
