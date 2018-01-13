@@ -47,7 +47,7 @@ public class DriverControlled extends LinearOpMode
 
             // Grabber:
             //GlypherObject.GrabberSetPower(gamepad2.left_stick_x * 0.5);
-            GlypherObject.setGrabberLeftRight(0.7, (int) (gamepad2.left_stick_x*27) );
+            GlypherObject.setGrabberLeftRight(0.5, (int) (gamepad2.left_stick_x*27) );
 
             // Elevator:
             //GlypherObject.setElevatorPower(-gamepad2.right_stick_y * 0.1); // by power
