@@ -28,7 +28,7 @@ public class Blue_Right_Side extends BaseNavigation
 
         // Ultrasonic Range sensor
         double X_distance = 60.0 - 8.5;  // to the left wall minus sensor offset
-        Move_to_Distance_inch(X_distance,0,5.0);
+        //Move_to_Distance_inch(X_distance,0,5.0);
 
         Glyph_Deposit();
 
