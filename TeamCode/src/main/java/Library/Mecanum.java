@@ -82,7 +82,7 @@ public class Mecanum
     public void run_Motors_no_encoder(double X_of_robot, double Y_of_robot, double rotation) {
         double LF = Y_of_robot + X_of_robot - rotation;
         double RF = Y_of_robot - X_of_robot + rotation;
-        double LR = (Y_of_robot - X_of_robot - rotation)*1.2;
+        double LR = (Y_of_robot - X_of_robot - rotation)*1.1;
         double RR = Y_of_robot + X_of_robot + rotation;
         // normalized just in case magnitude greater than 1.0
         double normalized = Math.max(1.0,Math.max( Math.max(Math.abs(LF), Math.abs(LR)) , Math.max( Math.abs(RF), Math.abs(RR)) ));
