@@ -35,7 +35,7 @@ public class Red_Right_Side extends BaseNavigation
         // Ultrasonic Range sensor
         // Adjust it for crytobox
         double X_distance = 36.0 - 8.5;  // to the right wall minus sensor offset
-        Move_to_Distance_inch(0.0, X_distance,5.0);
+        //Move_to_Distance_inch(0.0, X_distance,5.0);
 
 
         Glyph_Deposit();
