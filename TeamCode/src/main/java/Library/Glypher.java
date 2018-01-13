@@ -17,31 +17,33 @@ public class Glypher {
     private Servo GlyphStopper;
     private ElapsedTime glypher_runtime = new ElapsedTime();
     private double lastBooterPosition = 0.0;
-    //private DcMotor grabber;
-    private CRServo grabberservo;
+    private DcMotor grabber;
+    //private CRServo grabberservo;
     private int     Elevator_init_position;
+    private int     Grabber_init_position;
 
     public Glypher(HardwareMap hardwareMap) {    // constructor to create object
 
         Elevator = hardwareMap.dcMotor.get("GlypherElevator");
-        //grabber = hardwareMap.dcMotor.get("GlypherGrabber");
-        grabberservo = hardwareMap.crservo.get("GlypherServo");
+        grabber = hardwareMap.dcMotor.get("GlypherGrabber");
+        //grabberservo = hardwareMap.crservo.get("GlypherServo");
         GlyphStopper = hardwareMap.get(Servo.class, "GlyphStopper");
 
         Elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         Elevator.setDirection(DcMotor.Direction.FORWARD);
-        grabberservo.setDirection(DcMotor.Direction.FORWARD);
+        grabber.setDirection(DcMotor.Direction.FORWARD);
 
         Elevator_init_position = Elevator.getCurrentPosition();
+        Grabber_init_position = grabber.getCurrentPosition();
     }
 
-    //public void GrabberSetPower(double GrabberPower) {
-    //    grabber.setPower(GrabberPower);
-    //}
     public void GrabberSetPower(double GrabberPower) {
-        grabberservo.setPower(GrabberPower);
+        grabber.setPower(GrabberPower);
     }
+    //public void GrabberSetPower(double GrabberPower) {
+    //    grabberservo.setPower(GrabberPower);
+    //}
 
 
     public void glyphstopper_open() {
@@ -75,8 +77,6 @@ public class Glypher {
             }
             //wait(1);
         }
-        //Elevator.setPower(0.0);
-        //Elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void setElevatorUpDown(double Elevatorpower, int increment_step) {
@@ -88,6 +88,13 @@ public class Glypher {
         } else {
             Elevator.setPower(Elevatorpower);
         }
+    }
+
+    public void setGrabberLeftRight(double Grabberpower, int increment_step) {
+        int target_position = grabber.getCurrentPosition()+ increment_step;
+        grabber.setTargetPosition(target_position);
+        grabber.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        grabber.setPower(Grabberpower);
     }
 
     public int getElevatorPosition() {
