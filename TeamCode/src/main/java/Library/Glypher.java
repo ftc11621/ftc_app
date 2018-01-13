@@ -30,6 +30,8 @@ public class Glypher {
         GlyphStopper = hardwareMap.get(Servo.class, "GlyphStopper");
 
         Elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        grabber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         Elevator.setDirection(DcMotor.Direction.FORWARD);
         grabber.setDirection(DcMotor.Direction.FORWARD);
