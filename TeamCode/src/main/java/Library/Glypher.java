@@ -60,7 +60,7 @@ public class Glypher {
 
     public void setElevatorPower (double Elevatorpower) {
         if (Elevatorpower > 0) {  // harder to lift than lowering
-            Elevatorpower *= 2.0;
+            Elevatorpower *= 2  .0;
         }
         Elevator.setPower(Elevatorpower);
     }

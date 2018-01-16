@@ -47,20 +47,20 @@ public class DriverControlled extends LinearOpMode
 
             // Grabber:
             //GlypherObject.GrabberSetPower(gamepad2.left_stick_x * 0.5);
-            GlypherObject.setGrabberLeftRight(0.5, (int) (gamepad2.left_stick_x*27) );
+            GlypherObject.setGrabberLeftRight(0.4, (int) (gamepad2.left_stick_x*26) );
 
             // Elevator:
             //GlypherObject.setElevatorPower(-gamepad2.right_stick_y * 0.1); // by power
             GlypherObject.setElevatorUpDown(max_elevator_power, (int) (-gamepad2.right_stick_y*max_elevator_power*150.0)); // by encoder
 
             if (gamepad2.dpad_down) {
-                max_elevator_power = 0.1;
-            } else if (gamepad2.dpad_left) {
                 max_elevator_power = 0.2;
+            } else if (gamepad2.dpad_left) {
+                max_elevator_power = 0.5;
             } else if (gamepad2.dpad_up) {
-                max_elevator_power = 0.3;
+                max_elevator_power = 1.8;
             } else if (gamepad2.dpad_right) {
-                max_elevator_power = 0.4;
+                max_elevator_power = 3.5;
             }
 
             //telemetry.addData("Elevator position: ", GlypherObject.getElevatorPosition());
